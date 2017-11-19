@@ -1,0 +1,32 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# IMposterior
+
+The goal of IMposterior is to ...
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example, eval=FALSE}
+library(IMposterior)
+set.seed(9782)
+x <- rnorm(1000)
+IMposterior(x= x, MME=1)
+```
+
+![Posterior distribution](./posterior.png)
