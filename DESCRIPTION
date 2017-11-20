@@ -1,7 +1,7 @@
 Package: IMposterior
 Title: Plot the posterior distribution
 Version: 0.5
-Authors@R: Authors@R: c(
+Authors@R: c(
     person("Ignacio", "Martinez", email = "ignacio@protonmail.com", role = c("aut", "cre")),
     person("Linus", "Marco", email = "LMarco@mathematica-mpr.com", role = "aut"))
 Description: What the package does (one paragraph).
