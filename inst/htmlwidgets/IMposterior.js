@@ -20,7 +20,7 @@ HTMLWidgets.widget({
         console.log("text: ", opts.text);
 
 
-        var margin = {left:50,right:50,top:40,bottom:0};
+        var margin = {left:50,right:50,top:40,bottom:60};
 
         xMax = d3.max(opts.data, function(d) { return d.x ; });
         yMax = d3.max(opts.data, function(d) { return d.y ; });
@@ -29,7 +29,7 @@ HTMLWidgets.widget({
 
         var y = d3.scaleLinear()
                     .domain([0,yMax])
-                    .range([height,0]);
+                    .range([height-margin.bottom,0]);
 
         var x = d3.scaleLinear()
                     .domain([xMin,xMax])
@@ -42,7 +42,7 @@ HTMLWidgets.widget({
 
         var area = d3.area()
                          .x(function(d){ return x(d.x) ;})
-                         .y0(height)
+                         .y0(height-margin.bottom)
                          .y1(function(d){ return y(d.y); });
 
         var svg = d3.select(el).append('svg').attr("height","100%").attr("width","100%");
@@ -68,7 +68,7 @@ HTMLWidgets.widget({
 
         chartGroup.append("g")
             .attr("class","axis x")
-            .attr("transform","translate(0,"+height+")")
+            .attr("transform","translate(0,"+(height-margin.bottom)+")")
             .call(xAxis);
 
 
