@@ -17,6 +17,7 @@ HTMLWidgets.widget({
         console.log("prob: ", opts.prob);
         console.log("colors: ", opts.colors);
         console.log("data: ", opts.data);
+        console.log("text: ", opts.text);
 
 
         var margin = {left:50,right:50,top:40,bottom:0};
@@ -52,15 +53,17 @@ HTMLWidgets.widget({
              .attr("d", area(opts.data.filter(function(d){  return d.x< -opts.MME ;})))
              .style("fill", opts.colors[0]);
 
-        chartGroup.append("path")
-             .attr("d", area(opts.data.filter(function(d){  return d.x > opts.MME ;})))
-             .style("fill", opts.colors[2]);
-
         if(opts.MME !==0){
           chartGroup.append("path")
              .attr("d", area(opts.data.filter(function(d){  return (d.x < opts.MME & d.x > -opts.MME) ;})))
              .style("fill", opts.colors[1]);
         }
+
+        chartGroup.append("path")
+             .attr("d", area(opts.data.filter(function(d){  return d.x > opts.MME ;})))
+             .style("fill", opts.colors[2]);
+
+
 
 
         chartGroup.append("g")
@@ -69,7 +72,22 @@ HTMLWidgets.widget({
             .call(xAxis);
 
 
+        var tooltip = d3.tip()
+                .attr('class', 'd3-tip chart-data-tip')
+                .offset([30, 0])
+                .direction('s')
+                .html(function(d, i) {
+                    return "<strong>" + d + "</strong> <span style='color:" + "white" + "'>"+ "</span>";
+                });
+
+        svg.call(tooltip);
+
+        chartGroup.selectAll("path").data(opts.text).on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
+
+
       },
+
+
 
       resize: function(width, height) {
 
