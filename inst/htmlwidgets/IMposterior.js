@@ -16,27 +16,15 @@ HTMLWidgets.widget({
         console.log("threshold: ", opts.threshold);
         console.log("prob: ", opts.prob);
         console.log("colors: ", opts.colors);
+        console.log("data: ", opts.data);
 
 
         var margin = {left:50,right:50,top:40,bottom:0};
 
-        var xMax = opts.x.reduce(function(a, b) {
-          return Math.max(a, b);
-
-        });
-        var yMax = opts.y.reduce(function(a, b) {
-          return Math.max(a, b);
-
-        });
-        var xMin = opts.x.reduce(function(a, b) {
-          return Math.min(a, b);
-
-        });
-        var yMin = opts.y.reduce(function(a, b) {
-          return Math.min(a, b);
-
-        });
-
+        xMax = d3.max(opts.data, function(d) { return d.x ; });
+        yMax = d3.max(opts.data, function(d) { return d.y ; });
+        xMin = d3.min(opts.data, function(d) { return d.x ; });
+        yMin = d3.min(opts.data, function(d) { return d.y ; });
 
         var y = d3.scaleLinear()
                     .domain([0,yMax])
@@ -52,16 +40,27 @@ HTMLWidgets.widget({
 
 
         var area = d3.area()
-                         .x(function(d,i){ return x(opts.x[i]) ;})
+                         .x(function(d){ return x(d.x) ;})
                          .y0(height)
-                         .y1(function(d){ return y(d); });
+                         .y1(function(d){ return y(d.y); });
 
         var svg = d3.select(el).append('svg').attr("height","100%").attr("width","100%");
         var chartGroup = svg.append("g").attr("transform","translate("+margin.left+","+margin.top+")");
 
 
         chartGroup.append("path")
-             .attr("d", area(opts.y));
+             .attr("d", area(opts.data.filter(function(d){  return d.x< -opts.threshold ;})))
+             .style("fill", opts.colors[0]);
+
+        chartGroup.append("path")
+             .attr("d", area(opts.data.filter(function(d){  return d.x > opts.threshold ;})))
+             .style("fill", opts.colors[2]);
+
+        if(opts.threshold !==0){
+          chartGroup.append("path")
+             .attr("d", area(opts.data.filter(function(d){  return (d.x < opts.threshold & d.x > -opts.threshold) ;})))
+             .style("fill", opts.colors[1]);
+        }
 
 
         chartGroup.append("g")

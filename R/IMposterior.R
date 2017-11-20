@@ -34,10 +34,11 @@ IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
     dplyr::ungroup() %>%
     tidyr::complete(section, fill=list(prob="0%"))
 
+
+
   # forward options using x
   opts = list(
-    x = dens$x,
-    y = dens$y,
+    data = dataframeToD3(data.frame(x = dens$x, y = dens$y)),
     MME = MME,
     threshold = threshold,
     prob = sp$prob,
