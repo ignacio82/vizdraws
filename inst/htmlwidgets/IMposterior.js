@@ -49,16 +49,16 @@ HTMLWidgets.widget({
 
 
         chartGroup.append("path")
-             .attr("d", area(opts.data.filter(function(d){  return d.x< -opts.threshold ;})))
+             .attr("d", area(opts.data.filter(function(d){  return d.x< -opts.MME ;})))
              .style("fill", opts.colors[0]);
 
         chartGroup.append("path")
-             .attr("d", area(opts.data.filter(function(d){  return d.x > opts.threshold ;})))
+             .attr("d", area(opts.data.filter(function(d){  return d.x > opts.MME ;})))
              .style("fill", opts.colors[2]);
 
-        if(opts.threshold !==0){
+        if(opts.MME !==0){
           chartGroup.append("path")
-             .attr("d", area(opts.data.filter(function(d){  return (d.x < opts.threshold & d.x > -opts.threshold) ;})))
+             .attr("d", area(opts.data.filter(function(d){  return (d.x < opts.MME & d.x > -opts.MME) ;})))
              .style("fill", opts.colors[1]);
         }
 
