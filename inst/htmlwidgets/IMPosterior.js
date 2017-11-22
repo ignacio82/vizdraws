@@ -153,6 +153,11 @@ HTMLWidgets.widget({
             return height - margin.bottom - yBar(d.y);
           });
 
+        g.selectAll(".bar")
+          .data(opts.text)
+          .on('mouseover', tooltip.show)
+          .on('mouseout', tooltip.hide);
+
 
 
 
