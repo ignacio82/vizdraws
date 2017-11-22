@@ -38,7 +38,7 @@ IMPosterior <- function(x, MME = 0, threshold = 0.75, colors,
   left <-  glue::glue('Your data suggest that there is a {sp$prob[[1]]} probability that the intervention has a negative effect of {MME} or more.')
   if(MME!=0){
     middle <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the effect of the intervention between -{MME} and {MME}, which we consider negligible')
-    right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a negative effect of {MME} or more.')
+    right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a positive effect of {MME} or more.')
     text <- c(left, middle, right)
   }else{
     right <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the intervention has a positive effect of {MME} or more.')
