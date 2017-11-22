@@ -6,9 +6,9 @@
 #' @importFrom magrittr "%>%"
 #'
 #' @export
-IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
-                     width = NULL, height = NULL,
-                     elementId = NULL) {
+IMPosterior <- function(x, MME = 0, threshold = 0.75, colors,
+                        width = NULL, height = NULL,
+                        elementId = NULL) {
   # Set colors
 
   if(missing(colors)){
@@ -38,11 +38,22 @@ IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
   left <-  glue::glue('Your data suggest that there is a {sp$prob[[1]]} probability that the intervention has a negative effect of {MME} or more.')
   if(MME!=0){
     middle <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the effect of the intervention between -{MME} and {MME}, which we consider negligible')
-    right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a negative effect of {MME} or more.')
+    right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a positive effect of {MME} or more.')
     text <- c(left, middle, right)
   }else{
-    right <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the intervention has a negative effect of {MME} or more.')
+    right <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the intervention has a positive effect of {MME} or more.')
     text <- c(left, right)
+  }
+
+
+  if(MME!=0){
+    bars <- data.frame(y = as.numeric(sub("%", "", sp$prob))/100,
+                       x = c("Worse", "Equivalent", "Better"),
+                       color = colors)
+  }else{
+    bars <- data.frame(y = as.numeric(sub("%", "", sp$prob))/100,
+                       x = c("Worse", "Better"),
+                       color = c(colors[1], colors[3]))
   }
 
 
@@ -54,44 +65,45 @@ IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
     threshold = threshold,
     prob = sp$prob,
     colors = colors,
+    bars = dataframeToD3(bars),
     text = text
   )
 
   # create widget
   htmlwidgets::createWidget(
-    name = 'IMposterior',
+    name = 'IMPosterior',
     opts,
     width = width,
     height = height,
-    package = 'IMposterior',
+    package = 'IMPosterior',
     elementId = elementId
   )
 }
 
-#' Shiny bindings for IMposterior
+#' Shiny bindings for IMPosterior
 #'
-#' Output and render functions for using IMposterior within Shiny
+#' Output and render functions for using IMPosterior within Shiny
 #' applications and interactive Rmd documents.
 #'
 #' @param outputId output variable to read from
 #' @param width,height Must be a valid CSS unit (like \code{'100\%'},
 #'   \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
 #'   string and have \code{'px'} appended.
-#' @param expr An expression that generates a IMposterior
+#' @param expr An expression that generates a IMPosterior
 #' @param env The environment in which to evaluate \code{expr}.
 #' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
 #'   is useful if you want to save an expression in a variable.
 #'
-#' @name IMposterior-shiny
+#' @name IMPosterior-shiny
 #'
 #' @export
-IMposteriorOutput <- function(outputId, width = '100%', height = '400px'){
-  htmlwidgets::shinyWidgetOutput(outputId, 'IMposterior', width, height, package = 'IMposterior')
+IMPosteriorOutput <- function(outputId, width = '100%', height = '400px'){
+  htmlwidgets::shinyWidgetOutput(outputId, 'IMPosterior', width, height, package = 'IMPosterior')
 }
 
-#' @rdname IMposterior-shiny
+#' @rdname IMPosterior-shiny
 #' @export
-renderIMposterior <- function(expr, env = parent.frame(), quoted = FALSE) {
+renderIMPosterior <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
-  htmlwidgets::shinyRenderWidget(expr, IMposteriorOutput, env, quoted = TRUE)
+  htmlwidgets::shinyRenderWidget(expr, IMPosteriorOutput, env, quoted = TRUE)
 }
