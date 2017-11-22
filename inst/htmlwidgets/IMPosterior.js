@@ -1,6 +1,6 @@
 HTMLWidgets.widget({
 
-  name: 'IMposterior',
+  name: 'IMPosterior',
 
   type: 'output',
 

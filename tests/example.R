@@ -4,8 +4,8 @@ x <- rnorm(1000)
 
 
 # Usy my widget -----------------------------------------------------------
-library(IMposterior)
-IMposterior(x= x, MME=1)
+library(IMPosterior)
+IMPosterior(x= x, MME=1)
 
 
 
