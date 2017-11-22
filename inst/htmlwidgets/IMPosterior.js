@@ -54,7 +54,7 @@ HTMLWidgets.widget({
         var margin = {
                 top: 50,
                 right: 20,
-                bottom: 30,
+                bottom: 80,
                 left: 70
             },
             dims = {
