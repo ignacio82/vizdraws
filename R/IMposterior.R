@@ -7,8 +7,8 @@
 #'
 #' @export
 IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
-                     width = NULL, height = NULL,
-                     elementId = NULL) {
+                        width = NULL, height = NULL,
+                        elementId = NULL) {
   # Set colors
 
   if(missing(colors)){
@@ -46,6 +46,17 @@ IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
   }
 
 
+  if(MME!=0){
+    bars <- data.frame(y = as.numeric(sub("%", "", sp$prob))/100,
+                       x = c("Worse", "Equivalent", "Better"),
+                       color = colors)
+  }else{
+    bars <- data.frame(y = as.numeric(sub("%", "", sp$prob))/100,
+                       x = c("Worse", "Better"),
+                       color = c(colors[1], colors[3]))
+  }
+
+
 
   # forward options using x
   opts = list(
@@ -54,6 +65,7 @@ IMposterior <- function(x, MME = 0, threshold = 0.75, colors,
     threshold = threshold,
     prob = sp$prob,
     colors = colors,
+    bars = dataframeToD3(bars),
     text = text
   )
 
