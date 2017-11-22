@@ -90,10 +90,6 @@ HTMLWidgets.widget({
                     .domain(opts.bars.map(function(d) { return d.x; }))
                     .rangeRound([0, width]).padding(0.1);
 
-      var yAxisBar = d3.axisLeft(yBar);
-      var xAxisBar = d3.axisBottom(xBar);
-
-
       var g = svg.append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
