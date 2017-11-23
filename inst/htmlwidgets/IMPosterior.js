@@ -13,7 +13,7 @@ HTMLWidgets.widget({
       renderValue: function(opts) {
 
         //transition
-        var transDuration = 1000;
+        var transDuration = 2500;
 
         var dataDiscrete = opts.bars.map((b, i) => {
             b.y = Number(b.y);
