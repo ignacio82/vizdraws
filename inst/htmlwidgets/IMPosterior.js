@@ -116,10 +116,10 @@ HTMLWidgets.widget({
                 .style("fill", function(d) { return d.color; })
                 .attr("d", function(d, i) {
                     let numPts = dataContinuousGroups[i].data.length - 2;
-                    var path = d3.path()
+                    var path = d3.path();
                     path.moveTo(xDiscrete(d.x), y(0));
                     for (j=0; j<numPts; j++) {
-                        path.lineTo(xDiscrete(d.x) + j*xDiscrete.bandwidth()/(numPts-1), y(d.y))
+                        path.lineTo(xDiscrete(d.x) + j*xDiscrete.bandwidth()/(numPts-1), y(d.y));
                     }
                     path.lineTo(xDiscrete(d.x) + xDiscrete.bandwidth(), y(0));
                     return path.toString();
