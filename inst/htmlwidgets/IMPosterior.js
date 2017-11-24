@@ -74,7 +74,7 @@ HTMLWidgets.widget({
             .domain([0, 1])
             .range([dims.height, 0]);
 
-        var svg = d3.select(el).html("").append("svg")
+        var svg = d3.select(el).html(null).append("svg")
             .attr("width", dims.width + margin.left + margin.right)
             .attr("height", dims.height + margin.top + margin.bottom);
 
