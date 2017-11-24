@@ -74,10 +74,10 @@ HTMLWidgets.widget({
             .domain([0, 1])
             .range([dims.height, 0]);
 
-        var svg = d3.select(el).append("svg")
+        var svg = d3.select(el).html("").append("svg")
             .attr("width", dims.width + margin.left + margin.right)
             .attr("height", dims.height + margin.top + margin.bottom);
-            
+
         var g = svg
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -99,7 +99,7 @@ HTMLWidgets.widget({
             .style("text-anchor", "end")
             .style("font-size", 14 + "px")
             .text("Probability");
-            
+
         g.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + dims.height + ")")
@@ -156,7 +156,7 @@ HTMLWidgets.widget({
             } else {
                 xAxis.scale(xDiscrete);
             }
-            d3.select(".x").transition().duration(duration).call(xAxis);       
+            d3.select(".x").transition().duration(duration).call(xAxis);
         };
 
         var updateYAxis = function(data, duration) {
@@ -271,7 +271,7 @@ HTMLWidgets.widget({
             } else {
                 toggle("discrete", transDuration);
             }
-            
+
           })
           .on("mouseover", function() {
             if (d3.select(this).select("rect").attr("fill") != pressedColor) {
@@ -333,7 +333,7 @@ HTMLWidgets.widget({
         }
 
         toggle("distribution", 0);
-        
+
         setTimeout(() => {
             toggle("discrete", transDuration);
         }, 1000);
@@ -345,6 +345,10 @@ HTMLWidgets.widget({
       resize: function(width, height) {
 
         // TODO: code to re-render the widget with a new size
+
+        var svg = d3.select(el).append("svg")
+            .attr("width", dims.width + margin.left + margin.right)
+            .attr("height", dims.height + margin.top + margin.bottom);
 
       }
 
