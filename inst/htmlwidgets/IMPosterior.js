@@ -26,7 +26,11 @@ HTMLWidgets.widget({
             max: d3.max(opts.data, d => d.x)
         };
 
-        distParams.cuts = [-opts.MME, opts.MME, distParams.max];
+        if (opts.MME === 0) {
+            distParams.cuts = [opts.MME, distParams.max];
+        } else {
+            distParams.cuts = [-opts.MME, opts.MME, distParams.max];
+        }
 
         opts.data = opts.data.sort((a,b) => a.x - b.x);
 
@@ -171,7 +175,7 @@ HTMLWidgets.widget({
 
         var toggle = function(to, duration) {
             if (to === "distribution") {
-                updateYAxis(dataContinuousGroups[0].data.concat(dataContinuousGroups[1].data).concat(dataContinuousGroups[2].data), 0);
+                updateYAxis(opts.data, 0);
                 updateXAxis("continuous", duration);
 
                 areas
