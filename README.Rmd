@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# IMposterior
+# IMPosterior
 
 The goal of IMposterior is to ...
 
@@ -30,3 +30,6 @@ IMposterior(x= x, MME=1)
 ```
 
 ![Posterior distribution](./posterior.png)
+# Notes
+
+The bell-curve icon was [created by Davo Sime.](https://thenounproject.com/term/bell-curve/614251/)
