@@ -247,99 +247,98 @@ HTMLWidgets.widget({
 
 
         // Add buttons
+        var STATUS = "distribution";
+
+        //colors for different button states
+        var defaultColor = "#aaa";
+        var hoverColor = "#666";
+        var pressedColor = "#000";
+
+        var click = function(context) {
+            if (STATUS === "discrete") {
+                toggle("distribution", transDuration);
+                
+                var button = d3.select(context);
+                var icon = button.selectAll(".icon");
+                var background = button.select(".background");
+                icon.style("fill", pressedColor);
+                background.style("stroke", pressedColor);
+
+                STATUS = "distribution";
+            } else {
+                toggle("discrete", transDuration);
+
+                var button = d3.select(context);
+                var icon = button.selectAll(".icon");
+                var background = button.select(".background");
+                icon.style("fill", defaultColor);
+                background.style("stroke", defaultColor);
+
+                STATUS = "discrete";
+            }
+        }
 
         //container for all buttons
         var allButtons = svg.append("g")
-          .attr("id", "allButtons");
+            .attr("id", "allButtons")
+            .attr("transform", "translate(" + (width - 95) + "," + 15 + ") scale(0.6)");
 
-        //fontawesome button labels
-        var labels = ["B", "D"];
+        var button = allButtons
+            .append("g")
+            .attr("id", "button");
+        
+        button.append("rect")
+            .attr("class", "background")
+            .attr("x", -10)
+            .attr("y", 0)
+            .attr("width", 120)
+            .attr("height", 100)
+            .style("stroke", pressedColor)
+            .style("stroke-width", 2)
+            .style("fill", "white");
 
-        //colors for different button states
-        var defaultColor = "#E0E0E0";
-        var hoverColor = "#808080";
-        var pressedColor = "#000000";
+        button.append("rect")
+            .attr("class", "icon")
+            .attr("y", 75)
+            .attr("width", 100)
+            .attr("height", 2)
+            .style("stroke", "none")
+            .style("fill", pressedColor);
 
-        //groups for each button (which will hold a rect and text)
-        var buttonGroups = allButtons.selectAll("g.button")
-          .data(labels)
-          .enter()
-          .append("g")
-          .attr("class", "button")
-          .style("cursor", "pointer")
-          .on("click", function(d, i) {
-            updateButtonColors(d3.select(this), d3.select(this.parentNode));
-            d3.select("#numberToggle").text(i + 1);
-            if (d === "D") {
-                toggle("distribution", transDuration);
-            } else {
-                toggle("discrete", transDuration);
-            }
+        button.append("path")
+            .attr("class", "icon")
+            .attr("d", "M37.92,42.22c3.78-8,7-14.95,12.08-14.95h0c5,0,8.3,6.93,12.08,14.95,6.12,13,13.73,29.13,33.48,29.13h0v-2h0c-18.48,0-25.79-15.51-31.67-28C59.82,32.74,56.3,25.28,50,25.28h0c-6.3,0-9.82,7.46-13.89,16.09-5.88,12.47-13.19,28-31.67,28h0v2h0C24.18,71.35,31.8,55.2,37.92,42.22Z" )
+            .style("stroke", "none")
+            .style("fill", pressedColor);
 
-          })
-          .on("mouseover", function() {
-            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-              d3.select(this)
-                .select("rect")
-                .attr("fill", hoverColor);
-            }
-          })
-          .on("mouseout", function() {
-            if (d3.select(this).select("rect").attr("fill") != pressedColor) {
-              d3.select(this)
-                .select("rect")
-                .attr("fill", defaultColor);
-            }
-          });
-
-        var bWidth = 40; //button width
-        var bHeight = 25; //button height
-        var bSpace = 10; //space between buttons
-        var x0 = 20; //x offset
-        var y0 = 10; //y offset
-
-        //adding a rect to each toggle button group
-        //rx and ry give the rect rounded corner
-        buttonGroups.append("rect")
-          .attr("class", "buttonRect")
-          .attr("width", bWidth)
-          .attr("height", bHeight)
-          .attr("x", function(d, i) {
-            return x0 + (bWidth + bSpace) * i;
-          })
-          .attr("y", y0)
-          .attr("rx", 5) //rx and ry give the buttons rounded corners
-          .attr("ry", 5)
-          .attr("fill", defaultColor);
-
-        //adding text to each toggle button group, centered
-        //within the toggle button rect
-        buttonGroups.append("text")
-          .attr("class", "buttonText")
-          .attr("x", function(d, i) {
-            return x0 + (bWidth + bSpace) * i + bWidth / 2;
-          })
-          .attr("y", y0 + bHeight / 2)
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "central")
-          .attr("fill", "white")
-          .text(function(d) {
-            return d;
-          });
-
-        function updateButtonColors(button, parent) {
-          parent.selectAll("rect")
-            .attr("fill", defaultColor);
-
-          button.select("rect")
-            .attr("fill", pressedColor);
-
-        }
+        button
+            .style("cursor", "pointer")
+            .on("click", function(d, i) {
+                click(this);
+            })
+            .on("mouseover", function() {
+                var button = d3.select(this);
+                var icon = button.selectAll(".icon");
+                var background = button.select(".background");
+                if (STATUS === "discrete") {
+                    icon.style("fill", hoverColor);
+                    background.style("stroke", hoverColor);
+                }
+            })
+            .on("mouseout", function() {
+                var button = d3.select(this);
+                var icon = button.selectAll(".icon");
+                var background = button.select(".background");
+                if (STATUS === "discrete") {
+                    icon.style("fill", defaultColor);
+                    background.style("stroke", defaultColor);
+                }
+            });
 
         toggle("distribution", 0);
 
         setTimeout(() => {
-            toggle("discrete", transDuration);
+            click("#button");
         }, 1000);
 
       },
