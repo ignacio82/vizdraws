@@ -27,24 +27,6 @@ IMPosterior <- function(x, MME = 0, threshold = 0.75, colors,
     dplyr::group_by(section) %>%
     dplyr::mutate(prob = paste0(round(sum(y)*mean(diff(x))*100),"%"))
 
-  if(min(dens$x)> (-MME)){
-
-    tmp <- data.frame(x= 1.1*(-MME), y = 0,
-                      section = dens[which(dens$x==min(dens$x)),]$section,
-                      prob = dens[which(dens$x==min(dens$x)),]$prob)
-    dens <- rbind(as.data.frame(dens), tmp)
-
-  }
-
-  if(max(dens$x)< MME){
-
-    tmp <- data.frame(x= 1.1*MME, y = 0,
-                      section = dens[which(dens$x==max(dens$x)),]$section,
-                      prob = dens[which(dens$x==max(dens$x)),]$prob)
-    dens <- rbind(as.data.frame(dens), tmp)
-
-  }
-
   # Get probability mass for each level of section
   sp <- dens %>%
     dplyr::group_by(section, prob) %>%
