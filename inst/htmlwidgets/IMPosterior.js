@@ -50,7 +50,7 @@ HTMLWidgets.widget({
                 data.unshift({x:data[0].x, y:0});
                 data.push({x:data[data.length - 1].x, y:0});
             }
-            
+
             dataContinuousGroups.push({
                 color: opts.colors[i],
                 data: data
@@ -69,7 +69,7 @@ HTMLWidgets.widget({
             };
 
         var xContinuous = d3.scaleLinear()
-            .domain([distParams.min - 1, distParams.max + 1])
+            .domain([Math.min(distParams.min, -opts.MME), Math.max(distParams.max, opts.MME)])
             .range([0, dims.width]);
 
         var xDiscrete = d3.scaleBand()
@@ -259,7 +259,7 @@ HTMLWidgets.widget({
         var click = function(context) {
             if (STATUS === "discrete") {
                 toggle("distribution", transDuration);
-                
+
                 var button = d3.select(context);
                 var icon = button.selectAll(".icon");
                 var background = button.select(".background");
@@ -288,7 +288,7 @@ HTMLWidgets.widget({
         var button = allButtons
             .append("g")
             .attr("id", "button");
-        
+
         button.append("rect")
             .attr("class", "background")
             .attr("x", -10)
