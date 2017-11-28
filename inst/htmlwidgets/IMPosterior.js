@@ -46,9 +46,11 @@ HTMLWidgets.widget({
                 }
             });
 
-            data.unshift({x:data[0].x, y:0});
-            data.push({x:data[data.length - 1].x, y:0});
-
+            if (data.length > 0) {
+                data.unshift({x:data[0].x, y:0});
+                data.push({x:data[data.length - 1].x, y:0});
+            }
+            
             dataContinuousGroups.push({
                 color: opts.colors[i],
                 data: data
