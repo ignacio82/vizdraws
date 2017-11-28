@@ -16,6 +16,6 @@ x <- rnorm(1000)
 IMposterior(x= x, MME=1)
 ```
 
-![Posterior distribution](./posterior.png) \# Notes
+![Posterior distribution](./Posterior.gif) \# Notes
 
 The bell-curve icon was [created by Davo Sime.](https://thenounproject.com/term/bell-curve/614251/)
