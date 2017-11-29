@@ -151,9 +151,9 @@ HTMLWidgets.widget({
             .style("stroke-dasharray", "5,5")
             .style("opacity", 1)
             .attr("x1", 0)
-            .attr("y1", y(opts.threshold))
+            .attr("y1", y(0))
             .attr("x2", dims.width)
-            .attr("y2", y(opts.threshold));
+            .attr("y2", y(0));
 
 
         var updateXAxis = function(type, duration) {
@@ -196,7 +196,9 @@ HTMLWidgets.widget({
                         });
 
                 thresholdLine
-                    .style("opacity", 0);
+                    .style("opacity", 0)
+                    .attr("y1", y(0))
+                    .attr("y2", y(0));
 
                 g.select(".y.axis")
                     .style("opacity", 0);
@@ -227,9 +229,10 @@ HTMLWidgets.widget({
 
                 thresholdLine
                     .transition()
-                    .duration(0)
                     .delay(duration)
                         .style("opacity", 1)
+                    .transition()
+                    .duration(1000)
                         .attr("y1", y(opts.threshold))
                         .attr("y2", y(opts.threshold));
 
