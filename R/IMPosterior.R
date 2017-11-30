@@ -9,6 +9,7 @@
 IMPosterior <- function(x, MME = 0, threshold = 0.75, colors,
                         width = NULL, height = NULL,
                         elementId = NULL) {
+  if(MME<0) stop("MME should be non-negative")
   # Set colors
 
   if(missing(colors)){
