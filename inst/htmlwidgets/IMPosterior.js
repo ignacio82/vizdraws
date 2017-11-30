@@ -9,13 +9,26 @@ HTMLWidgets.widget({
     factory: (el, width, height) => {
         return {
             renderValue: opts => {
-                const transDuration = 2500;
+                // define globals
+                let STATUS = 'distribution';
 
-                let dataDiscrete = opts.bars.map((b, i) => {
-                    b.y = Number(b.y);
-                    b.desc = opts.text[i];
-                    return b;
-                });
+                const transDuration = 500;
+
+                const defaultColor = '#aaa';
+                const hoverColor = '#666';
+                const pressedColor = '#000';
+
+                const margin = {
+                    top: 50,
+                    right: 20,
+                    bottom: 80,
+                    left: 70
+                };
+
+                const dims = {
+                    width: width - margin.left - margin.right,
+                    height: height - margin.top - margin.bottom
+                };
 
                 const distParams = {
                     min: d3.min(opts.data, d => d.x),
@@ -28,8 +41,17 @@ HTMLWidgets.widget({
                     distParams.cuts = [-opts.MME, opts.MME, distParams.max];
                 }
 
+                // sort input data
                 opts.data = opts.data.sort((a, b) => a.x - b.x);
 
+                // set up data for bars
+                let dataDiscrete = opts.bars.map((b, i) => {
+                    b.y = Number(b.y);
+                    b.desc = opts.text[i];
+                    return b;
+                });
+
+                // set up data for distribution
                 let dataContinuousGroups = [];
                 distParams.cuts.forEach((c, i) => {
                     let data = opts.data.filter(d => {
@@ -53,18 +75,7 @@ HTMLWidgets.widget({
                     });
                 });
 
-                const margin = {
-                    top: 50,
-                    right: 20,
-                    bottom: 80,
-                    left: 70
-                };
-
-                const dims = {
-                    width: width - margin.left - margin.right,
-                    height: height - margin.top - margin.bottom
-                };
-
+                // set up scales
                 let xContinuous = d3
                     .scaleLinear()
                     .domain([
@@ -84,6 +95,7 @@ HTMLWidgets.widget({
                     .domain([0, 1])
                     .range([dims.height, 0]);
 
+                // create main containers
                 let svg = d3
                     .select(el)
                     .html(null)
@@ -95,6 +107,7 @@ HTMLWidgets.widget({
                     .append('g')
                     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+                // define axes
                 let xAxis = d3.axisBottom().scale(xDiscrete);
 
                 let yAxis = d3
@@ -114,6 +127,7 @@ HTMLWidgets.widget({
                     .style('font-size', 14 + 'px')
                     .text('Probability');
 
+                // create axes
                 g
                     .append('g')
                     .attr('class', 'x axis')
@@ -125,6 +139,74 @@ HTMLWidgets.widget({
                     .attr('class', 'y axis')
                     .call(yAxis);
 
+                // function to transition areas to bars
+                let transToBars = (d, i) => {
+                    // Each bar will be defined by a svg path made up of the same number
+                    // of points as the corresponding distribution section. We do this
+                    // so that the shape transition will be smooth.
+                    //
+                    // The distribution sections are made up of all of the actual data
+                    // points plus one extra point on each end at [x0, 0] and [xn, 0] so
+                    // that the distribution section extends down to the x-axis.
+                    //
+                    // Therefore, we draw the bars starting with a point on the x-axis
+                    // followed by n equally-space points with y values equal to the
+                    // height of the bar (n = number of data points). Then finally we add
+                    // another point on the x-axis to complete the rectange.
+                    //
+                    // Pictorally:
+
+                    //
+                    //    dist                        bar
+                    //             . .
+                    //            .
+                    //         . .
+                    //        .             to      .........
+                    //       .            ------\
+                    //    . .             ------/
+                    //
+                    //
+                    //
+                    //
+                    // ___.__________.______________._______.___ x-axis
+                    //
+
+                    let path = d3.path();
+
+                    // continuous data already contains x-axis anchor points
+                    // we're adding those outside of the loop below, so we
+                    // subtract 2 from our counter
+                    let numPts = dataContinuousGroups[i].data.length - 2;
+
+                    // start on x-axis
+                    path.moveTo(xDiscrete(d.x), y(0));
+
+                    // create points along the top of the bar
+                    for (j = 0; j < numPts; j++) {
+                        path.lineTo(
+                            xDiscrete(d.x) + j * xDiscrete.bandwidth() / (numPts - 1),
+                            y(d.y)
+                        );
+                    }
+
+                    // end on x-axis
+                    path.lineTo(xDiscrete(d.x) + xDiscrete.bandwidth(), y(0));
+
+                    // return stringified path data
+                    return path.toString();
+                };
+
+                // function to transition areas to distribution segments
+                let transToDistributionSegments = d => {
+                    // line with x and y values defned by data
+                    let gen = d3
+                        .line()
+                        .x(p => xContinuous(p.x))
+                        .y(p => y(p.y));
+                    return gen(d.data);
+                };
+
+                // create bars
                 let areas = g
                     .selectAll('.area')
                     .data(dataDiscrete)
@@ -132,20 +214,9 @@ HTMLWidgets.widget({
                     .append('path')
                     .attr('class', 'area')
                     .style('fill', d => d.color)
-                    .attr('d', (d, i) => {
-                        let numPts = dataContinuousGroups[i].data.length - 2;
-                        let path = d3.path();
-                        path.moveTo(xDiscrete(d.x), y(0));
-                        for (j = 0; j < numPts; j++) {
-                            path.lineTo(
-                                xDiscrete(d.x) + j * xDiscrete.bandwidth() / (numPts - 1),
-                                y(d.y)
-                            );
-                        }
-                        path.lineTo(xDiscrete(d.x) + xDiscrete.bandwidth(), y(0));
-                        return path.toString();
-                    });
+                    .attr('d', transToBars);
 
+                // define reusable tooltip
                 let tooltip = d3
                     .tip()
                     .attr('class', 'd3-tip chart-data-tip')
@@ -153,10 +224,13 @@ HTMLWidgets.widget({
                     .direction('s')
                     .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
 
+                // attach tooltip to container
                 g.call(tooltip);
 
+                // show tooltip on hover over areas
                 areas.on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
 
+                // define threshold line
                 let thresholdLine = g
                     .append('line')
                     .attr('stroke', 'black')
@@ -168,6 +242,7 @@ HTMLWidgets.widget({
                     .attr('x2', dims.width)
                     .attr('y2', y(0));
 
+                // function to update x axis
                 let updateXAxis = (type, duration) => {
                     if (type === 'continuous') {
                         xAxis.scale(xContinuous);
@@ -182,6 +257,7 @@ HTMLWidgets.widget({
                         .call(xAxis);
                 };
 
+                // function to update y axis
                 let updateYAxis = (data, duration) => {
                     const extent = d3.extent(data, d => d.y);
                     extent[0] = 0;
@@ -195,32 +271,31 @@ HTMLWidgets.widget({
                         .call(yAxis);
                 };
 
+                // function to switch between bars and distribution
                 let toggle = (to, duration) => {
                     if (to === 'distribution') {
+                        // update axes
                         updateYAxis(opts.data, 0);
                         updateXAxis('continuous', duration);
 
+                        // change bars to areas
                         areas
                             .data(dataContinuousGroups)
                             .transition()
                             .duration(duration)
-                            .attr('d', d => {
-                                let gen = d3
-                                    .line()
-                                    .x(p => xContinuous(p.x))
-                                    .y(p => y(p.y));
-                                return gen(d.data);
-                            });
+                            .attr('d', transToDistributionSegments);
 
+                        // hide threshold line
                         thresholdLine
                             .style('opacity', 0)
                             .attr('y1', y(0))
                             .attr('y2', y(0));
 
+                        // hide y axis
                         g.select('.y.axis').style('opacity', 0);
-
                         g.select('.y-axis-label').style('opacity', 0);
                     } else {
+                        // update axes
                         y.domain([0, 1]);
                         d3
                             .select('.y')
@@ -230,24 +305,14 @@ HTMLWidgets.widget({
 
                         updateXAxis('discrete', duration);
 
+                        // change areas to bars
                         areas
                             .data(dataDiscrete)
                             .transition()
                             .duration(duration)
-                            .attr('d', (d, i) => {
-                                let numPts = dataContinuousGroups[i].data.length - 2;
-                                let path = d3.path();
-                                path.moveTo(xDiscrete(d.x), y(0));
-                                for (j = 0; j < numPts; j++) {
-                                    path.lineTo(
-                                        xDiscrete(d.x) + j * xDiscrete.bandwidth() / (numPts - 1),
-                                        y(d.y)
-                                    );
-                                }
-                                path.lineTo(xDiscrete(d.x) + xDiscrete.bandwidth(), y(0));
-                                return path.toString();
-                            });
+                            .attr('d', transToBars);
 
+                        // make threshold line appear and float up
                         thresholdLine
                             .transition()
                             .delay(duration)
@@ -257,6 +322,7 @@ HTMLWidgets.widget({
                             .attr('y1', y(opts.threshold))
                             .attr('y2', y(opts.threshold));
 
+                        // transition in y axis
                         g
                             .select('.y.axis')
                             .transition()
@@ -273,13 +339,7 @@ HTMLWidgets.widget({
                     }
                 };
 
-                // Add buttons
-                let STATUS = 'distribution';
-
-                const defaultColor = '#aaa';
-                const hoverColor = '#666';
-                const pressedColor = '#000';
-
+                // function called when toggle button pushed
                 let click = context => {
                     let button, icon, background;
                     if (STATUS === 'discrete') {
@@ -305,6 +365,7 @@ HTMLWidgets.widget({
                     }
                 };
 
+                // create button containers
                 let allButtons = svg
                     .append('g')
                     .attr('id', 'allButtons')
@@ -312,6 +373,7 @@ HTMLWidgets.widget({
 
                 let button = allButtons.append('g').attr('id', 'button');
 
+                // button background/border box
                 button
                     .append('rect')
                     .attr('class', 'background')
@@ -323,6 +385,7 @@ HTMLWidgets.widget({
                     .style('stroke-width', 2)
                     .style('fill', 'white');
 
+                // x axis in button graphic
                 button
                     .append('rect')
                     .attr('class', 'icon')
@@ -332,6 +395,7 @@ HTMLWidgets.widget({
                     .style('stroke', 'none')
                     .style('fill', pressedColor);
 
+                // curve in button graphic
                 button
                     .append('path')
                     .attr('class', 'icon')
@@ -347,6 +411,7 @@ HTMLWidgets.widget({
                     .style('stroke', 'none')
                     .style('fill', pressedColor);
 
+                // button interactions
                 button
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
@@ -371,8 +436,10 @@ HTMLWidgets.widget({
                         }
                     });
 
+                // start app as distribution
                 toggle('distribution', 0);
 
+                // wait 1 second then transition to bars
                 setTimeout(() => {
                     click('#button');
                 }, 1000);
