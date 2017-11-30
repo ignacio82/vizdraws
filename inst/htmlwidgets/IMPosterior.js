@@ -7,20 +7,17 @@ HTMLWidgets.widget({
     type: 'output',
 
     factory: function(el, width, height) {
-        // TODO: define shared variables for this instance
-
         return {
             renderValue: function(opts) {
-                //transition
-                var transDuration = 2500;
+                const transDuration = 2500;
 
-                var dataDiscrete = opts.bars.map((b, i) => {
+                let dataDiscrete = opts.bars.map((b, i) => {
                     b.y = Number(b.y);
                     b.desc = opts.text[i];
                     return b;
                 });
 
-                var distParams = {
+                const distParams = {
                     min: d3.min(opts.data, d => d.x),
                     max: d3.max(opts.data, d => d.x)
                 };
@@ -33,7 +30,7 @@ HTMLWidgets.widget({
 
                 opts.data = opts.data.sort((a, b) => a.x - b.x);
 
-                var dataContinuousGroups = [];
+                let dataContinuousGroups = [];
                 distParams.cuts.forEach((c, i) => {
                     let data = opts.data.filter(d => {
                         if (i === 0) {
@@ -56,18 +53,19 @@ HTMLWidgets.widget({
                     });
                 });
 
-                var margin = {
-                        top: 50,
-                        right: 20,
-                        bottom: 80,
-                        left: 70
-                    },
-                    dims = {
-                        width: width - margin.left - margin.right,
-                        height: height - margin.top - margin.bottom
-                    };
+                const margin = {
+                    top: 50,
+                    right: 20,
+                    bottom: 80,
+                    left: 70
+                };
 
-                var xContinuous = d3
+                const dims = {
+                    width: width - margin.left - margin.right,
+                    height: height - margin.top - margin.bottom
+                };
+
+                let xContinuous = d3
                     .scaleLinear()
                     .domain([
                         Math.min(distParams.min, -opts.MME),
@@ -75,41 +73,37 @@ HTMLWidgets.widget({
                     ])
                     .range([0, dims.width]);
 
-                var xDiscrete = d3
+                let xDiscrete = d3
                     .scaleBand()
-                    .domain(
-                        dataDiscrete.map(function(d) {
-                            return d.x;
-                        })
-                    )
+                    .domain(dataDiscrete.map(d => d.x))
                     .rangeRound([0, dims.width])
                     .padding(0.1);
 
-                var y = d3
+                let y = d3
                     .scaleLinear()
                     .domain([0, 1])
                     .range([dims.height, 0]);
 
-                var svg = d3
+                let svg = d3
                     .select(el)
                     .html(null)
                     .append('svg')
                     .attr('width', dims.width + margin.left + margin.right)
                     .attr('height', dims.height + margin.top + margin.bottom);
 
-                var g = svg
+                let g = svg
                     .append('g')
                     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-                var xAxis = d3.axisBottom().scale(xDiscrete);
+                let xAxis = d3.axisBottom().scale(xDiscrete);
 
-                var yAxis = d3
+                let yAxis = d3
                     .axisLeft()
                     .scale(y)
                     .ticks(10)
                     .tickFormat(d3.format('.0%'));
 
-                var yLabel = g
+                let yLabel = g
                     .append('text')
                     .attr('class', 'y-axis-label')
                     .attr('transform', 'rotate(-90)')
@@ -131,18 +125,16 @@ HTMLWidgets.widget({
                     .attr('class', 'y axis')
                     .call(yAxis);
 
-                var areas = g
+                let areas = g
                     .selectAll('.area')
                     .data(dataDiscrete)
                     .enter()
                     .append('path')
                     .attr('class', 'area')
-                    .style('fill', function(d) {
-                        return d.color;
-                    })
-                    .attr('d', function(d, i) {
+                    .style('fill', d => d.color)
+                    .attr('d', (d, i) => {
                         let numPts = dataContinuousGroups[i].data.length - 2;
-                        var path = d3.path();
+                        let path = d3.path();
                         path.moveTo(xDiscrete(d.x), y(0));
                         for (j = 0; j < numPts; j++) {
                             path.lineTo(
@@ -154,20 +146,18 @@ HTMLWidgets.widget({
                         return path.toString();
                     });
 
-                var tooltip = d3
+                let tooltip = d3
                     .tip()
                     .attr('class', 'd3-tip chart-data-tip')
                     .offset([30, 0])
                     .direction('s')
-                    .html(function(d, i) {
-                        return '<span>' + dataDiscrete[i].desc + '</span>';
-                    });
+                    .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
 
                 g.call(tooltip);
 
                 areas.on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
 
-                var thresholdLine = g
+                let thresholdLine = g
                     .append('line')
                     .attr('stroke', 'black')
                     .style('stroke-width', '1.5px')
@@ -178,12 +168,13 @@ HTMLWidgets.widget({
                     .attr('x2', dims.width)
                     .attr('y2', y(0));
 
-                var updateXAxis = function(type, duration) {
+                let updateXAxis = (type, duration) => {
                     if (type === 'continuous') {
                         xAxis.scale(xContinuous);
                     } else {
                         xAxis.scale(xDiscrete);
                     }
+
                     d3
                         .select('.x')
                         .transition()
@@ -191,13 +182,12 @@ HTMLWidgets.widget({
                         .call(xAxis);
                 };
 
-                var updateYAxis = function(data, duration) {
-                    var extent = d3.extent(data, function(d) {
-                        return d.y;
-                    });
+                let updateYAxis = (data, duration) => {
+                    const extent = d3.extent(data, d => d.y);
                     extent[0] = 0;
                     extent[1] = extent[1] + 0.2 * (extent[1] - extent[0]);
                     y.domain(extent);
+
                     d3
                         .select('.y')
                         .transition()
@@ -205,7 +195,7 @@ HTMLWidgets.widget({
                         .call(yAxis);
                 };
 
-                var toggle = function(to, duration) {
+                let toggle = (to, duration) => {
                     if (to === 'distribution') {
                         updateYAxis(opts.data, 0);
                         updateXAxis('continuous', duration);
@@ -214,15 +204,11 @@ HTMLWidgets.widget({
                             .data(dataContinuousGroups)
                             .transition()
                             .duration(duration)
-                            .attr('d', function(d) {
-                                var gen = d3
+                            .attr('d', d => {
+                                let gen = d3
                                     .line()
-                                    .x(function(p) {
-                                        return xContinuous(p.x);
-                                    })
-                                    .y(function(p) {
-                                        return y(p.y);
-                                    });
+                                    .x(p => xContinuous(p.x))
+                                    .y(p => y(p.y));
                                 return gen(d.data);
                             });
 
@@ -248,9 +234,9 @@ HTMLWidgets.widget({
                             .data(dataDiscrete)
                             .transition()
                             .duration(duration)
-                            .attr('d', function(d, i) {
+                            .attr('d', (d, i) => {
                                 let numPts = dataContinuousGroups[i].data.length - 2;
-                                var path = d3.path();
+                                let path = d3.path();
                                 path.moveTo(xDiscrete(d.x), y(0));
                                 for (j = 0; j < numPts; j++) {
                                     path.lineTo(
@@ -288,20 +274,20 @@ HTMLWidgets.widget({
                 };
 
                 // Add buttons
-                var STATUS = 'distribution';
+                let STATUS = 'distribution';
 
-                //colors for different button states
-                var defaultColor = '#aaa';
-                var hoverColor = '#666';
-                var pressedColor = '#000';
+                const defaultColor = '#aaa';
+                const hoverColor = '#666';
+                const pressedColor = '#000';
 
-                var click = function(context) {
+                let click = context => {
+                    let button, icon, background;
                     if (STATUS === 'discrete') {
                         toggle('distribution', transDuration);
 
-                        var button = d3.select(context);
-                        var icon = button.selectAll('.icon');
-                        var background = button.select('.background');
+                        button = d3.select(context);
+                        icon = button.selectAll('.icon');
+                        background = button.select('.background');
                         icon.style('fill', pressedColor);
                         background.style('stroke', pressedColor);
 
@@ -309,9 +295,9 @@ HTMLWidgets.widget({
                     } else {
                         toggle('discrete', transDuration);
 
-                        var button = d3.select(context);
-                        var icon = button.selectAll('.icon');
-                        var background = button.select('.background');
+                        button = d3.select(context);
+                        icon = button.selectAll('.icon');
+                        background = button.select('.background');
                         icon.style('fill', defaultColor);
                         background.style('stroke', defaultColor);
 
@@ -319,13 +305,12 @@ HTMLWidgets.widget({
                     }
                 };
 
-                //container for all buttons
-                var allButtons = svg
+                let allButtons = svg
                     .append('g')
                     .attr('id', 'allButtons')
                     .attr('transform', 'translate(' + (width - 95) + ',' + 15 + ') scale(0.6)');
 
-                var button = allButtons.append('g').attr('id', 'button');
+                let button = allButtons.append('g').attr('id', 'button');
 
                 button
                     .append('rect')
@@ -359,22 +344,22 @@ HTMLWidgets.widget({
 
                 button
                     .style('cursor', 'pointer')
-                    .on('click', function(d, i) {
+                    .on('click', function(d) {
                         click(this);
                     })
                     .on('mouseover', function() {
-                        var button = d3.select(this);
-                        var icon = button.selectAll('.icon');
-                        var background = button.select('.background');
+                        let button = d3.select(this);
+                        let icon = button.selectAll('.icon');
+                        let background = button.select('.background');
                         if (STATUS === 'discrete') {
                             icon.style('fill', hoverColor);
                             background.style('stroke', hoverColor);
                         }
                     })
                     .on('mouseout', function() {
-                        var button = d3.select(this);
-                        var icon = button.selectAll('.icon');
-                        var background = button.select('.background');
+                        let button = d3.select(this);
+                        let icon = button.selectAll('.icon');
+                        let background = button.select('.background');
                         if (STATUS === 'discrete') {
                             icon.style('fill', defaultColor);
                             background.style('stroke', defaultColor);
@@ -391,7 +376,7 @@ HTMLWidgets.widget({
             resize: function(width, height) {
                 // TODO: code to re-render the widget with a new size
 
-                var svg = d3
+                let svg = d3
                     .select(el)
                     .append('svg')
                     .attr('width', dims.width + margin.left + margin.right)
