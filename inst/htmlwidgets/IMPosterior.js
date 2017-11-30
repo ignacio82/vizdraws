@@ -6,9 +6,9 @@ HTMLWidgets.widget({
     name: 'IMPosterior',
     type: 'output',
 
-    factory: function(el, width, height) {
+    factory: (el, width, height) => {
         return {
-            renderValue: function(opts) {
+            renderValue: opts => {
                 const transDuration = 2500;
 
                 let dataDiscrete = opts.bars.map((b, i) => {
@@ -337,7 +337,12 @@ HTMLWidgets.widget({
                     .attr('class', 'icon')
                     .attr(
                         'd',
-                        'M37.92,42.22c3.78-8,7-14.95,12.08-14.95h0c5,0,8.3,6.93,12.08,14.95,6.12,13,13.73,29.13,33.48,29.13h0v-2h0c-18.48,0-25.79-15.51-31.67-28C59.82,32.74,56.3,25.28,50,25.28h0c-6.3,0-9.82,7.46-13.89,16.09-5.88,12.47-13.19,28-31.67,28h0v2h0C24.18,71.35,31.8,55.2,37.92,42.22Z'
+                        'M37.92,42.22c3.78-8,7-14.95,12.08-14.95h' +
+                            '0c5,0,8.3,6.93,12.08,14.95,6.12,13,13.73,29.13,33.48,29.13' +
+                            'h0v-2h0c-18.48,0-25.79-15.51-31.67-28' +
+                            'C59.82,32.74,56.3,25.28,50,25.28' +
+                            'h0c-6.3,0-9.82,7.46-13.89,16.09-5.88,12.47-13.19,28-31.67,28' +
+                            'h0v2h0C24.18,71.35,31.8,55.2,37.92,42.22Z'
                     )
                     .style('stroke', 'none')
                     .style('fill', pressedColor);
@@ -373,7 +378,7 @@ HTMLWidgets.widget({
                 }, 1000);
             },
 
-            resize: function(width, height) {
+            resize: (width, height) => {
                 // TODO: code to re-render the widget with a new size
 
                 let svg = d3
