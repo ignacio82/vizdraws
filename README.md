@@ -16,7 +16,7 @@ x <- rnorm(1000)
 IMPosterior(x= x, MME=1)
 ```
 
-![Posterior distribution](./Posterior.gif)
+![Posterior distribution](https://home.ignacio.website/Posterior.gif)
 
 Notes
 =====
