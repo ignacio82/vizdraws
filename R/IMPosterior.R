@@ -39,7 +39,7 @@ IMPosterior <- function(x, MME = 0, threshold = 0.75, units = NULL,
   }else c(-Inf, MME, Inf)
 
   # Calculate density values for input data
-  dens <- data.frame(density(x, n=2^10, adjust=1)[c("x","y")]) %>%
+  dens <- data.frame(stats::density(x, n=2^10, adjust=1)[c("x","y")]) %>%
     dplyr::mutate(section = cut(x, breaks=breaks)) %>%
     dplyr::group_by(section) %>%
     dplyr::mutate(prob = paste0(round(sum(y)*mean(diff(x))*100),"%"))
