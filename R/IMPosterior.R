@@ -1,15 +1,31 @@
-#' <Add Title>
+#' @title IMPosterior
 #'
-#' <Add Description>
+#' @param x draws from the the posterior
+#' @param MME minimum meaninful effect
+#' @param threshold if the probability is greater than this threshold, you would feel confortable making a decision
+#' @param units the units of x. For example, dollars or applications
+#' @param colors colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")
+#' @param width width for shiny
+#' @param height height for shiny
+#' @param elementId elementID for shiny
 #'
-#' @import htmlwidgets
-#' @importFrom magrittr "%>%"
-#'
+#' @return
 #' @export
-IMPosterior <- function(x, MME = 0, threshold = 0.75, colors,
+#'
+#' @examples
+#' if(interactive()){
+#' set.seed(9782)
+#' x <- rnorm(1000)
+#' library(IMPosterior)
+#' IMPosterior(x= x, MME=1)
+#'  }
+
+IMPosterior <- function(x, MME = 0, threshold = 0.75, units = NULL,
+                        colors,
                         width = NULL, height = NULL,
                         elementId = NULL) {
-  if(MME<0) stop("MME should be non-negative")
+  if(MME<0) stop("MME should be greater than 0")
+  if(threshold<=0 | threshold>=1) stop("threshold should be between 0 and 1")
   # Set colors
 
   if(missing(colors)){
@@ -36,15 +52,28 @@ IMPosterior <- function(x, MME = 0, threshold = 0.75, colors,
     tidyr::complete(section, fill=list(prob="0%"))
 
   # Gen text
-  left <-  glue::glue('Your data suggest that there is a {sp$prob[[1]]} probability that the intervention has a negative effect of {MME} or more.')
-  if(MME!=0){
-    middle <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the effect of the intervention between -{MME} and {MME}, which we consider negligible')
-    right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a positive effect of {MME} or more.')
-    text <- c(left, middle, right)
+  if(is.null(units)){
+    left <-  glue::glue('Your data suggest that there is a {sp$prob[[1]]} probability that the intervention has a negative effect of {MME} or more.')
+    if(MME!=0){
+      middle <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the effect of the intervention between -{MME} and {MME}, which is considered negligible')
+      right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a positive effect of {MME} or more.')
+      text <- c(left, middle, right)
+    }else{
+      right <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the intervention has a positive effect of {MME} or more.')
+      text <- c(left, right)
+    }
   }else{
-    right <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the intervention has a positive effect of {MME} or more.')
-    text <- c(left, right)
+    left <-  glue::glue('Your data suggest that there is a {sp$prob[[1]]} probability that the intervention has a negative effect of {MME} {units} or more.')
+    if(MME!=0){
+      middle <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the effect of the intervention between -{MME} and {MME} {units}, which is considered negligible')
+      right <-  glue::glue('Your data suggest that there is a {sp$prob[[3]]} probability that the intervention has a positive effect of {MME} {units} or more.')
+      text <- c(left, middle, right)
+    }else{
+      right <-  glue::glue('Your data suggest that there is a {sp$prob[[2]]} probability that the intervention has a positive effect of {MME} {units} or more.')
+      text <- c(left, right)
+    }
   }
+
 
 
   if(MME!=0){

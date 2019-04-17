@@ -1,15 +1,18 @@
 Package: IMPosterior
 Title: Plot the posterior distribution
-Version: 0.5
+Version: 0.6
 Authors@R: c(
     person("Ignacio", "Martinez", email = "ignacio@protonmail.com", role = c("aut", "cre")),
-    person("Linus", "Marco", email = "LMarco@mathematica-mpr.com", role = "aut"))
-Description: What the package does (one paragraph).
+    person("Linus", "Marco", email = "lmarco163@gmail.com", role = "aut"))
+Description: Plot the posterior distribution and the probabilities of being to the right or left of a threshold.
 Depends: R (>= 3.4.2)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: dplyr,
+Imports: 
+    dplyr,
     tidyr,
-    glue
-RoxygenNote: 6.0.1
+    glue,
+    htmlwidgets,
+    magrittr
+RoxygenNote: 6.1.1

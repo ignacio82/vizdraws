@@ -2,11 +2,36 @@
 % Please edit documentation in R/IMPosterior.R
 \name{IMPosterior}
 \alias{IMPosterior}
-\title{<Add Title>}
+\title{IMPosterior}
 \usage{
-IMPosterior(x, MME = 0, threshold = 0.75, colors, width = NULL,
-  height = NULL, elementId = NULL)
+IMPosterior(x, MME = 0, threshold = 0.75, units = NULL, colors,
+  width = NULL, height = NULL, elementId = NULL)
+}
+\arguments{
+\item{x}{draws from the the posterior}
+
+\item{MME}{minimum meaninful effect}
+
+\item{threshold}{if the probability is greater than this threshold, you would feel confortable making a decision}
+
+\item{units}{the units of x. For example, dollars or applications}
+
+\item{colors}{colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")}
+
+\item{width}{width for shiny}
+
+\item{height}{height for shiny}
+
+\item{elementId}{elementID for shiny}
 }
 \description{
-<Add Description>
+IMPosterior
+}
+\examples{
+if(interactive()){
+set.seed(9782)
+x <- rnorm(1000)
+library(IMPosterior)
+IMPosterior(x= x, MME=1)
+ }
 }
