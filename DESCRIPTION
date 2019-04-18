@@ -1,5 +1,5 @@
 Package: IMPosterior
-Title: Plot the posterior distribution
+Title: Visualize the Posterior Distribution
 Version: 0.6
 Authors@R: c(
     person("Ignacio", "Martinez", email = "ignacio@protonmail.com", role = c("aut", "cre")),
