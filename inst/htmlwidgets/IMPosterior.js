@@ -9,6 +9,8 @@ HTMLWidgets.widget({
     factory: (el, width, height) => {
         return {
             renderValue: opts => {
+                console.log('render w,h', width, height);
+                const vis = this;
                 // define globals
                 let STATUS = 'distribution';
 
@@ -29,6 +31,9 @@ HTMLWidgets.widget({
                     width: width - margin.left - margin.right,
                     height: height - margin.top - margin.bottom
                 };
+
+                vis.dims = dims;
+                vis.margin = margin;
 
                 const distParams = {
                     min: d3.min(opts.data, d => d.x),
@@ -216,19 +221,19 @@ HTMLWidgets.widget({
                     .style('fill', d => d.color)
                     .attr('d', transToBars);
 
-                // define reusable tooltip
-                let tooltip = d3
-                    .tip()
-                    .attr('class', 'd3-tip chart-data-tip')
-                    .offset([30, 0])
-                    .direction('s')
-                    .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
+                // // define reusable tooltip
+                // let tooltip = d3
+                //     .tip()
+                //     .attr('class', 'd3-tip chart-data-tip')
+                //     .offset([30, 0])
+                //     .direction('s')
+                //     .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
 
-                // attach tooltip to container
-                g.call(tooltip);
+                // // attach tooltip to container
+                // g.call(tooltip);
 
-                // show tooltip on hover over areas
-                areas.on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
+                // // show tooltip on hover over areas
+                // areas.on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
 
                 // define threshold line
                 let thresholdLine = g
@@ -446,13 +451,14 @@ HTMLWidgets.widget({
             },
 
             resize: (width, height) => {
+                console.log('resize w, h', width, height);
+                const vis = this;
                 // TODO: code to re-render the widget with a new size
-
                 let svg = d3
                     .select(el)
                     .append('svg')
-                    .attr('width', dims.width + margin.left + margin.right)
-                    .attr('height', dims.height + margin.top + margin.bottom);
+                    .attr('width', vis.dims.width + vis.margin.left + vis.margin.right)
+                    .attr('height', vis.dims.height + vis.margin.top + vis.margin.bottom);
             }
         };
     }
