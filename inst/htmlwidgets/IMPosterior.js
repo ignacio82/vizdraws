@@ -221,19 +221,19 @@ HTMLWidgets.widget({
                     .style('fill', d => d.color)
                     .attr('d', transToBars);
 
-                // // define reusable tooltip
-                // let tooltip = d3
-                //     .tip()
-                //     .attr('class', 'd3-tip chart-data-tip')
-                //     .offset([30, 0])
-                //     .direction('s')
-                //     .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
+                // define reusable tooltip
+                let tooltip = d3
+                    .tip()
+                    .attr('class', 'd3-tip chart-data-tip')
+                    .offset([30, 0])
+                    .direction('s')
+                    .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
 
-                // // attach tooltip to container
-                // g.call(tooltip);
+                // attach tooltip to container
+                g.call(tooltip);
 
-                // // show tooltip on hover over areas
-                // areas.on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
+                // show tooltip on hover over areas
+                areas.on('mouseover', tooltip.show).on('mouseout', tooltip.hide);
 
                 // define threshold line
                 let thresholdLine = g
