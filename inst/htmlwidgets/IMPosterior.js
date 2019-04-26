@@ -11,8 +11,11 @@ HTMLWidgets.widget({
             renderValue: opts => {
                 // define globals
                 let STATUS = 'distribution';
+                let MODE = opts.start;
 
                 const transDuration = 500;
+
+                const allow_mode_trans = opts.allow_mode_trans;
 
                 const defaultColor = '#aaa';
                 const hoverColor = '#666';
@@ -32,7 +35,7 @@ HTMLWidgets.widget({
 
                 const distParams = {
                     min: d3.min(opts.data, d => d.x),
-                    max: d3.max(opts.data, d => d.x)
+                    max: d3.max(opts.data, d =>  d.x)
                 };
 
                 if (opts.MME === 0) {
@@ -42,12 +45,15 @@ HTMLWidgets.widget({
                 }
 
                 // sort input data
+                // Can sort on prior
                 opts.data = opts.data.sort((a, b) => a.x - b.x);
 
                 // set up data for bars
                 let dataDiscrete = opts.bars.map((b, i) => {
-                    b.y = Number(b.y);
-                    b.desc = opts.text[i];
+                    b.y_prior = Number(b.y_prior);
+                    b.y_posterior = Number(b.y_posterior);
+                    b.desc_prior = opts.text_prior[i];
+                    b.desc_posterior = opts.text_posterior[i];
                     return b;
                 });
 
@@ -65,8 +71,8 @@ HTMLWidgets.widget({
                     });
 
                     if (data.length > 0) {
-                        data.unshift({ x: data[0].x, y: 0 });
-                        data.push({ x: data[data.length - 1].x, y: 0 });
+                        data.unshift({ x: data[0].x, y_prior: 0, y_posterior: 0 });
+                        data.push({ x: data[data.length - 1].x, y_prior: 0, y_posterior: 0 });
                     }
 
                     dataContinuousGroups.push({
@@ -185,7 +191,7 @@ HTMLWidgets.widget({
                     for (j = 0; j < numPts; j++) {
                         path.lineTo(
                             xDiscrete(d.x) + j * xDiscrete.bandwidth() / (numPts - 1),
-                            y(d.y)
+                           (MODE=="prior" ? y(d.y_prior) : y(d.y_posterior))
                         );
                     }
 
@@ -202,7 +208,16 @@ HTMLWidgets.widget({
                     let gen = d3
                         .line()
                         .x(p => xContinuous(p.x))
-                        .y(p => y(p.y));
+                        .y(p => (MODE=="prior" ? y(p.y_prior) : y(p.y_posterior)));
+                    return gen(d.data);
+                };
+
+                let transBarHeights = d => {
+                    // line with x and y values defned by data
+                    let gen = d3
+                        .line()
+                        .x(p => xDiscrete(p.x))
+                        .y(p => (MODE=="prior" ? y(p.y_prior) : y(p.y_posterior)));
                     return gen(d.data);
                 };
 
@@ -222,7 +237,7 @@ HTMLWidgets.widget({
                     .attr('class', 'd3-tip chart-data-tip')
                     .offset([30, 0])
                     .direction('s')
-                    .html((d, i) => '<span>' + dataDiscrete[i].desc + '</span>');
+                    .html((d, i) => '<span>' + (MODE=="prior" ? dataDiscrete[i].desc_prior : dataDiscrete[i].desc_posterior) + '</span>');
 
                 // attach tooltip to container
                 g.call(tooltip);
@@ -259,7 +274,7 @@ HTMLWidgets.widget({
 
                 // function to update y axis
                 let updateYAxis = (data, duration) => {
-                    const extent = d3.extent(data, d => d.y);
+                    const extent = d3.extent(data, d => Math.max(d.y_prior, d.y_posterior));
                     extent[0] = 0;
                     extent[1] = extent[1] + 0.2 * (extent[1] - extent[0]);
                     y.domain(extent);
@@ -443,6 +458,60 @@ HTMLWidgets.widget({
                 setTimeout(() => {
                     click('#button');
                 }, 1000);
+
+                // function called when prior/posterior toggle button pushed
+                let click2 = context => {
+                    let button, icon, background;
+
+                    button = d3
+                        .select("#button2 rect")
+                        .transition()
+                        .duration(transDuration)
+                        .style('fill',(MODE=='prior' ? 'red' : 'purple'));
+
+                    if (STATUS === 'discrete') {
+                        MODE = (MODE=="prior" ? "posterior" : "prior");
+                        areas
+                            .data(dataDiscrete)
+                            .transition()
+                            .duration(transDuration)
+                            .attr('d', transToBars);
+                    } else {
+                       MODE = (MODE=="prior" ? "posterior" : "prior");
+                       areas
+                            .data(dataContinuousGroups)
+                            .transition()
+                            .duration(transDuration)
+                            .attr('d', transToDistributionSegments);
+                    }
+                };
+
+                // Placeholder button to transition prior/posterior
+                let button2 = allButtons.append('g').attr('id', 'button2');
+
+                // button background/border box
+                button2
+                    .append('rect')
+                    .attr('class', 'background')
+                    .attr('x', -10)
+                    .attr('y', 110)
+                    .attr('width', 120)
+                    .attr('height', 100)
+                    .style('stroke', pressedColor)
+                    .style('stroke-width', 2)
+                    .style('fill', (MODE=='prior' ? 'purple' : 'red'));
+                button2
+                    .style('cursor', 'pointer')
+                    .on('click', function(d) {
+                        click2(this);
+                    });
+
+                    // If only one of prior/posterior chosen, simply don't show button2
+                    if (!allow_mode_trans) {
+                        d3
+                        .select("#button2")
+                        .remove();
+                    }
             },
 
             resize: (width, height) => {
