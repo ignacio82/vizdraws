@@ -35,6 +35,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.7
   if(missing(colors)){
     colors <- c("#e41a1c", "#377eb8", "#4daf4a")
   }
+  if (MME==0) colors <- c(colors[1], colors[3])
 
   # Calculate the breaks
   breaks <- if(MME!=0){
@@ -113,8 +114,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.7
     }else{
       data.frame(y = as.numeric(sub("%", "", x$prob))/100,
                          x = c("Worse", "Better"),
-                         color = c(colors[1], colors[3]))
-    }
+                         color = colors)    }
   })
 
   # forward options using x
