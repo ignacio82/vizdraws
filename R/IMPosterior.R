@@ -64,10 +64,6 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.7
   xmax <- max(rng$prior, rng$posterior)
   # Calculate density values for input data
   dens <- lapply(data, function(x) {
-    #If not specified, just fill with junk
-    if (is.null(x)) {
-      x <- rep(0,1000)
-    }
     data.frame(stats::density(x, n=2^10, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
       dplyr::mutate(section = cut(x, breaks=breaks)) %>%
       dplyr::group_by(section) %>%
