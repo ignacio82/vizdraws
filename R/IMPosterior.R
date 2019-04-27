@@ -104,7 +104,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.7
       }
     }
   })
-  text$prior <- sub("data suggest","prior suggests",text$prior)
+  text$prior <- sub("data suggest","priors imply",text$prior)
 
   bars <- lapply(sp, function(x){
     if(MME!=0){
