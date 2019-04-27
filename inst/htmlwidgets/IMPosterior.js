@@ -459,11 +459,6 @@ HTMLWidgets.widget({
                 // start app as distribution
                 toggle('distribution', 0);
 
-                // wait 1 second then transition to bars
-                setTimeout(() => {
-                    click('#button');
-                }, 1000);
-
                 // function called when prior/posterior toggle button pushed
                 let click2 = context => {
                     let button, icon, background;
@@ -511,12 +506,27 @@ HTMLWidgets.widget({
                         click2(this);
                     });
 
-                    // If only one of prior/posterior chosen, simply don't show button2
-                    if (!allow_mode_trans) {
-                        d3
-                        .select("#button2")
-                        .remove();
-                    }
+                // If only one of prior/posterior chosen, simply don't show button2
+                if (!allow_mode_trans) {
+                    d3
+                    .select("#button2")
+                    .remove();
+                }
+
+                    // If both prior & posterior are present, go from prior dens -> post dens -> post bars
+                if (allow_mode_trans) {
+                    setTimeout(() => {
+                        click2('#button2');
+                    }, 1000);
+                    setTimeout(() => {
+                        click('#button');
+                    }, 2000);
+                } else {
+                    setTimeout(() => {
+                        click('#button');
+                    }, 1000);
+                }
+
             },
 
             resize: (width, height) => {
