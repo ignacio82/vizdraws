@@ -28,8 +28,8 @@ HTMLWidgets.widget({
                 };
 
                 const dims = {
-                    width: 500,//width - margin.left - margin.right,
-                    height: 400//height - margin.top - margin.bottom
+                    width: width - margin.left - margin.right,
+                    height: height - margin.top - margin.bottom
                 };
 
                 vis.dims = dims;
