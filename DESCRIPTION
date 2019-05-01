@@ -1,9 +1,10 @@
 Package: IMPosterior
 Title: Visualize the Posterior Distribution
-Version: 0.6
+Version: 0.7
 Authors@R: c(
     person("Ignacio", "Martinez", email = "ignacio@protonmail.com", role = c("aut", "cre")),
-    person("Linus", "Marco", email = "lmarco163@gmail.com", role = "aut"))
+    person("Linus", "Marco", email = "lmarco163@gmail.com", role = "aut"),
+    person("Dan", "Thal", email = "DThal@mathematica-mpr.com", role = "aut"))
 Description: Plot the posterior distribution and the probabilities of being to the right or left of a threshold.
 License: GPL-3
 Encoding: UTF-8
