@@ -463,11 +463,11 @@ HTMLWidgets.widget({
                 let click2 = context => {
                     let button, icon, background;
 
-                    button = d3
-                        .select("#button2 rect")
-                        .transition()
-                        .duration(transDuration)
-                        .style('fill',(MODE=='prior' ? 'red' : 'purple'));
+                    button = d3.select(context);
+                    icon = button.selectAll('.icon');
+                    background = button.select('.background');
+                    icon.style('fill', (MODE=='prior' ? pressedColor : defaultColor));
+                    background.style('stroke', (MODE=='prior' ? pressedColor : defaultColor));
 
                     if (STATUS === 'discrete') {
                         MODE = (MODE=="prior" ? "posterior" : "prior");
@@ -497,13 +497,43 @@ HTMLWidgets.widget({
                     .attr('y', 110)
                     .attr('width', 120)
                     .attr('height', 100)
-                    .style('stroke', pressedColor)
+                    .style('stroke', defaultColor)
                     .style('stroke-width', 2)
-                    .style('fill', (MODE=='prior' ? 'purple' : 'red'));
+                    .style('fill','white');
+
+                button2
+                    .append('text')
+                    .attr('class', 'icon')
+                    .text('Posterior')
+                    .attr('text-anchor','middle')
+                    .attr('alignment-baseline','middle')
+                    .attr('x',50)
+                    .attr('y',160)
+                    .style('fill',defaultColor)
+                    .style('font-size','24px');
+
                 button2
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
                         click2(this);
+                    })
+                    .on('mouseover', function() {
+                        let button = d3.select(this);
+                        let icon = button.selectAll('.icon');
+                        let background = button.select('.background');
+                        if (MODE === 'prior') {
+                            icon.style('fill', hoverColor);
+                            background.style('stroke', hoverColor);
+                        }
+                    })
+                    .on('mouseout', function() {
+                        let button = d3.select(this);
+                        let icon = button.selectAll('.icon');
+                        let background = button.select('.background');
+                        if (MODE === 'prior') {
+                            icon.style('fill', defaultColor);
+                            background.style('stroke', defaultColor);
+                        }
                     });
 
                 // If only one of prior/posterior chosen, simply don't show button2
