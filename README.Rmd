@@ -25,8 +25,7 @@ This is a basic example which shows you how to solve a common problem:
 ```{r example, eval=FALSE}
 library(IMPosterior)
 set.seed(9782)
-x <- rnorm(1000)
-IMPosterior(x= x, MME=1)
+IMPosterior(prior = rnorm(10000, 0, 1), posterior = rnorm(10000, 1.1, 0.5), MME = 0.5, threshold = 0.8)
 ```
 
 ![Posterior distribution](https://home.ignacio.website/Posterior.gif)
