@@ -17,16 +17,22 @@
 #' IMPosterior(prior= rnorm(100000))
 #'  }
 
-IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.75, units = NULL,
+IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL, units = NULL,
                         colors,
                         width = NULL, height = NULL,
                         elementId = NULL) {
   if(MME<0) stop("MME should be greater than 0")
-  if(threshold<=0 | threshold>=1) stop("threshold should be between 0 and 1")
-  if(is.null(prior) & is.null(posterior)) stop("must specify at least one of prior or posterior")
+  if(is.null(threshold)) {
+    allow_threshold <- FALSE
+  } else if((threshold<=0 | threshold>=1)) {
+    stop("threshold should be between 0 and 1")
+  } else {
+    allow_threshold <- TRUE
+  }
 
-  if(is.null(prior) | is.null(posterior)) allow_mode_trans = FALSE
-  else allow_mode_trans = TRUE
+  if(is.null(prior) & is.null(posterior)) stop("must specify at least one of prior or posterior")
+  if(is.null(prior) | is.null(posterior)) allow_mode_trans <- FALSE
+  else allow_mode_trans <- TRUE
   # Set colors
 
   if(missing(colors)){
@@ -120,6 +126,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.7
                                     y_prior = dens$prior$y,
                                     y_posterior = dens$posterior$y)),
     MME = MME,
+    allow_threshold = allow_threshold,
     threshold = threshold,
     prob_prior = sp$prior$prob,
     prob_posterior = sp$posterior$prob,
