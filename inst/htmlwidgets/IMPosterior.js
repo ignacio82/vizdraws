@@ -6,11 +6,31 @@ HTMLWidgets.widget({
     name: 'IMPosterior',
     type: 'output',
 
-    factory: (el, width, height) => {
+    factory: function(el, width, height) {
+        let options, dims, margin;
         return {
-            renderValue: opts => {
-                console.log('render w,h', width, height);
+            setupSvg: () => {
+                d3.select(el).selectAll('*').remove();
+                return d3.select(el).append('svg');
+            },
+            draw: function(opts, svg) {
                 const vis = this;
+                // if width or height is 0 then try again to determine width and height of container
+                width = width <= 0 ? $(el).outerWidth() : width;
+                height = height <= 0 ? $(el).outerHeight() : height;
+
+                margin = {
+                    top: 50,
+                    right: 20,
+                    bottom: 80,
+                    left: 70
+                };
+
+                dims = {
+                    width: width - margin.left - margin.right,
+                    height: height - margin.top - margin.bottom
+                };
+
                 // define globals
                 let STATUS = 'distribution';
                 let MODE = opts.start;
@@ -22,21 +42,6 @@ HTMLWidgets.widget({
                 const defaultColor = '#aaa';
                 const hoverColor = '#666';
                 const pressedColor = '#000';
-
-                const margin = {
-                    top: 50,
-                    right: 20,
-                    bottom: 80,
-                    left: 70
-                };
-
-                const dims = {
-                    width: width - margin.left - margin.right,
-                    height: height - margin.top - margin.bottom
-                };
-
-                vis.dims = dims;
-                vis.margin = margin;
 
                 const distParams = {
                     min: d3.min(opts.data, d => d.x),
@@ -106,11 +111,7 @@ HTMLWidgets.widget({
                     .domain([0, 1])
                     .range([dims.height, 0]);
 
-                // create main containers
-                let svg = d3
-                    .select(el)
-                    .html(null)
-                    .append('svg')
+                svg
                     .attr('width', dims.width + margin.left + margin.right)
                     .attr('height', dims.height + margin.top + margin.bottom);
 
@@ -556,18 +557,39 @@ HTMLWidgets.widget({
                         click('#button');
                     }, 1000);
                 }
+            },
+            renderValue: function(opts) {
+                console.log('render w,h', width, height);
+                // keep options for resize
+                options = opts;
 
+                // create main containers
+                let svg = this.setupSvg();
+
+                let timeout = 0;
+                if(height <= 0 || width <= 0) {
+                    // set a timeout to handle potential animation of the parent container
+                    //   in cases like a modal
+                    timeout = 500;
+                }
+                setTimeout(this.draw.bind(this, opts, svg), timeout);
             },
 
-            resize: (width, height) => {
+            resize: function(width, height) {
                 console.log('resize w, h', width, height);
-                const vis = this;
                 // TODO: code to re-render the widget with a new size
-                let svg = d3
+                /*let svg = d3
                     .select(el)
-                    .append('svg')
-                    .attr('width', vis.dims.width + vis.margin.left + vis.margin.right)
-                    .attr('height', vis.dims.height + vis.margin.top + vis.margin.bottom);
+                    .append('svg')  // definitely don't think you'll want to append a new svg
+                    .attr('width', dims.width + margin.left + margin.right)
+                    .attr('height', dims.height + margin.top + margin.bottom);
+                */
+
+                // if you don't care about animation or transition
+                // you can just call render
+                //this.renderValue(options);
+
+                // or without uncommenting as of now do nothing
             }
         };
     }
