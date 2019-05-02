@@ -70,11 +70,15 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   xmin <- min(rng$prior, rng$posterior)
   xmax <- max(rng$prior, rng$posterior)
   # Calculate density values for input data
-  dens <- lapply(data, function(x) {
-    data.frame(stats::density(x, n=2^10, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
+  dens <- lapply(data, function(d) {
+    probs <- tibble(d) %>%
+      mutate(n=n(), section = cut(d,breaks=breaks)) %>%
+      group_by(section) %>%
+      summarize(prob = paste0(round(sum(100/n)),'%'))
+
+    data.frame(stats::density(d, n=2^10, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
       dplyr::mutate(section = cut(x, breaks=breaks)) %>%
-      dplyr::group_by(section) %>%
-      dplyr::mutate(prob = paste0(round(sum(y)*mean(diff(x))*100),"%"))
+      dplyr::left_join(probs, by='section')
   })
 
   # Get probability mass for each level of section
