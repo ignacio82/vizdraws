@@ -333,15 +333,17 @@ HTMLWidgets.widget({
                             .duration(duration)
                             .attr('d', transToBars);
 
-                        // make threshold line appear and float up
-                        thresholdLine
-                            .transition()
-                            .delay(duration)
-                            .style('opacity', 1)
-                            .transition()
-                            .duration(1000)
-                            .attr('y1', y(opts.threshold))
-                            .attr('y2', y(opts.threshold));
+                        // make threshold line appear and float up, but only if both prior and posterior chosen
+                        if (allow_mode_trans | MODE=='posterior') {
+                            thresholdLine
+                                .transition()
+                                .delay(duration)
+                                .style('opacity', 1)
+                                .transition()
+                                .duration(1000)
+                                .attr('y1', y(opts.threshold))
+                                .attr('y2', y(opts.threshold));
+                        }
 
                         // transition in y axis
                         g
