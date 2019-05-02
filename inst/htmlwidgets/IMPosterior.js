@@ -310,6 +310,7 @@ HTMLWidgets.widget({
 
                         // hide threshold line
                         thresholdLine
+                            .interrupt()
                             .style('opacity', 0)
                             .attr('y1', y(0))
                             .attr('y2', y(0));
