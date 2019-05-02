@@ -1,23 +1,20 @@
 #' @title IMPosterior
-#'
-#' @param x draws from the the posterior
-#' @param MME minimum meaninful effect
+#' @param prior draws from the prior distribution. This is an optional parameter but either this or posterior should be provided.
+#' @param posterior draws from the posterior distribution. This is an optional parameter but either this or prior should be provided.
+#' @param MME minimum meaninful effect. If not provided MME is set to zero.
 #' @param threshold if the probability is greater than this threshold, you would feel confortable making a decision
-#' @param units the units of x. For example, dollars or applications
+#' @param units optional arguement to specify the units of x. For example, dollars or applications.
 #' @param colors colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")
 #' @param width width for shiny
 #' @param height height for shiny
 #' @param elementId elementID for shiny
-#'
-#' @return
+#' @return htmlwidget
 #' @export
-#'
 #' @examples
 #' if(interactive()){
 #' set.seed(9782)
-#' x <- rnorm(1000)
 #' library(IMPosterior)
-#' IMPosterior(x= x, MME=1)
+#' IMPosterior(prior= rnorm(100000))
 #'  }
 
 IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.75, units = NULL,
@@ -55,8 +52,8 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = 0.7
   #Hard part is, can't use min-max, since we want the density to extend beyond the min/max of the data
   #hacky workaround: add a quarter SD to min and max
   rng <- lapply(data, function(x){
-    x <- na.omit(x)
-    xsd <- sd(x)
+    x <- stats::na.omit(x)
+    xsd <- stats::sd(x)
     xmin <- min(x) - xsd/4
     xmax <- max(x) + xsd/4
     return(c(xmin, xmax))
