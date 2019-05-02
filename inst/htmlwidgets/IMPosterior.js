@@ -38,6 +38,7 @@ HTMLWidgets.widget({
                 const transDuration = 500;
 
                 const allow_mode_trans = opts.allow_mode_trans;
+                const allow_threshold = opts.allow_threshold;
 
                 const defaultColor = '#aaa';
                 const hoverColor = '#666';
@@ -333,17 +334,15 @@ HTMLWidgets.widget({
                             .duration(duration)
                             .attr('d', transToBars);
 
-                        // make threshold line appear and float up, but only if both prior and posterior chosen
-                        if (allow_mode_trans | MODE=='posterior') {
-                            thresholdLine
-                                .transition()
-                                .delay(duration)
-                                .style('opacity', 1)
-                                .transition()
-                                .duration(1000)
-                                .attr('y1', y(opts.threshold))
-                                .attr('y2', y(opts.threshold));
-                        }
+                        // make threshold line float up
+                        thresholdLine
+                            .transition()
+                            .delay(duration)
+                            .style('opacity', (allow_threshold ? 1 : 0))
+                            .transition()
+                            .duration(1000)
+                            .attr('y1', (allow_threshold ? y(opts.threshold) : y(0)))
+                            .attr('y2', (allow_threshold ? y(opts.threshold) : y(0)));
 
                         // transition in y axis
                         g
