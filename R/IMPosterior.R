@@ -57,15 +57,12 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   if (is.null(prior)) data$prior = posterior
   if (is.null(posterior)) data$posterior = prior
 
-  # Calculate densities over same range.
-  #Hard part is, can't use min-max, since we want the density to extend beyond the min/max of the data
-  #hacky workaround: add a quarter SD to min and max
-  rng <- lapply(data, function(x){
-    x <- na.omit(x)
-    xsd <- sd(x)
-    xmin <- min(x) - xsd/4
-    xmax <- max(x) + xsd/4
-    return(c(xmin, xmax))
+  n_dens <- 2^10
+  # Figure out range of densities
+  rng <- lapply(data, function(d){
+    data.frame(stats::density(d, n=n_dens, adjust=1)[c("x","y")]) %>%
+      summarize(xmin = min(x),
+                xmax = max(x))
   })
   xmin <- min(rng$prior, rng$posterior)
   xmax <- max(rng$prior, rng$posterior)
@@ -76,7 +73,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
       group_by(section) %>%
       summarize(prob = paste0(round(sum(100/n)),'%'))
 
-    data.frame(stats::density(d, n=2^10, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
+    data.frame(stats::density(d, n=n_dens, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
       dplyr::mutate(section = cut(x, breaks=breaks)) %>%
       dplyr::left_join(probs, by='section')
   })
