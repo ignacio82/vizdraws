@@ -61,17 +61,17 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   # Figure out range of densities
   rng <- lapply(data, function(d){
     data.frame(stats::density(d, n=n_dens, adjust=1)[c("x","y")]) %>%
-      summarize(xmin = min(x),
+      dplyr::summarize(xmin = min(x),
                 xmax = max(x))
   })
   xmin <- min(rng$prior, rng$posterior)
   xmax <- max(rng$prior, rng$posterior)
   # Calculate density values for input data
   dens <- lapply(data, function(d) {
-    probs <- tibble(d) %>%
-      mutate(n=n(), section = cut(d,breaks=breaks)) %>%
-      group_by(section) %>%
-      summarize(prob = paste0(round(sum(100/n)),'%'))
+    probs <- dplyr::tibble(d) %>%
+      dplyr::mutate(n=dplyr::n(), section = cut(d,breaks=breaks)) %>%
+      dplyr::group_by(section) %>%
+      dplyr::summarize(prob = paste0(round(sum(100/n)),'%'))
 
     data.frame(stats::density(d, n=n_dens, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
       dplyr::mutate(section = cut(x, breaks=breaks)) %>%
