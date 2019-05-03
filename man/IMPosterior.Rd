@@ -4,17 +4,20 @@
 \alias{IMPosterior}
 \title{IMPosterior}
 \usage{
-IMPosterior(x, MME = 0, threshold = 0.75, units = NULL, colors,
-  width = NULL, height = NULL, elementId = NULL)
+IMPosterior(prior = NULL, posterior = NULL, MME = 0,
+  threshold = 0.75, units = NULL, colors, width = NULL,
+  height = NULL, elementId = NULL)
 }
 \arguments{
-\item{x}{draws from the the posterior}
+\item{prior}{draws from the prior distribution. This is an optional parameter but either this or posterior should be provided.}
 
-\item{MME}{minimum meaninful effect}
+\item{posterior}{draws from the posterior distribution. This is an optional parameter but either this or prior should be provided.}
+
+\item{MME}{minimum meaninful effect. If not provided MME is set to zero.}
 
 \item{threshold}{if the probability is greater than this threshold, you would feel confortable making a decision}
 
-\item{units}{the units of x. For example, dollars or applications}
+\item{units}{optional arguement to specify the units of x. For example, dollars or applications.}
 
 \item{colors}{colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")}
 
@@ -24,14 +27,16 @@ IMPosterior(x, MME = 0, threshold = 0.75, units = NULL, colors,
 
 \item{elementId}{elementID for shiny}
 }
+\value{
+htmlwidget
+}
 \description{
 IMPosterior
 }
 \examples{
 if(interactive()){
 set.seed(9782)
-x <- rnorm(1000)
 library(IMPosterior)
-IMPosterior(x= x, MME=1)
+IMPosterior(prior= rnorm(100000))
  }
 }
