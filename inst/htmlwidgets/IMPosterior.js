@@ -242,6 +242,7 @@ HTMLWidgets.widget({
                 let tooltip = d3
                     .tip()
                     .attr('class', 'd3-tip chart-data-tip')
+                    .style('z-index',1050)
                     .offset([30, 0])
                     .direction('s')
                     .html((d, i) => '<span>' + (MODE=="prior" ? dataDiscrete[i].desc_prior : dataDiscrete[i].desc_posterior) + '</span>');
@@ -309,6 +310,7 @@ HTMLWidgets.widget({
 
                         // hide threshold line
                         thresholdLine
+                            .interrupt()
                             .style('opacity', 0)
                             .attr('y1', y(0))
                             .attr('y2', y(0));
