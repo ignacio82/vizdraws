@@ -356,15 +356,15 @@ HTMLWidgets.widget({
                         g
                             .select('.y.axis')
                             .transition()
-                            .duration(0)
                             .delay(duration)
+							.duration(duration)
                             .style('opacity', 1);
 
                         g
                             .select('.y-axis-label')
                             .transition()
-                            .duration(0)
                             .delay(duration)
+							.duration(duration)
                             .style('opacity', 1);
 						
 						// Turn on button
