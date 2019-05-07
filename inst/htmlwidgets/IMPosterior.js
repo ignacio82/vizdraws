@@ -273,7 +273,7 @@ HTMLWidgets.widget({
                         xAxis.scale(xDiscrete);
                     }
 
-                    d3
+                    g
                         .select('.x')
                         .transition()
                         .duration(duration)
@@ -287,7 +287,7 @@ HTMLWidgets.widget({
                     extent[1] = extent[1] + 0.2 * (extent[1] - extent[0]);
                     y.domain(extent);
 
-                    d3
+                    g
                         .select('.y')
                         .transition()
                         .duration(duration)
@@ -295,7 +295,7 @@ HTMLWidgets.widget({
                 };
 
                 // function to switch between bars and distribution
-                let toggle = (to, duration) => {
+                let toggle_status = (to, duration) => {
                     if (to === 'distribution') {
                         // update axes
                         updateYAxis(opts.data, 0);
@@ -316,12 +316,18 @@ HTMLWidgets.widget({
                             .attr('y2', y(0));
 
                         // hide y axis
-                        g.select('.y.axis').style('opacity', 0);
-                        g.select('.y-axis-label').style('opacity', 0);
+                        g.select('.y.axis').interrupt().style('opacity', 0);
+                        g.select('.y-axis-label').interrupt().style('opacity', 0);
+						
+						// Turn off button
+						status_button.classed('active',true);
+						
+						// Update status
+						STATUS = 'distribution'
                     } else {
                         // update axes
                         y.domain([0, 1]);
-                        d3
+                        g
                             .select('.y')
                             .transition()
                             .duration(duration)
@@ -350,77 +356,72 @@ HTMLWidgets.widget({
                         g
                             .select('.y.axis')
                             .transition()
-                            .duration(0)
                             .delay(duration)
+							.duration(duration)
                             .style('opacity', 1);
 
                         g
                             .select('.y-axis-label')
                             .transition()
-                            .duration(0)
                             .delay(duration)
+							.duration(duration)
                             .style('opacity', 1);
+						
+						// Turn on button
+						status_button.classed('active',false);
+						
+						// Update status
+						STATUS = 'discrete'
                     }
                 };
-
-                // function called when toggle button pushed
-                let click = context => {
-                    let button, icon, background;
-                    if (STATUS === 'discrete') {
-                        toggle('distribution', transDuration);
-
-                        button = d3.select(context);
-                        icon = button.selectAll('.icon');
-                        background = button.select('.background');
-                        icon.style('fill', pressedColor);
-                        background.style('stroke', pressedColor);
-
-                        STATUS = 'distribution';
+				
+				let toggle_mode = (to, duration) => {
+					// Update mode and activate/deactivate button
+					MODE = to;
+					mode_button.classed('active',MODE=='posterior');
+					
+					if (STATUS === 'discrete') {
+                        areas
+                            .data(dataDiscrete)
+                            .transition()
+                            .duration(duration)
+                            .attr('d', transToBars);
                     } else {
-                        toggle('discrete', transDuration);
-
-                        button = d3.select(context);
-                        icon = button.selectAll('.icon');
-                        background = button.select('.background');
-                        icon.style('fill', defaultColor);
-                        background.style('stroke', defaultColor);
-
-                        STATUS = 'discrete';
+                       areas
+                            .data(dataContinuousGroups)
+                            .transition()
+                            .duration(duration)
+                            .attr('d', transToDistributionSegments);
                     }
-                };
+				};
 
                 // create button containers
                 let allButtons = svg
                     .append('g')
-                    .attr('id', 'allButtons')
+					.attr('class','button-container')
                     .attr('transform', 'translate(' + (width - 95) + ',' + 15 + ') scale(0.6)');
 
-                let button = allButtons.append('g').attr('id', 'button');
+                let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', true);
 
                 // button background/border box
-                button
+                status_button
                     .append('rect')
                     .attr('class', 'background')
                     .attr('x', -10)
                     .attr('y', 0)
                     .attr('width', 120)
-                    .attr('height', 100)
-                    .style('stroke', pressedColor)
-                    .style('stroke-width', 2)
-                    .style('fill', 'white');
+                    .attr('height', 100);
 
                 // x axis in button graphic
-                button
+                status_button
                     .append('rect')
                     .attr('class', 'icon')
                     .attr('y', 75)
                     .attr('width', 100)
-                    .attr('height', 2)
-                    .style('stroke', 'none')
-                    .style('fill', pressedColor);
+                    .attr('height', 2);
 
                 // curve in button graphic
-                button
+                status_button
                     .append('path')
                     .attr('class', 'icon')
                     .attr(
@@ -431,133 +432,63 @@ HTMLWidgets.widget({
                             'C59.82,32.74,56.3,25.28,50,25.28' +
                             'h0c-6.3,0-9.82,7.46-13.89,16.09-5.88,12.47-13.19,28-31.67,28' +
                             'h0v2h0C24.18,71.35,31.8,55.2,37.92,42.22Z'
-                    )
-                    .style('stroke', 'none')
-                    .style('fill', pressedColor);
+                    );
 
                 // button interactions
-                button
+                status_button
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
-                        click(this);
-                    })
-                    .on('mouseover', function() {
-                        let button = d3.select(this);
-                        let icon = button.selectAll('.icon');
-                        let background = button.select('.background');
-                        if (STATUS === 'discrete') {
-                            icon.style('fill', hoverColor);
-                            background.style('stroke', hoverColor);
-                        }
-                    })
-                    .on('mouseout', function() {
-                        let button = d3.select(this);
-                        let icon = button.selectAll('.icon');
-                        let background = button.select('.background');
-                        if (STATUS === 'discrete') {
-                            icon.style('fill', defaultColor);
-                            background.style('stroke', defaultColor);
-                        }
+                        toggle_status((STATUS=='discrete' ? 'distribution' : 'discrete'),transDuration);
                     });
 
-                // start app as distribution
-                toggle('distribution', 0);
-
-                // function called when prior/posterior toggle button pushed
-                let click2 = context => {
-                    let button, icon, background;
-
-                    button = d3.select(context);
-                    icon = button.selectAll('.icon');
-                    background = button.select('.background');
-                    icon.style('fill', (MODE=='prior' ? pressedColor : defaultColor));
-                    background.style('stroke', (MODE=='prior' ? pressedColor : defaultColor));
-
-                    if (STATUS === 'discrete') {
-                        MODE = (MODE=="prior" ? "posterior" : "prior");
-                        areas
-                            .data(dataDiscrete)
-                            .transition()
-                            .duration(transDuration)
-                            .attr('d', transToBars);
-                    } else {
-                       MODE = (MODE=="prior" ? "posterior" : "prior");
-                       areas
-                            .data(dataContinuousGroups)
-                            .transition()
-                            .duration(transDuration)
-                            .attr('d', transToDistributionSegments);
-                    }
-                };
-
-                // Placeholder button to transition prior/posterior
-                let button2 = allButtons.append('g').attr('id', 'button2');
+                // Button to transition prior/posterior
+                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', false);
 
                 // button background/border box
-                button2
+                mode_button
                     .append('rect')
                     .attr('class', 'background')
                     .attr('x', -10)
                     .attr('y', 110)
                     .attr('width', 120)
-                    .attr('height', 100)
-                    .style('stroke', defaultColor)
-                    .style('stroke-width', 2)
-                    .style('fill','white');
+                    .attr('height', 100);
 
-                button2
+                mode_button
                     .append('text')
                     .attr('class', 'icon')
                     .text('Posterior')
                     .attr('text-anchor','middle')
                     .attr('alignment-baseline','middle')
                     .attr('x',50)
-                    .attr('y',160)
-                    .style('fill',defaultColor)
-                    .style('font-size','24px');
+                    .attr('y',160);
 
-                button2
+                mode_button
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
-                        click2(this);
-                    })
-                    .on('mouseover', function() {
-                        let button = d3.select(this);
-                        let icon = button.selectAll('.icon');
-                        let background = button.select('.background');
-                        if (MODE === 'prior') {
-                            icon.style('fill', hoverColor);
-                            background.style('stroke', hoverColor);
-                        }
-                    })
-                    .on('mouseout', function() {
-                        let button = d3.select(this);
-                        let icon = button.selectAll('.icon');
-                        let background = button.select('.background');
-                        if (MODE === 'prior') {
-                            icon.style('fill', defaultColor);
-                            background.style('stroke', defaultColor);
-                        }
+                        toggle_mode((MODE=='prior' ? 'posterior' : 'prior'),transDuration);
                     });
 
                 // If only one of prior/posterior chosen, simply don't show button2
                 if (!allow_mode_trans) {
-                    d3
-                    .select("#button2")
+                    g
+                    .select("mode-button")
                     .remove();
                 }
 
-                    // If both prior & posterior are present, go from prior dens -> post dens -> post bars
+				// start app as distribution
+                toggle_status('distribution', 0);
+				
+				// If both prior & posterior are present, go from prior dens -> post dens -> post bars
                 if (allow_mode_trans) {
                     setTimeout(() => {
-                        click2('#button2');
+                        toggle_mode('posterior',transDuration);
                     }, 1000);
                     setTimeout(() => {
-                        click('#button');
+                        toggle_status('discrete',transDuration);
                     }, 2000);
                 } else {
                     setTimeout(() => {
-                        click('#button');
+                        toggle_status('discrete',transDuration);
                     }, 1000);
                 }
             },
