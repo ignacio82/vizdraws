@@ -1,5 +1,9 @@
-text.y-axis-label {
-	color: purple;
+.axis text, .y-axis-label {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
 }
 
 /* Inactive buttons*/
