@@ -10,3 +10,7 @@
     src: htmlwidgets/lib/d3-tip
     script: d3-tip.min.js
     stylesheet: style.css
+  - name: custom-css
+    version: 0.0.1
+    src: htmlwidgets/lib/custom-css
+    stylesheet: style.css

@@ -1,0 +1,46 @@
+.axis text, .y-axis-label {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+/* Inactive buttons*/
+.trans-button rect.background {
+	stroke-width: 2;
+	fill: white;
+	stroke: #aaa;
+}
+
+.trans-button rect.icon, .button-container path.icon {
+	stroke: none;
+	fill: #aaa;
+}
+
+.trans-button text.icon {
+	font-size: 24px;
+	fill: #aaa;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Active buttons */
+.trans-button.active rect.background {
+	stroke: #000;
+}
+
+.trans-button.active rect.icon, .trans-button.active path.icon, .trans-button.active text.icon{
+	fill: #000;
+}
+
+/* hovered buttons */
+.trans-button:hover rect.background {
+	stroke: #666;
+}
+
+.trans-button:hover rect.icon, .trans-button:hover path.icon, .trans-button:hover text.icon{
+	fill: #666;
+}
