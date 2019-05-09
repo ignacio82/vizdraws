@@ -138,10 +138,18 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
                                     y_posterior = bars$posterior$y)),
     text_prior = text$prior,
     text_posterior = text$posterior,
-    start = start,
+    start_mode = start,
+    start_status = 'distribution',
+    initial_trans = TRUE,
     allow_mode_trans = allow_mode_trans
   )
 
+  # Define sizing policy
+  sizingPolicy = htmlwidgets::sizingPolicy(
+    browser.defaultWidth = 400,
+    browser.defaultHeight = 400,
+    browser.fill = TRUE
+  )
   # create widget
   htmlwidgets::createWidget(
     name = 'IMPosterior',
@@ -149,7 +157,8 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     width = width,
     height = height,
     package = 'IMPosterior',
-    elementId = elementId
+    elementId = elementId,
+    sizingPolicy = sizingPolicy
   )
 }
 
@@ -170,7 +179,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
 #' @name IMPosterior-shiny
 #'
 #' @export
-IMPosteriorOutput <- function(outputId, width = '100%', height = '400px'){
+IMPosteriorOutput <- function(outputId, width = '100%', height = '100%'){
   htmlwidgets::shinyWidgetOutput(outputId, 'IMPosterior', width, height, package = 'IMPosterior')
 }
 

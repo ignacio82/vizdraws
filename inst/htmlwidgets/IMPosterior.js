@@ -7,7 +7,7 @@ HTMLWidgets.widget({
     type: 'output',
 
     factory: function(el, width, height) {
-        let options, dims, margin;
+        let options, dims, margin, status, mode;
         return {
             setupSvg: () => {
                 d3.select(el).selectAll('*').remove();
@@ -31,9 +31,9 @@ HTMLWidgets.widget({
                     height: height - margin.top - margin.bottom
                 };
 
-                // define globals
-                let STATUS = 'distribution';
-                let MODE = opts.start;
+                // defined globally now
+                STATUS = opts.start_status;
+                MODE = opts.start_mode;
 
                 const transDuration = 500;
 
@@ -129,14 +129,13 @@ HTMLWidgets.widget({
                     .ticks(10)
                     .tickFormat(d3.format('.0%'));
 
+				// Y axis label. Translates 
                 let yLabel = g
                     .append('text')
                     .attr('class', 'y-axis-label')
-                    .attr('transform', 'rotate(-90)')
-                    .attr('y', -52)
-                    .attr('x', -160)
+                    .attr('transform', `rotate(-90) translate(${-dims.height/2},${-margin.left + 20})`)
                     .attr('dy', '.71em')
-                    .style('text-anchor', 'end')
+                    .style('text-anchor', 'middle')
                     .style('font-size', 14 + 'px')
                     .text('Probability');
 
@@ -348,7 +347,7 @@ HTMLWidgets.widget({
                             .delay(duration)
                             .style('opacity', (allow_threshold ? 1 : 0))
                             .transition()
-                            .duration(1000)
+                            .duration(duration)
                             .attr('y1', (allow_threshold ? y(opts.threshold) : y(0)))
                             .attr('y2', (allow_threshold ? y(opts.threshold) : y(0)));
 
@@ -401,7 +400,7 @@ HTMLWidgets.widget({
 					.attr('class','button-container')
                     .attr('transform', 'translate(' + (width - 95) + ',' + 15 + ') scale(0.6)');
 
-                let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', true);
+                let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', STATUS=='distribution');
 
                 // button background/border box
                 status_button
@@ -442,7 +441,7 @@ HTMLWidgets.widget({
                     });
 
                 // Button to transition prior/posterior
-                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', false);
+                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', MODE=='posterior');
 
                 // button background/border box
                 mode_button
@@ -470,29 +469,31 @@ HTMLWidgets.widget({
 
                 // If only one of prior/posterior chosen, simply don't show button2
                 if (!allow_mode_trans) {
-                    g
-                    .select("mode-button")
+                    mode_button
                     .remove();
                 }
 
-				// start app as distribution
-                toggle_status('distribution', 0);
+				// start app
+                toggle_status(STATUS, 0);
 				
 				// If both prior & posterior are present, go from prior dens -> post dens -> post bars
-                if (allow_mode_trans) {
-                    setTimeout(() => {
-                        toggle_mode('posterior',transDuration);
-                    }, 1000);
-                    setTimeout(() => {
-                        toggle_status('discrete',transDuration);
-                    }, 2000);
-                } else {
-                    setTimeout(() => {
-                        toggle_status('discrete',transDuration);
-                    }, 1000);
-                }
+				if (opts.initial_trans) {
+					if (allow_mode_trans) {
+						setTimeout(() => {
+							toggle_mode('posterior',transDuration);
+						}, 1000);
+						setTimeout(() => {
+							toggle_status('discrete',transDuration);
+						}, 2000);
+					} else {
+						setTimeout(() => {
+							toggle_status('discrete',transDuration);
+						}, 1000);
+					}
+				}
             },
             renderValue: function(opts) {
+				
                 console.log('render w,h', width, height);
                 // keep options for resize
                 options = opts;
@@ -509,8 +510,10 @@ HTMLWidgets.widget({
                 setTimeout(this.draw.bind(this, opts, svg), timeout);
             },
 
-            resize: function(width, height) {
-                console.log('resize w, h', width, height);
+            resize: function(newWidth, newHeight) {
+                console.log('resize w, h', newWidth, newHeight);
+				width = newWidth;
+				height = newHeight;
                 // TODO: code to re-render the widget with a new size
                 /*let svg = d3
                     .select(el)
@@ -518,10 +521,13 @@ HTMLWidgets.widget({
                     .attr('width', dims.width + margin.left + margin.right)
                     .attr('height', dims.height + margin.top + margin.bottom);
                 */
-
+				// Set initials to whatever they currently were when graph was last changed
+				options.start_mode=MODE;
+				options.start_status=STATUS;
+				options.initial_trans=false;
                 // if you don't care about animation or transition
                 // you can just call render
-                //this.renderValue(options);
+                this.renderValue(options);
 
                 // or without uncommenting as of now do nothing
             }
