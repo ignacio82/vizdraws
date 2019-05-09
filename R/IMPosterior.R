@@ -146,8 +146,8 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
 
   # Define sizing policy
   sizingPolicy = htmlwidgets::sizingPolicy(
-    browser.defaultWidth = 400,
-    browser.defaultHeight = 400,
+    defaultWidth = 400,
+    defaultHeight = 400,
     browser.fill = TRUE
   )
   # create widget
