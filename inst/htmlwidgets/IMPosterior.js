@@ -260,9 +260,9 @@ HTMLWidgets.widget({
                     .style('stroke-dasharray', '5,5')
                     .style('opacity', 1)
                     .attr('x1', 0)
-                    .attr('y1', y(0))
+                    .attr('y1', (!opts.initial_trans && STATUS == 'discrete' && allow_threshold ? y(opts.threshold) : y(0)))
                     .attr('x2', dims.width)
-                    .attr('y2', y(0));
+                    .attr('y2', (!opts.initial_trans && STATUS == 'discrete' && allow_threshold ? y(opts.threshold) : y(0)));
 
                 // function to update x axis
                 let updateXAxis = (type, duration) => {
