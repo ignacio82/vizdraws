@@ -419,7 +419,9 @@ HTMLWidgets.widget({
                     .attr('x', 0)
                     .attr('y', 0)
                     .attr('width', button_dims.width)
-                    .attr('height', button_dims.height);
+                    .attr('height', button_dims.height)
+					// Rescale so always 1px
+					.style('stroke-width',`${1/button_dims.scale}`);
 
                 mode_button
                     .append('text')
@@ -439,7 +441,8 @@ HTMLWidgets.widget({
                     .attr('x', button_dims.width + button_dims.buffer)
                     .attr('y', 0)
                     .attr('width', button_dims.width)
-                    .attr('height', button_dims.height);
+                    .attr('height', button_dims.height)
+					.style('stroke-width',`${1/button_dims.scale}`);
 
                 // x axis in button graphic
                 status_button
