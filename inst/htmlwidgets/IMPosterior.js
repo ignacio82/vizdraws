@@ -18,9 +18,18 @@ HTMLWidgets.widget({
                 // if width or height is 0 then try again to determine width and height of container
                 width = width <= 0 ? $(el).outerWidth() : width;
                 height = height <= 0 ? $(el).outerHeight() : height;
-
+				
+				// Buttons scale between 40-80px, depending on height between 300 and 800 px
+				button_dims = {
+					scale: Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4),
+					width: 120,
+					height: 100,
+					buffer: 10
+				};
+				
+				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
                 margin = {
-                    top: 50,
+                    top: 10 + 100*button_dims.scale,
                     right: 20,
                     bottom: 80,
                     left: 70
@@ -398,31 +407,54 @@ HTMLWidgets.widget({
                 let allButtons = svg
                     .append('g')
 					.attr('class','button-container')
-                    .attr('transform', 'translate(' + (width - 95) + ',' + 15 + ') scale(0.6)');
+					.attr('transform', `translate( ${width - margin.right - button_dims.scale*(2*button_dims.width + button_dims.buffer)}, 5) scale(${button_dims.scale})`);
+                
+				// Button to transition prior/posterior
+                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', MODE=='posterior');
 
-                let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', STATUS=='distribution');
+                // button background/border box
+                mode_button
+                    .append('rect')
+                    .attr('class', 'background')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', button_dims.width)
+                    .attr('height', button_dims.height);
+
+                mode_button
+                    .append('text')
+                    .attr('class', 'icon')
+                    .text('Posterior')
+                    .attr('text-anchor','middle')
+                    .attr('alignment-baseline','middle')
+                    .attr('x',button_dims.width/2)
+                    .attr('y',button_dims.height/2);
+
+				let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', STATUS=='distribution');
 
                 // button background/border box
                 status_button
                     .append('rect')
                     .attr('class', 'background')
-                    .attr('x', -10)
+                    .attr('x', button_dims.width + button_dims.buffer)
                     .attr('y', 0)
-                    .attr('width', 120)
-                    .attr('height', 100);
+                    .attr('width', button_dims.width)
+                    .attr('height', button_dims.height);
 
                 // x axis in button graphic
                 status_button
                     .append('rect')
                     .attr('class', 'icon')
-                    .attr('y', 75)
-                    .attr('width', 100)
+					.attr('x', button_dims.width + button_dims.buffer + (1/12)*button_dims.height)
+					.attr('y', 0.75*button_dims.height)
+                    .attr('width', (5/6)*button_dims.width)
                     .attr('height', 2);
 
                 // curve in button graphic
                 status_button
                     .append('path')
                     .attr('class', 'icon')
+					.attr('transform',`translate(${button_dims.width + button_dims.buffer + (1/12)*button_dims.height},0)`)
                     .attr(
                         'd',
                         'M37.92,42.22c3.78-8,7-14.95,12.08-14.95h' +
@@ -439,28 +471,7 @@ HTMLWidgets.widget({
                     .on('click', function(d) {
                         toggle_status((STATUS=='discrete' ? 'distribution' : 'discrete'),transDuration);
                     });
-
-                // Button to transition prior/posterior
-                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', MODE=='posterior');
-
-                // button background/border box
-                mode_button
-                    .append('rect')
-                    .attr('class', 'background')
-                    .attr('x', -10)
-                    .attr('y', 110)
-                    .attr('width', 120)
-                    .attr('height', 100);
-
-                mode_button
-                    .append('text')
-                    .attr('class', 'icon')
-                    .text('Posterior')
-                    .attr('text-anchor','middle')
-                    .attr('alignment-baseline','middle')
-                    .attr('x',50)
-                    .attr('y',160);
-
+					
                 mode_button
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
