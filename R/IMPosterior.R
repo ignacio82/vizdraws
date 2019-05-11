@@ -18,10 +18,16 @@
 #'  }
 
 IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL, units = NULL,
-                        colors,
+                        breaks=NULL, break_names = NULL, colors = NULL,
                         width = NULL, height = NULL,
                         elementId = NULL) {
   if(MME<0) stop("MME should be greater than 0")
+  if (!is.null(breaks) & MME!=0) stop('MME and breaks cannot both be specified')
+  if (length(breaks)>9) stop('Can\'t specicfy more than 9 breaks')
+  if (!is.null(breaks) & is.null(break_names)) stop('Need break_names if specifying option breaks')
+  if (!is.null(breaks) & !is.null(break_names) & length(break_names)<=length(breaks)) stop('Not enough break_names specified')
+  if (!is.null(breaks) & !is.null(colors) & length(colors)<=length(breaks)) stop('Not enough colors specified')
+
   if(is.null(threshold)) {
     allow_threshold <- FALSE
   } else if((threshold<=0 | threshold>=1)) {
@@ -33,17 +39,17 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   if(is.null(prior) & is.null(posterior)) stop("must specify at least one of prior or posterior")
   if(is.null(prior) | is.null(posterior)) allow_mode_trans <- FALSE
   else allow_mode_trans <- TRUE
-  # Set colors
-
-  if(missing(colors)){
-    colors <- c("#e41a1c", "#377eb8", "#4daf4a")
-  }
-  if (MME==0) colors <- c(colors[1], colors[3])
 
   # Calculate the breaks
-  breaks <- if(MME!=0){
-    c(-Inf, -MME, MME, Inf)
-  }else c(-Inf, MME, Inf)
+  if(is.null(breaks)) {
+    breaks <- if(MME!=0){
+      c(-MME, MME)
+    }else 0
+  }
+
+  if(missing(colors)){
+    colors <- c('#e41a1c', '#377eb8', '#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999')
+  }
 
   #Start graph showing prior, unless it's not provided
   start <- ifelse(is.null(prior),'posterior','prior')
@@ -54,7 +60,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   if (is.null(prior)) data$prior = posterior
   if (is.null(posterior)) data$posterior = prior
 
-  n_dens <- 2^10
+  n_dens <- 2^11
   # Figure out range of densities
   rng <- lapply(data, function(d){
     data.frame(stats::density(d, n=n_dens, adjust=1)[c("x","y")]) %>%
@@ -65,79 +71,21 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   xmax <- max(rng$prior, rng$posterior)
   # Calculate density values for input data
   dens <- lapply(data, function(d) {
-    probs <- dplyr::tibble(d) %>%
-      dplyr::mutate(n=dplyr::n(), section = cut(d,breaks=breaks)) %>%
-      dplyr::group_by(section) %>%
-      dplyr::summarize(prob = paste0(round(sum(100/n)),'%'))
-
-    data.frame(stats::density(d, n=n_dens, adjust=1, from=xmin, to=xmax)[c("x","y")]) %>%
-      dplyr::mutate(section = cut(x, breaks=breaks)) %>%
-      dplyr::left_join(probs, by='section')
-  })
-
-  # Get probability mass for each level of section
-  sp <- lapply(dens, function(x) {
-    x %>%
-    dplyr::group_by(section, prob) %>%
-    dplyr::summarise() %>%
-    dplyr::ungroup() %>%
-    tidyr::complete(section, fill=list(prob="0%"))
-  })
-
-  # Gen text
-  text <- lapply(sp, function(x) {
-    if(is.null(units)){
-      left <-  glue::glue('Your data suggest that there is a {x$prob[[1]]} probability that the intervention has a negative effect of {MME} or more.')
-      if(MME!=0){
-        middle <-  glue::glue('Your data suggest that there is a {x$prob[[2]]} probability that the effect of the intervention is between -{MME} and {MME}, which is considered negligible')
-        right <-  glue::glue('Your data suggest that there is a {x$prob[[3]]} probability that the intervention has a positive effect of {MME} or more.')
-        return(c(left, middle, right))
-      }else{
-        right <-  glue::glue('Your data suggest that there is a {x$prob[[2]]} probability that the intervention has a positive effect of {MME} or more.')
-        return(text <- c(left, right))
-      }
-    }else{
-      left <-  glue::glue('Your data suggest that there is a {x$prob[[1]]} probability that the intervention has a negative effect of {MME} {units} or more.')
-      if(MME!=0){
-        middle <-  glue::glue('Your data suggest that there is a {x$prob[[2]]} probability that the effect of the intervention is between -{MME} and {MME} {units}, which is considered negligible')
-        right <-  glue::glue('Your data suggest that there is a {x$prob[[3]]} probability that the intervention has a positive effect of {MME} {units} or more.')
-        return(c(left, middle, right))
-      }else{
-        right <-  glue::glue('Your data suggest that there is a {x$prob[[2]]} probability that the intervention has a positive effect of {MME} {units} or more.')
-        return(text <- c(left, right))
-      }
-    }
-  })
-  text$prior <- sub("data suggest","priors imply",text$prior)
-
-  bars <- lapply(sp, function(x){
-    if(MME!=0){
-      data.frame(y = as.numeric(sub("%", "", x$prob))/100,
-                         x = c("Worse", "Equivalent", "Better"),
-                         color = colors)
-    }else{
-      data.frame(y = as.numeric(sub("%", "", x$prob))/100,
-                         x = c("Worse", "Better"),
-                         color = colors)    }
+    data.frame(stats::density(d, n=n_dens, adjust=1, from=xmin, to=xmax)[c("x","y")])
   })
 
   # forward options using x
   opts = list(
-    data = dataframeToD3(data.frame(x = dens$prior$x,
+    dens = dataframeToD3(data.frame(x = dens$prior$x,
                                     y_prior = dens$prior$y,
                                     y_posterior = dens$posterior$y)),
-    MME = MME,
+    prior = dataframeToD3(data.frame(x = data$prior)),
+    posterior = dataframeToD3(data.frame(x = data$posterior)),
+    breaks = breaks,
+    break_names = break_names,
+    colors = colors,
     allow_threshold = allow_threshold,
     threshold = threshold,
-    prob_prior = sp$prior$prob,
-    prob_posterior = sp$posterior$prob,
-    colors = colors,
-    bars = dataframeToD3(data.frame(color = colors,
-                                    x = bars$prior$x,
-                                    y_prior = bars$prior$y,
-                                    y_posterior = bars$posterior$y)),
-    text_prior = text$prior,
-    text_posterior = text$posterior,
     start_mode = start,
     start_status = 'distribution',
     initial_trans = TRUE,
