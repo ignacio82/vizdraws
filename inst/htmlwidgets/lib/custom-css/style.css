@@ -8,9 +8,9 @@
 
 /* Inactive buttons*/
 .trans-button rect.background {
-	stroke-width: 2;
 	fill: white;
 	stroke: #aaa;
+	shape-rendering: crispEdges;
 }
 
 .trans-button rect.icon, .button-container path.icon {
