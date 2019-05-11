@@ -14,3 +14,7 @@
     version: 0.0.1
     src: htmlwidgets/lib/custom-css
     stylesheet: style.css
+  - name: jquery
+    version: 3.4.1
+    src: htmlwidgets/lib/jquery
+    script: jquery-3.4.1.min.js
