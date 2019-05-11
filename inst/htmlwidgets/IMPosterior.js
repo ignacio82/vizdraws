@@ -101,12 +101,20 @@ HTMLWidgets.widget({
 				let createDiscrete = (cuts) => {
 					cuts.forEach((c, i) => {
 						// Figure out text
-						let range_suffix = ''
-						if (i==0) range_suffix = `less than ${Math.round(100*c)/100}${opts.unit_text}`
-						else if (i==cuts.length-1) range_suffix = `of ${Math.round(100*cuts[i-1])/100}${opts.unit_text} or more`
-						else range_suffix = `between ${Math.round(100*cuts[i-1])/100} and ${Math.round(100*c)/100}${opts.unit_text}`
-						let desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that the intervention has an effect ${range_suffix}.`
-						let desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that the intervention has an effect ${range_suffix}.`
+						let range_suffix = '';
+						if (i==0) range_suffix = `less than ${Math.round(100*c)/100}`
+						else if (i==cuts.length-1) range_suffix = `more than ${Math.round(100*cuts[i-1])/100}`;
+						else range_suffix = `between ${Math.round(100*cuts[i-1])/100} and ${Math.round(100*c)/100}`;
+						
+						let desc_prior = '';
+						let desc_posterior = '';
+						if (opts.is_quantity) {
+							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that ${opts.unit_text} are ${range_suffix}.`;
+							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that ${opts.unit_text} are ${range_suffix}.`;
+						} else {
+							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
+							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
+						};
 						
 						dataDiscrete.push({
 							color: opts.colors[i],
