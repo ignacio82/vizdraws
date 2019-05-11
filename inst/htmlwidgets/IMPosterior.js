@@ -54,52 +54,89 @@ HTMLWidgets.widget({
                 const pressedColor = '#000';
 
                 const distParams = {
-                    min: d3.min(opts.data, d => d.x),
-                    max: d3.max(opts.data, d =>  d.x)
+                    min: d3.min(opts.dens, d => d.x),
+                    max: d3.max(opts.dens, d =>  d.x)
                 };
-
-                if (opts.MME === 0) {
-                    distParams.cuts = [opts.MME, distParams.max];
-                } else {
-                    distParams.cuts = [-opts.MME, opts.MME, distParams.max];
-                }
+				
+				distParams.cuts = opts.breaks;
+				// Append something over the max onto the end of cuts
+				// That way, can always do <cutn+1
+				distParams.cuts.push(distParams.max+1)
+				console.log(distParams);
 
                 // sort input data
-                // Can sort on prior
-                opts.data = opts.data.sort((a, b) => a.x - b.x);
+                opts.dens = opts.dens.sort((a, b) => a.x - b.x);
+				opts.prior = opts.prior.sort((a, b) => a - b);
+				opts.posterior = opts.posterior.sort((a, b) => a - b);
+				console.log(opts.dens);
+				console.log(opts.prior);
+				console.log(opts.posterior);
+				
+				let probs = [];
+				let calculateProbs = (cuts) => {
+					cuts.forEach((c, i) => {
+						let prior_filtered = opts.prior.filter(d => {
+							if (i === 0) {
+								return d.x < c;
+							} else {
+								return d.x < c && d.x >= cuts[i - 1];
+							}
+						});
+						let prior_prob = Math.round(100*prior_filtered.length/opts.prior.length);
+						
+						let posterior_filtered = opts.posterior.filter(d => {
+							if (i === 0) {
+								return d.x < c;
+							} else {
+								return d.x < c && d.x >= cuts[i - 1];
+							}
+						});
+						let posterior_prob = Math.round(100*posterior_filtered.length/opts.posterior.length);
 
-                // set up data for bars
-                let dataDiscrete = opts.bars.map((b, i) => {
-                    b.y_prior = Number(b.y_prior);
-                    b.y_posterior = Number(b.y_posterior);
-                    b.desc_prior = opts.text_prior[i];
-                    b.desc_posterior = opts.text_posterior[i];
-                    return b;
-                });
+						probs.push({
+							prior: prior_prob,
+							posterior: posterior_prob,
+						});
+					});					
+				};
+				
+				let dataDiscrete = [];
+				let createDiscrete = (cuts) => {
+					
+				};
+				
+				let dataContinuousGroups = [];
+				let createContinuous = (cuts) => {
+					cuts.forEach((c, i) => {
+						let data = opts.dens.filter(d => {
+							if (i === 0) {
+								return d.x < c;
+							} else {
+								return d.x < c && d.x >= cuts[i - 1];
+							}
+						});
 
-                // set up data for distribution
-                let dataContinuousGroups = [];
-                distParams.cuts.forEach((c, i) => {
-                    let data = opts.data.filter(d => {
-                        if (i === 0) {
-                            return d.x < c;
-                        } else if (i === distParams.cuts.length - 1) {
-                            return d.x > distParams.cuts[i - 1];
-                        } else {
-                            return d.x < c && d.x > distParams.cuts[i - 1];
-                        }
-                    });
+						if (data.length > 0) {
+							data.unshift({ x: data[0].x, y_prior: 0, y_posterior: 0 });
+							data.push({ x: data[data.length - 1].x, y_prior: 0, y_posterior: 0 });
+						}
 
-                    if (data.length > 0) {
-                        data.unshift({ x: data[0].x, y_prior: 0, y_posterior: 0 });
-                        data.push({ x: data[data.length - 1].x, y_prior: 0, y_posterior: 0 });
-                    }
-
-                    dataContinuousGroups.push({
-                        color: opts.colors[i],
-                        data: data
-                    });
-                });
+						dataContinuousGroups.push({
+							color: opts.colors[i],
+							name: opts.break_names[i],
+							prob: probs[i],
+							data: data
+						});
+					});
+				};
+				
+				calculateProbs(distParams.cuts);
+				createDiscrete(distParams.cuts);
+				createContinuous(distParams.cuts);
+				console.log(distParams);
+				console.log(probs);
+				console.log(dataDiscrete);
+				console.log(dataContinuousGroups);
 
                 // set up scales
                 let xContinuous = d3
