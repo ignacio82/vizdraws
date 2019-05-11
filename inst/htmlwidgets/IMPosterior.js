@@ -7,7 +7,7 @@ HTMLWidgets.widget({
     type: 'output',
 
     factory: function(el, width, height) {
-        let options, dims, margin;
+        let options, dims, margin, status, mode;
         return {
             setupSvg: () => {
                 d3.select(el).selectAll('*').remove();
@@ -18,9 +18,18 @@ HTMLWidgets.widget({
                 // if width or height is 0 then try again to determine width and height of container
                 width = width <= 0 ? $(el).outerWidth() : width;
                 height = height <= 0 ? $(el).outerHeight() : height;
-
+				
+				// Buttons scale between 40-80px, depending on height between 300 and 800 px
+				button_dims = {
+					scale: Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4),
+					width: 120,
+					height: 100,
+					buffer: 10
+				};
+				
+				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
                 margin = {
-                    top: 50,
+                    top: 10 + 100*button_dims.scale,
                     right: 20,
                     bottom: 80,
                     left: 70
@@ -31,9 +40,9 @@ HTMLWidgets.widget({
                     height: height - margin.top - margin.bottom
                 };
 
-                // define globals
-                let STATUS = 'distribution';
-                let MODE = opts.start;
+                // defined globally now
+                STATUS = opts.start_status;
+                MODE = opts.start_mode;
 
                 const transDuration = 500;
 
@@ -129,14 +138,13 @@ HTMLWidgets.widget({
                     .ticks(10)
                     .tickFormat(d3.format('.0%'));
 
+				// Y axis label. Translates 
                 let yLabel = g
                     .append('text')
                     .attr('class', 'y-axis-label')
-                    .attr('transform', 'rotate(-90)')
-                    .attr('y', -52)
-                    .attr('x', -160)
+                    .attr('transform', `rotate(-90) translate(${-dims.height/2},${-margin.left + 20})`)
                     .attr('dy', '.71em')
-                    .style('text-anchor', 'end')
+                    .style('text-anchor', 'middle')
                     .style('font-size', 14 + 'px')
                     .text('Probability');
 
@@ -261,9 +269,9 @@ HTMLWidgets.widget({
                     .style('stroke-dasharray', '5,5')
                     .style('opacity', 1)
                     .attr('x1', 0)
-                    .attr('y1', y(0))
+                    .attr('y1', (!opts.initial_trans && STATUS == 'discrete' && allow_threshold ? y(opts.threshold) : y(0)))
                     .attr('x2', dims.width)
-                    .attr('y2', y(0));
+                    .attr('y2', (!opts.initial_trans && STATUS == 'discrete' && allow_threshold ? y(opts.threshold) : y(0)));
 
                 // function to update x axis
                 let updateXAxis = (type, duration) => {
@@ -348,7 +356,7 @@ HTMLWidgets.widget({
                             .delay(duration)
                             .style('opacity', (allow_threshold ? 1 : 0))
                             .transition()
-                            .duration(1000)
+                            .duration(duration)
                             .attr('y1', (allow_threshold ? y(opts.threshold) : y(0)))
                             .attr('y2', (allow_threshold ? y(opts.threshold) : y(0)));
 
@@ -399,31 +407,57 @@ HTMLWidgets.widget({
                 let allButtons = svg
                     .append('g')
 					.attr('class','button-container')
-                    .attr('transform', 'translate(' + (width - 95) + ',' + 15 + ') scale(0.6)');
+					.attr('transform', `translate( ${width - margin.right - button_dims.scale*(2*button_dims.width + button_dims.buffer)}, 5) scale(${button_dims.scale})`);
+                
+				// Button to transition prior/posterior
+                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', MODE=='posterior');
 
-                let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', true);
+                // button background/border box
+                mode_button
+                    .append('rect')
+                    .attr('class', 'background')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', button_dims.width)
+                    .attr('height', button_dims.height)
+					// Rescale so always 1px
+					.style('stroke-width',`${1/button_dims.scale}`);
+
+                mode_button
+                    .append('text')
+                    .attr('class', 'icon')
+                    .text('Posterior')
+                    .attr('text-anchor','middle')
+                    .attr('alignment-baseline','middle')
+                    .attr('x',button_dims.width/2)
+                    .attr('y',button_dims.height/2);
+
+				let status_button = allButtons.append('g').attr('class', 'trans-button status-button').classed('active', STATUS=='distribution');
 
                 // button background/border box
                 status_button
                     .append('rect')
                     .attr('class', 'background')
-                    .attr('x', -10)
+                    .attr('x', button_dims.width + button_dims.buffer)
                     .attr('y', 0)
-                    .attr('width', 120)
-                    .attr('height', 100);
+                    .attr('width', button_dims.width)
+                    .attr('height', button_dims.height)
+					.style('stroke-width',`${1/button_dims.scale}`);
 
                 // x axis in button graphic
                 status_button
                     .append('rect')
                     .attr('class', 'icon')
-                    .attr('y', 75)
-                    .attr('width', 100)
+					.attr('x', button_dims.width + button_dims.buffer + (1/12)*button_dims.height)
+					.attr('y', 0.75*button_dims.height)
+                    .attr('width', (5/6)*button_dims.width)
                     .attr('height', 2);
 
                 // curve in button graphic
                 status_button
                     .append('path')
                     .attr('class', 'icon')
+					.attr('transform',`translate(${button_dims.width + button_dims.buffer + (1/12)*button_dims.height},0)`)
                     .attr(
                         'd',
                         'M37.92,42.22c3.78-8,7-14.95,12.08-14.95h' +
@@ -440,28 +474,7 @@ HTMLWidgets.widget({
                     .on('click', function(d) {
                         toggle_status((STATUS=='discrete' ? 'distribution' : 'discrete'),transDuration);
                     });
-
-                // Button to transition prior/posterior
-                let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', false);
-
-                // button background/border box
-                mode_button
-                    .append('rect')
-                    .attr('class', 'background')
-                    .attr('x', -10)
-                    .attr('y', 110)
-                    .attr('width', 120)
-                    .attr('height', 100);
-
-                mode_button
-                    .append('text')
-                    .attr('class', 'icon')
-                    .text('Posterior')
-                    .attr('text-anchor','middle')
-                    .attr('alignment-baseline','middle')
-                    .attr('x',50)
-                    .attr('y',160);
-
+					
                 mode_button
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
@@ -470,29 +483,31 @@ HTMLWidgets.widget({
 
                 // If only one of prior/posterior chosen, simply don't show button2
                 if (!allow_mode_trans) {
-                    g
-                    .select("mode-button")
+                    mode_button
                     .remove();
                 }
 
-				// start app as distribution
-                toggle_status('distribution', 0);
+				// start app
+                toggle_status(STATUS, 0);
 				
 				// If both prior & posterior are present, go from prior dens -> post dens -> post bars
-                if (allow_mode_trans) {
-                    setTimeout(() => {
-                        toggle_mode('posterior',transDuration);
-                    }, 1000);
-                    setTimeout(() => {
-                        toggle_status('discrete',transDuration);
-                    }, 2000);
-                } else {
-                    setTimeout(() => {
-                        toggle_status('discrete',transDuration);
-                    }, 1000);
-                }
+				if (opts.initial_trans) {
+					if (allow_mode_trans) {
+						setTimeout(() => {
+							toggle_mode('posterior',transDuration);
+						}, 1000);
+						setTimeout(() => {
+							toggle_status('discrete',transDuration);
+						}, 2000);
+					} else {
+						setTimeout(() => {
+							toggle_status('discrete',transDuration);
+						}, 1000);
+					}
+				}
             },
             renderValue: function(opts) {
+				
                 console.log('render w,h', width, height);
                 // keep options for resize
                 options = opts;
@@ -509,8 +524,10 @@ HTMLWidgets.widget({
                 setTimeout(this.draw.bind(this, opts, svg), timeout);
             },
 
-            resize: function(width, height) {
-                console.log('resize w, h', width, height);
+            resize: function(newWidth, newHeight) {
+                console.log('resize w, h', newWidth, newHeight);
+				width = newWidth;
+				height = newHeight;
                 // TODO: code to re-render the widget with a new size
                 /*let svg = d3
                     .select(el)
@@ -518,10 +535,13 @@ HTMLWidgets.widget({
                     .attr('width', dims.width + margin.left + margin.right)
                     .attr('height', dims.height + margin.top + margin.bottom);
                 */
-
+				// Set initials to whatever they currently were when graph was last changed
+				options.start_mode=MODE;
+				options.start_status=STATUS;
+				options.initial_trans=false;
                 // if you don't care about animation or transition
                 // you can just call render
-                //this.renderValue(options);
+                this.renderValue(options);
 
                 // or without uncommenting as of now do nothing
             }
