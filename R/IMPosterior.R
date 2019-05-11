@@ -23,8 +23,8 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
                         elementId = NULL) {
   if(MME<0) stop("MME should be greater than 0")
   if (!is.null(breaks) & MME!=0) stop('MME and breaks cannot both be specified')
-  if (length(breaks)>9) stop('Can\'t specicfy more than 9 breaks')
-  if (!is.null(breaks) & is.null(break_names)) stop('Need break_names if specifying option breaks')
+  if (length(breaks)>10) stop('Can\'t specicfy more than 10 breaks')
+  if (!is.null(breaks) & is.null(break_names)) warning('Please supply break_names if specifying option breaks')
   if (!is.null(breaks) & !is.null(break_names) & length(break_names)<=length(breaks)) stop('Not enough break_names specified')
   if (!is.null(breaks) & !is.null(colors) & length(colors)<=length(breaks)) stop('Not enough colors specified')
 
@@ -47,8 +47,33 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     }else 0
   }
 
-  if(missing(colors)){
-    colors <- c('#e41a1c', '#377eb8', '#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999')
+  if (!is.null(units)) unit_text <- paste0(' ',units)
+  else unit_text <- ''
+
+  #Default names and colors
+  defaults <- list(break_names = c('Much much worse','Much worse','Worse','A bit worse','A little bit worse',
+                                   'Equivalent',
+                                   'A little bit better','A bit better','Better','Much Better','Much much better'),
+                   colors = c('#a50f15','#de2d26','#e41a1c','#fcae91','#fee5d9',
+                              '#377eb8',
+                              '#edf8e9','#bae4b3','#4daf4a','#31a354','#006d2c'))
+
+  group_options <- list(break_names = break_names,
+                 colors = colors)
+
+  for (x in c('colors', 'break_names')) {
+    n_per_side <- ceiling(length(breaks)/2)
+    no_middle <- length(breaks) %% 2
+    def <- defaults[[x]]
+    if(is.null(group_options[[x]])) {
+      if (n_per_side == 1) group_options[[x]] <- c(def[3],def[6],def[9])
+      else if (n_per_side == 2) group_options[[x]] <- c(def[2],def[4],def[6],def[8],def[10])
+      else if (n_per_side == 3) group_options[[x]] <- c(def[1],def[3],def[5],def[6],def[7],def[9],def[11])
+      else if (n_per_side == 4) group_options[[x]] <- c(def[1],def[2],def[4],def[5],def[6],def[7],def[8],def[10],def[11])
+      else if (n_per_side == 5) group_options[[x]] <- def
+
+      if (no_middle) group_options[[x]] <- group_options[[x]][-(n_per_side+1)]
+    }
   }
 
   #Start graph showing prior, unless it's not provided
@@ -82,10 +107,11 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     prior = dataframeToD3(data.frame(x = data$prior)),
     posterior = dataframeToD3(data.frame(x = data$posterior)),
     breaks = breaks,
-    break_names = break_names,
-    colors = colors,
+    break_names = group_options$break_names,
+    colors = group_options$colors,
     allow_threshold = allow_threshold,
     threshold = threshold,
+    unit_text = unit_text,
     start_mode = start,
     start_status = 'distribution',
     initial_trans = TRUE,

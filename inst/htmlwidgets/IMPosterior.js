@@ -49,28 +49,25 @@ HTMLWidgets.widget({
                 const allow_mode_trans = opts.allow_mode_trans;
                 const allow_threshold = opts.allow_threshold;
 
-                const defaultColor = '#aaa';
-                const hoverColor = '#666';
-                const pressedColor = '#000';
-
                 const distParams = {
                     min: d3.min(opts.dens, d => d.x),
                     max: d3.max(opts.dens, d =>  d.x)
                 };
 				
-				distParams.cuts = opts.breaks;
+				// If no MME or breaks are passed, R will pass a single value break, so convert to array
+				if (opts.breaks instanceof Array) {
+					distParams.cuts = opts.breaks;
+				} else {
+					distParams.cuts = [opts.breaks];
+				}
 				// Append something over the max onto the end of cuts
 				// That way, can always do <cutn+1
 				distParams.cuts.push(distParams.max+1)
-				console.log(distParams);
 
                 // sort input data
                 opts.dens = opts.dens.sort((a, b) => a.x - b.x);
 				opts.prior = opts.prior.sort((a, b) => a - b);
 				opts.posterior = opts.posterior.sort((a, b) => a - b);
-				console.log(opts.dens);
-				console.log(opts.prior);
-				console.log(opts.posterior);
 				
 				let probs = [];
 				let calculateProbs = (cuts) => {
@@ -102,7 +99,24 @@ HTMLWidgets.widget({
 				
 				let dataDiscrete = [];
 				let createDiscrete = (cuts) => {
-					
+					cuts.forEach((c, i) => {
+						// Figure out text
+						let range_suffix = ''
+						if (i==0) range_suffix = `less than ${Math.round(100*c)/100}${opts.unit_text}`
+						else if (i==cuts.length-1) range_suffix = `of ${Math.round(100*cuts[i-1])/100}${opts.unit_text} or more`
+						else range_suffix = `between ${Math.round(100*cuts[i-1])/100} and ${Math.round(100*c)/100}${opts.unit_text}`
+						let desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that the intervention has an effect ${range_suffix}.`
+						let desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that the intervention has an effect ${range_suffix}.`
+						
+						dataDiscrete.push({
+							color: opts.colors[i],
+							x: opts.break_names[i],
+							y_prior: probs[i].prior/100,
+							y_posterior: probs[i].posterior/100,
+							desc_prior: desc_prior,
+							desc_posterior: desc_posterior
+						});
+					});
 				};
 				
 				let dataContinuousGroups = [];
@@ -123,8 +137,6 @@ HTMLWidgets.widget({
 
 						dataContinuousGroups.push({
 							color: opts.colors[i],
-							name: opts.break_names[i],
-							prob: probs[i],
 							data: data
 						});
 					});
@@ -133,17 +145,14 @@ HTMLWidgets.widget({
 				calculateProbs(distParams.cuts);
 				createDiscrete(distParams.cuts);
 				createContinuous(distParams.cuts);
-				console.log(distParams);
-				console.log(probs);
-				console.log(dataDiscrete);
-				console.log(dataContinuousGroups);
 
                 // set up scales
                 let xContinuous = d3
                     .scaleLinear()
                     .domain([
-                        Math.min(distParams.min, -opts.MME),
-                        Math.max(distParams.max, opts.MME)
+                        Math.min(distParams.min, distParams.cuts[0]),
+						// Lenght -1 since we appended on a group at max+1
+                        Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 1])
                     ])
                     .range([0, dims.width]);
 
@@ -343,7 +352,7 @@ HTMLWidgets.widget({
                 let toggle_status = (to, duration) => {
                     if (to === 'distribution') {
                         // update axes
-                        updateYAxis(opts.data, 0);
+                        updateYAxis(opts.dens, 0);
                         updateXAxis('continuous', duration);
 
                         // change bars to areas
