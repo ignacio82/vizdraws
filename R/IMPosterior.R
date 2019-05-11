@@ -17,7 +17,8 @@
 #' IMPosterior(prior= rnorm(100000))
 #'  }
 
-IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL, units = NULL,
+IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
+                        units = NULL, quantity = FALSE,
                         breaks=NULL, break_names = NULL, colors = NULL,
                         width = NULL, height = NULL,
                         elementId = NULL) {
@@ -112,6 +113,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     allow_threshold = allow_threshold,
     threshold = threshold,
     unit_text = unit_text,
+    is_quantity = quantity,
     start_mode = start,
     start_status = 'distribution',
     initial_trans = TRUE,
