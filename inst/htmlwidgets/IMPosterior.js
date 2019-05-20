@@ -109,8 +109,8 @@ HTMLWidgets.widget({
 						let desc_prior = '';
 						let desc_posterior = '';
 						if (opts.is_quantity) {
-							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that ${opts.unit_text} are ${range_suffix}.`;
-							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that ${opts.unit_text} are ${range_suffix}.`;
+							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that ${opts.unit_text} will be ${range_suffix}.`;
+							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that ${opts.unit_text} will be ${range_suffix}.`;
 						} else {
 							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
 							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
