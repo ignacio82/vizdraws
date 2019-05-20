@@ -49,64 +49,118 @@ HTMLWidgets.widget({
                 const allow_mode_trans = opts.allow_mode_trans;
                 const allow_threshold = opts.allow_threshold;
 
-                const defaultColor = '#aaa';
-                const hoverColor = '#666';
-                const pressedColor = '#000';
-
                 const distParams = {
-                    min: d3.min(opts.data, d => d.x),
-                    max: d3.max(opts.data, d =>  d.x)
+                    min: d3.min(opts.dens, d => d.x),
+                    max: d3.max(opts.dens, d =>  d.x)
                 };
-
-                if (opts.MME === 0) {
-                    distParams.cuts = [opts.MME, distParams.max];
-                } else {
-                    distParams.cuts = [-opts.MME, opts.MME, distParams.max];
-                }
+				
+				// If no MME or breaks are passed, R will pass a single value break, so convert to array
+				if (opts.breaks instanceof Array) {
+					distParams.cuts = opts.breaks;
+				} else {
+					distParams.cuts = [opts.breaks];
+				}
+				// Append something over the max onto the end of cuts
+				// That way, can always do <cutn+1
+				distParams.cuts.push(distParams.max+1)
 
                 // sort input data
-                // Can sort on prior
-                opts.data = opts.data.sort((a, b) => a.x - b.x);
+                opts.dens = opts.dens.sort((a, b) => a.x - b.x);
+				opts.prior = opts.prior.sort((a, b) => a - b);
+				opts.posterior = opts.posterior.sort((a, b) => a - b);
+				
+				let probs = [];
+				let calculateProbs = (cuts) => {
+					cuts.forEach((c, i) => {
+						let prior_filtered = opts.prior.filter(d => {
+							if (i === 0) {
+								return d.x < c;
+							} else {
+								return d.x < c && d.x >= cuts[i - 1];
+							}
+						});
+						let prior_prob = Math.round(100*prior_filtered.length/opts.prior.length);
+						
+						let posterior_filtered = opts.posterior.filter(d => {
+							if (i === 0) {
+								return d.x < c;
+							} else {
+								return d.x < c && d.x >= cuts[i - 1];
+							}
+						});
+						let posterior_prob = Math.round(100*posterior_filtered.length/opts.posterior.length);
 
-                // set up data for bars
-                let dataDiscrete = opts.bars.map((b, i) => {
-                    b.y_prior = Number(b.y_prior);
-                    b.y_posterior = Number(b.y_posterior);
-                    b.desc_prior = opts.text_prior[i];
-                    b.desc_posterior = opts.text_posterior[i];
-                    return b;
-                });
+						probs.push({
+							prior: prior_prob,
+							posterior: posterior_prob,
+						});
+					});					
+				};
+				
+				let dataDiscrete = [];
+				let createDiscrete = (cuts) => {
+					cuts.forEach((c, i) => {
+						// Figure out text
+						let range_suffix = '';
+						if (i==0) range_suffix = `less than ${Math.round(100*c)/100}`
+						else if (i==cuts.length-1) range_suffix = `more than ${Math.round(100*cuts[i-1])/100}`;
+						else range_suffix = `between ${Math.round(100*cuts[i-1])/100} and ${Math.round(100*c)/100}`;
+						
+						let desc_prior = '';
+						let desc_posterior = '';
+						if (opts.is_quantity) {
+							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that ${opts.unit_text} will be ${range_suffix}.`;
+							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that ${opts.unit_text} will be ${range_suffix}.`;
+						} else {
+							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
+							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
+						};
+						
+						dataDiscrete.push({
+							color: opts.colors[i],
+							x: opts.break_names[i],
+							y_prior: probs[i].prior/100,
+							y_posterior: probs[i].posterior/100,
+							desc_prior: desc_prior,
+							desc_posterior: desc_posterior
+						});
+					});
+				};
+				
+				let dataContinuousGroups = [];
+				let createContinuous = (cuts) => {
+					cuts.forEach((c, i) => {
+						let data = opts.dens.filter(d => {
+							if (i === 0) {
+								return d.x < c;
+							} else {
+								return d.x < c && d.x >= cuts[i - 1];
+							}
+						});
 
-                // set up data for distribution
-                let dataContinuousGroups = [];
-                distParams.cuts.forEach((c, i) => {
-                    let data = opts.data.filter(d => {
-                        if (i === 0) {
-                            return d.x < c;
-                        } else if (i === distParams.cuts.length - 1) {
-                            return d.x > distParams.cuts[i - 1];
-                        } else {
-                            return d.x < c && d.x > distParams.cuts[i - 1];
-                        }
-                    });
+						if (data.length > 0) {
+							data.unshift({ x: data[0].x, y_prior: 0, y_posterior: 0 });
+							data.push({ x: data[data.length - 1].x, y_prior: 0, y_posterior: 0 });
+						}
 
-                    if (data.length > 0) {
-                        data.unshift({ x: data[0].x, y_prior: 0, y_posterior: 0 });
-                        data.push({ x: data[data.length - 1].x, y_prior: 0, y_posterior: 0 });
-                    }
-
-                    dataContinuousGroups.push({
-                        color: opts.colors[i],
-                        data: data
-                    });
-                });
+						dataContinuousGroups.push({
+							color: opts.colors[i],
+							data: data
+						});
+					});
+				};
+				
+				calculateProbs(distParams.cuts);
+				createDiscrete(distParams.cuts);
+				createContinuous(distParams.cuts);
 
                 // set up scales
                 let xContinuous = d3
                     .scaleLinear()
                     .domain([
-                        Math.min(distParams.min, -opts.MME),
-                        Math.max(distParams.max, opts.MME)
+                        Math.min(distParams.min, distParams.cuts[0]),
+						// Lenght -1 since we appended on a group at max+1
+                        Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 1])
                     ])
                     .range([0, dims.width]);
 
@@ -306,7 +360,7 @@ HTMLWidgets.widget({
                 let toggle_status = (to, duration) => {
                     if (to === 'distribution') {
                         // update axes
-                        updateYAxis(opts.data, 0);
+                        updateYAxis(opts.dens, 0);
                         updateXAxis('continuous', duration);
 
                         // change bars to areas
