@@ -201,7 +201,17 @@ HTMLWidgets.widget({
                     .style('text-anchor', 'middle')
                     .style('font-size', 14 + 'px')
                     .text('Probability');
-
+				
+				// Define x label, if desired
+				let xLabel = g
+                    .append('text')
+                    .attr('class', 'x-axis-label')
+                    .attr('transform', `translate(${dims.width/2},${dims.height + margin.bottom/2})`)
+                    .style('text-anchor', 'middle')
+                    .style('font-size', 14 + 'px')
+                    .text(opts.xlab||'');
+				
+				
                 // create axes
                 g
                     .append('g')
