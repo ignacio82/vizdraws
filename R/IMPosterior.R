@@ -18,7 +18,7 @@
 #'  }
 
 IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
-                        units = NULL, quantity = FALSE,
+                        units = NULL, quantity = FALSE, xlab = NULL,
                         breaks=NULL, break_names = NULL, colors = NULL,
                         width = NULL, height = NULL,
                         elementId = NULL) {
@@ -114,6 +114,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     threshold = threshold,
     unit_text = unit_text,
     is_quantity = quantity,
+    xlab = xlab,
     start_mode = start,
     start_status = 'distribution',
     initial_trans = TRUE,
