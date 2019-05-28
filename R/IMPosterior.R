@@ -29,6 +29,12 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   if (!is.null(breaks) & !is.null(break_names) & length(break_names)<=length(breaks)) stop('Not enough break_names specified')
   if (!is.null(breaks) & !is.null(colors) & length(colors)<=length(breaks)) stop('Not enough colors specified')
 
+  #Need breaks to be in order
+  if (!is.null(breaks) & sum(breaks!=sort(breaks))>0) {
+    breaks <- sort(breaks)
+    if (!is.null(colors) | !is.null(break_names)) warning('breaks given out of order. Assuming colors/names supplied in ascending order, NOT in same order as breaks')
+  }
+
   if(is.null(threshold)) {
     allow_threshold <- FALSE
   } else if((threshold<=0 | threshold>=1)) {
