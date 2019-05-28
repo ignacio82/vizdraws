@@ -15,10 +15,11 @@ HTMLWidgets.widget({
             },
             draw: function(opts, svg) {
                 const vis = this;
-                // if width or height is 0 then try again to determine width and height of container
-                width = width <= 0 ? $(el).outerWidth() : width;
-                height = height <= 0 ? $(el).outerHeight() : height;
-				
+                // if width or height is 0 then use reasonable default - 400 for height, and height for width
+                height = height <= 0 ? 400 : height;
+                width = width <= 0 ? height : width;
+
+
 				// Buttons scale between 40-80px, depending on height between 300 and 800 px
 				button_dims = {
 					scale: Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4),
@@ -26,7 +27,7 @@ HTMLWidgets.widget({
 					height: 100,
 					buffer: 10
 				};
-				
+
 				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
                 margin = {
                     top: 10 + 100*button_dims.scale,
@@ -53,7 +54,7 @@ HTMLWidgets.widget({
                     min: d3.min(opts.dens, d => d.x),
                     max: d3.max(opts.dens, d =>  d.x)
                 };
-				
+
 				// If no MME or breaks are passed, R will pass a single value break, so convert to array
 				if (opts.breaks instanceof Array) {
 					distParams.cuts = opts.breaks;
@@ -68,7 +69,7 @@ HTMLWidgets.widget({
                 opts.dens = opts.dens.sort((a, b) => a.x - b.x);
 				opts.prior = opts.prior.sort((a, b) => a - b);
 				opts.posterior = opts.posterior.sort((a, b) => a - b);
-				
+
 				let probs = [];
 				let calculateProbs = (cuts) => {
 					cuts.forEach((c, i) => {
@@ -80,7 +81,7 @@ HTMLWidgets.widget({
 							}
 						});
 						let prior_prob = Math.round(100*prior_filtered.length/opts.prior.length);
-						
+
 						let posterior_filtered = opts.posterior.filter(d => {
 							if (i === 0) {
 								return d.x < c;
@@ -94,9 +95,9 @@ HTMLWidgets.widget({
 							prior: prior_prob,
 							posterior: posterior_prob,
 						});
-					});					
+					});
 				};
-				
+
 				let dataDiscrete = [];
 				let createDiscrete = (cuts) => {
 					cuts.forEach((c, i) => {
@@ -105,7 +106,7 @@ HTMLWidgets.widget({
 						if (i==0) range_suffix = `less than ${Math.round(100*c)/100}`
 						else if (i==cuts.length-1) range_suffix = `more than ${Math.round(100*cuts[i-1])/100}`;
 						else range_suffix = `between ${Math.round(100*cuts[i-1])/100} and ${Math.round(100*c)/100}`;
-						
+
 						let desc_prior = '';
 						let desc_posterior = '';
 						if (opts.is_quantity) {
@@ -115,7 +116,7 @@ HTMLWidgets.widget({
 							desc_prior = `Your priors imply that there is a ${probs[i].prior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
 							desc_posterior = `Your data suggest that there is a ${probs[i].posterior}% probability that the intervention has an effect ${range_suffix}${opts.unit_text}.`;
 						};
-						
+
 						dataDiscrete.push({
 							color: opts.colors[i],
 							x: opts.break_names[i],
@@ -126,7 +127,7 @@ HTMLWidgets.widget({
 						});
 					});
 				};
-				
+
 				let dataContinuousGroups = [];
 				let createContinuous = (cuts) => {
 					cuts.forEach((c, i) => {
@@ -149,7 +150,7 @@ HTMLWidgets.widget({
 						});
 					});
 				};
-				
+
 				calculateProbs(distParams.cuts);
 				createDiscrete(distParams.cuts);
 				createContinuous(distParams.cuts);
@@ -192,7 +193,7 @@ HTMLWidgets.widget({
                     .ticks(10)
                     .tickFormat(d3.format('.0%'));
 
-				// Y axis label. Translates 
+				// Y axis label. Translates
                 let yLabel = g
                     .append('text')
                     .attr('class', 'y-axis-label')
@@ -201,7 +202,7 @@ HTMLWidgets.widget({
                     .style('text-anchor', 'middle')
                     .style('font-size', 14 + 'px')
                     .text('Probability');
-				
+
 				// Define x label, if desired
 				let xLabel = g
                     .append('text')
@@ -210,8 +211,8 @@ HTMLWidgets.widget({
                     .style('text-anchor', 'middle')
                     .style('font-size', 14 + 'px')
                     .text(opts.xlab||'');
-				
-				
+
+
                 // create axes
                 g
                     .append('g')
@@ -390,10 +391,10 @@ HTMLWidgets.widget({
                         // hide y axis
                         g.select('.y.axis').interrupt().style('opacity', 0);
                         g.select('.y-axis-label').interrupt().style('opacity', 0);
-						
+
 						// Turn off button
 						status_button.classed('active',true);
-						
+
 						// Update status
 						STATUS = 'distribution'
                     } else {
@@ -438,20 +439,20 @@ HTMLWidgets.widget({
                             .delay(duration)
 							.duration(duration)
                             .style('opacity', 1);
-						
+
 						// Turn on button
 						status_button.classed('active',false);
-						
+
 						// Update status
 						STATUS = 'discrete'
                     }
                 };
-				
+
 				let toggle_mode = (to, duration) => {
 					// Update mode and activate/deactivate button
 					MODE = to;
 					mode_button.classed('active',MODE=='posterior');
-					
+
 					if (STATUS === 'discrete') {
                         areas
                             .data(dataDiscrete)
@@ -472,7 +473,7 @@ HTMLWidgets.widget({
                     .append('g')
 					.attr('class','button-container')
 					.attr('transform', `translate( ${width - margin.right - button_dims.scale*(2*button_dims.width + button_dims.buffer)}, 5) scale(${button_dims.scale})`);
-                
+
 				// Button to transition prior/posterior
                 let mode_button = allButtons.append('g').attr('class', 'trans-button mode-button').classed('active', MODE=='posterior');
 
@@ -538,7 +539,7 @@ HTMLWidgets.widget({
                     .on('click', function(d) {
                         toggle_status((STATUS=='discrete' ? 'distribution' : 'discrete'),transDuration);
                     });
-					
+
                 mode_button
                     .style('cursor', 'pointer')
                     .on('click', function(d) {
@@ -553,7 +554,7 @@ HTMLWidgets.widget({
 
 				// start app
                 toggle_status(STATUS, 0);
-				
+
 				// If both prior & posterior are present, go from prior dens -> post dens -> post bars
 				if (opts.initial_trans) {
 					if (allow_mode_trans) {
@@ -571,7 +572,7 @@ HTMLWidgets.widget({
 				}
             },
             renderValue: function(opts) {
-				
+
                 console.log('render w,h', width, height);
                 // keep options for resize
                 options = opts;
@@ -590,8 +591,8 @@ HTMLWidgets.widget({
 
             resize: function(newWidth, newHeight) {
                 console.log('resize w, h', newWidth, newHeight);
-				width = newWidth;
-				height = newHeight;
+				        width = newWidth;
+			          height = newHeight;
                 // TODO: code to re-render the widget with a new size
                 /*let svg = d3
                     .select(el)
@@ -599,10 +600,10 @@ HTMLWidgets.widget({
                     .attr('width', dims.width + margin.left + margin.right)
                     .attr('height', dims.height + margin.top + margin.bottom);
                 */
-				// Set initials to whatever they currently were when graph was last changed
-				options.start_mode=MODE;
-				options.start_status=STATUS;
-				options.initial_trans=false;
+        				// Set initials to whatever they currently were when graph was last changed
+        				options.start_mode=MODE;
+        				options.start_status=STATUS;
+        				options.initial_trans=false;
                 // if you don't care about animation or transition
                 // you can just call render
                 this.renderValue(options);
