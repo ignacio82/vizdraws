@@ -21,6 +21,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
                         units = NULL, quantity = FALSE, xlab = NULL,
                         breaks=NULL, break_names = NULL, colors = NULL,
                         width = NULL, height = NULL,
+                        xlim = NULL,
                         elementId = NULL) {
   if(MME<0) stop("MME should be greater than 0")
   if (!is.null(breaks) & MME!=0) stop('MME and breaks cannot both be specified')
@@ -28,6 +29,11 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   if (!is.null(breaks) & is.null(break_names)) warning('Please supply break_names if specifying option breaks')
   if (!is.null(breaks) & !is.null(break_names) & length(break_names)<=length(breaks)) stop('Not enough break_names specified')
   if (!is.null(breaks) & !is.null(colors) & length(colors)<=length(breaks)) stop('Not enough colors specified')
+
+  if (!is.null(xlim)) {
+    xlim <- sort(xlim)
+    if (length(xlim)!=2) stop ('xlim must have exactly 2 elements')
+  }
 
   #Need breaks to be in order
   if (!is.null(breaks) & sum(breaks!=sort(breaks))>0) {
@@ -124,7 +130,8 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     start_mode = start,
     start_status = 'distribution',
     initial_trans = TRUE,
-    allow_mode_trans = allow_mode_trans
+    allow_mode_trans = allow_mode_trans,
+    xlim = xlim
   )
 
   # Define sizing policy
