@@ -155,15 +155,22 @@ HTMLWidgets.widget({
 				createDiscrete(distParams.cuts);
 				createContinuous(distParams.cuts);
 
+				let xDomain = [
+					Math.min(distParams.min, distParams.cuts[0]),
+					// Length -1 since we appended on a group at max+1
+					Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 1])
+				];
+				if (opts.xlim != null) {
+					xDomain = opts.xlim;
+				};
                 // set up scales
                 let xContinuous = d3
                     .scaleLinear()
-                    .domain([
-                        Math.min(distParams.min, distParams.cuts[0]),
-						// Lenght -1 since we appended on a group at max+1
-                        Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 1])
-                    ])
+                    .domain(xDomain)
                     .range([0, dims.width]);
+				
+				// Clamp - otherwise the xlim won't cut off sharply
+				xContinuous.clamp(true);
 
                 let xDiscrete = d3
                     .scaleBand()
