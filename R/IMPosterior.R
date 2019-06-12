@@ -21,7 +21,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
                         units = NULL, quantity = FALSE, xlab = NULL,
                         breaks=NULL, break_names = NULL, colors = NULL,
                         width = NULL, height = NULL,
-                        xlim = NULL,
+                        xlim = NULL, font_scale = 1,
                         elementId = NULL) {
   if(MME<0) stop("MME should be greater than 0")
   if (!is.null(breaks) & MME!=0) stop('MME and breaks cannot both be specified')
@@ -131,7 +131,8 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     start_status = 'distribution',
     initial_trans = TRUE,
     allow_mode_trans = allow_mode_trans,
-    xlim = xlim
+    xlim = xlim,
+    font_scale = font_scale
   )
 
   # Define sizing policy

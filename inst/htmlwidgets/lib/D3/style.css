@@ -13,7 +13,6 @@ g.tick line {
 }
 
 g.tick text {
-  font-size: 12px;
   fill: black;
 
 }
