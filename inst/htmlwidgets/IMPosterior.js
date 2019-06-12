@@ -168,7 +168,7 @@ HTMLWidgets.widget({
                     .scaleLinear()
                     .domain(xDomain)
                     .range([0, dims.width]);
-				
+
 				// Clamp - otherwise the xlim won't cut off sharply
 				xContinuous.clamp(true);
 
@@ -207,7 +207,7 @@ HTMLWidgets.widget({
                     .attr('transform', `rotate(-90) translate(${-dims.height/2},${-margin.left + 20})`)
                     .attr('dy', '.71em')
                     .style('text-anchor', 'middle')
-                    .style('font-size', 14 + 'px')
+                    .style('font-size', 14*opts.font_scale + 'px')
                     .text('Probability');
 
 				// Define x label, if desired
@@ -216,7 +216,7 @@ HTMLWidgets.widget({
                     .attr('class', 'x-axis-label')
                     .attr('transform', `translate(${dims.width/2},${dims.height + margin.bottom/2})`)
                     .style('text-anchor', 'middle')
-                    .style('font-size', 14 + 'px')
+                    .style('font-size', 14*opts.font_scale + 'px')
                     .text(opts.xlab||'');
 
 
@@ -224,12 +224,14 @@ HTMLWidgets.widget({
                 g
                     .append('g')
                     .attr('class', 'x axis')
+                    .style('font-size',12*opts.font_scale + 'px')
                     .attr('transform', 'translate(0,' + dims.height + ')')
                     .call(xAxis);
 
                 g
                     .append('g')
                     .attr('class', 'y axis')
+                    .style('font-size',12*opts.font_scale + 'px')
                     .call(yAxis);
 
                 // function to transition areas to bars
