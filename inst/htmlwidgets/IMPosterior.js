@@ -219,16 +219,37 @@ HTMLWidgets.widget({
                     .style('font-size', 14 + 'px')
                     .text(opts.xlab||'');
 
-        // Define title - may not actually show
-        let titleg = svg
-                    .append('g')
-                    .attr('transform', 'translate(' + margin.left + ',0)');
-
-          titleg.append('text')
-                .style('text-anchor','left')
-                .style('font-size', 14 + 'px')
-                .text('Prior Distribution');
-
+				// Proper case function
+				let str_proper = (str) => {
+					let first = str.substring(0,1).toUpperCase();
+					let rest = str.substring(1,9999).toLowerCase();
+					return(first + rest);
+				}
+				
+				// Define title - may not actually show
+				let titleg = svg
+							.append('g')
+							.attr('class','title')
+							.attr('transform', 'translate(' + margin.left + ',10)');
+				
+				var mode_title;
+				var subtitle;
+				if (opts.title) {
+					mode_title = titleg.append('text')
+						.style('text-anchor','left')
+						.style('alignment-baseline', 'hanging')
+						.style('font-size', 20 + 'px')
+						.style('opacity',1)
+						.text(`${str_proper(MODE)} Distribution`);
+						
+					sub_title = titleg.append('text')
+						.style('text-anchor','left')
+						.style('alignment-baseline', 'hanging')
+						.style('font-size', 20 + 'px')
+						.style('opacity',1)
+						.attr('dy','20px')
+						.text(opts.subtitle);
+				}
 
                 // create axes
                 g
@@ -469,6 +490,21 @@ HTMLWidgets.widget({
 					// Update mode and activate/deactivate button
 					MODE = to;
 					mode_button.classed('active',MODE=='posterior');
+					
+					// Fade out, change, fade back
+					if (opts.title) {
+						mode_title
+							.interrupt()
+							.style('opacity',1)
+							.transition()
+							.duration(duration/2)
+							.style('opacity',0)
+							.transition()
+							.delay(duration/2)
+							.duration(duration/2)
+							.text(`${str_proper(MODE)} Distribution`)
+							.style('opacity',1);
+					}
 
 					if (STATUS === 'discrete') {
                         areas
