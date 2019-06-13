@@ -241,13 +241,15 @@ HTMLWidgets.widget({
 						.style('font-size', 20 + 'px')
 						.style('opacity',1)
 						.text(`${str_proper(MODE)} Distribution`);
-						
+				}
+				
+				if (opts.subtitle != null) {
 					sub_title = titleg.append('text')
 						.style('text-anchor','left')
 						.style('alignment-baseline', 'hanging')
 						.style('font-size', 20 + 'px')
 						.style('opacity',1)
-						.attr('dy','20px')
+						.attr('dy',`${20*opts.title}px`)
 						.text(opts.subtitle);
 				}
 
