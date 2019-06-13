@@ -168,7 +168,7 @@ HTMLWidgets.widget({
                     .scaleLinear()
                     .domain(xDomain)
                     .range([0, dims.width]);
-				
+
 				// Clamp - otherwise the xlim won't cut off sharply
 				xContinuous.clamp(true);
 
@@ -218,6 +218,16 @@ HTMLWidgets.widget({
                     .style('text-anchor', 'middle')
                     .style('font-size', 14 + 'px')
                     .text(opts.xlab||'');
+
+        // Define title - may not actually show
+        let titleg = svg
+                    .append('g')
+                    .attr('transform', 'translate(' + margin.left + ',0)');
+
+          titleg.append('text')
+                .style('text-anchor','left')
+                .style('font-size', 14 + 'px')
+                .text('Prior Distribution');
 
 
                 // create axes
