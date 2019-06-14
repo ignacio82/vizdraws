@@ -234,23 +234,23 @@ HTMLWidgets.widget({
 				
 				var mode_title;
 				var subtitle;
-				if (opts.title) {
+				if (opts.display_mode_name) {
 					mode_title = titleg.append('text')
 						.style('text-anchor','left')
 						.style('alignment-baseline', 'hanging')
 						.style('font-size', 20 + 'px')
 						.style('opacity',1)
-						.text(`${str_proper(MODE)} Distribution`);
+						.text(`${str_proper(MODE)} ${STATUS=='discrete' ? 'Probability' : 'Distribution'}`);
 				}
 				
-				if (opts.subtitle != null) {
+				if (opts.title != null) {
 					sub_title = titleg.append('text')
 						.style('text-anchor','left')
 						.style('alignment-baseline', 'hanging')
 						.style('font-size', 20 + 'px')
 						.style('opacity',1)
-						.attr('dy',`${20*opts.title}px`)
-						.text(opts.subtitle);
+						.attr('dy',`${20*opts.display_mode_name}px`)
+						.text(opts.title);
 				}
 
                 // create axes
@@ -409,6 +409,22 @@ HTMLWidgets.widget({
 
                 // function to switch between bars and distribution
                 let toggle_status = (to, duration) => {
+					
+					// Fade out, change, fade back
+					if (opts.display_mode_name) {
+						mode_title
+							.interrupt()
+							.style('opacity',1)
+							.transition()
+							.duration(duration/2)
+							.style('opacity',0)
+							.transition()
+							.delay(duration/2)
+							.duration(duration/2)
+							.text(`${str_proper(MODE)} ${to=='discrete' ? 'Probability' : 'Distribution'}`)
+							.style('opacity',1);
+					}
+					
                     if (to === 'distribution') {
                         // update axes
                         updateYAxis(opts.dens, 0);
@@ -494,7 +510,7 @@ HTMLWidgets.widget({
 					mode_button.classed('active',MODE=='posterior');
 					
 					// Fade out, change, fade back
-					if (opts.title) {
+					if (opts.display_mode_name) {
 						mode_title
 							.interrupt()
 							.style('opacity',1)
@@ -504,7 +520,7 @@ HTMLWidgets.widget({
 							.transition()
 							.delay(duration/2)
 							.duration(duration/2)
-							.text(`${str_proper(MODE)} Distribution`)
+							.text(`${str_proper(MODE)} ${STATUS=='discrete' ? 'Probability' : 'Distribution'}`)
 							.style('opacity',1);
 					}
 
