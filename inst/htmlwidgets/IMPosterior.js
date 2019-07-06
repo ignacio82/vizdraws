@@ -29,11 +29,12 @@ HTMLWidgets.widget({
 				};
 
 				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
+				// Bottom and left margin scale with font size to accomodate larger scales/labels
                 margin = {
                     top: 10 + 100*button_dims.scale,
                     right: 20,
-                    bottom: 80,
-                    left: 70
+                    bottom: 20 + 60*opts.font_scale,
+                    left: 40 + 30*opts.font_scale
                 };
 
                 dims = {
@@ -207,7 +208,7 @@ HTMLWidgets.widget({
                     .attr('transform', `rotate(-90) translate(${-dims.height/2},${-margin.left + 20})`)
                     .attr('dy', '.71em')
                     .style('text-anchor', 'middle')
-                    .style('font-size', 14 + 'px')
+                    .style('font-size', 14*opts.font_scale + 'px')
                     .text('Probability');
 
 				// Define x label, if desired
@@ -216,7 +217,7 @@ HTMLWidgets.widget({
                     .attr('class', 'x-axis-label')
                     .attr('transform', `translate(${dims.width/2},${dims.height + margin.bottom/2})`)
                     .style('text-anchor', 'middle')
-                    .style('font-size', 14 + 'px')
+                    .style('font-size', 14*opts.font_scale + 'px')
                     .text(opts.xlab||'');
 
 				// Proper case function
@@ -257,12 +258,14 @@ HTMLWidgets.widget({
                 g
                     .append('g')
                     .attr('class', 'x axis')
+                    .style('font-size',12*opts.font_scale + 'px')
                     .attr('transform', 'translate(0,' + dims.height + ')')
                     .call(xAxis);
 
                 g
                     .append('g')
                     .attr('class', 'y axis')
+                    .style('font-size',12*opts.font_scale + 'px')
                     .call(yAxis);
 
                 // function to transition areas to bars
@@ -355,6 +358,7 @@ HTMLWidgets.widget({
                 let tooltip = d3
                     .tip()
                     .attr('class', 'd3-tip chart-data-tip')
+					.style('font-size',12*opts.font_scale + 'px')
                     .style('z-index',1050)
                     .offset([30, 0])
                     .direction('s')
