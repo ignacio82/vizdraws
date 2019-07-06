@@ -18,22 +18,32 @@ HTMLWidgets.widget({
                 // if width or height is 0 then use reasonable default - 400 for height, and height for width
                 height = height <= 0 ? 400 : height;
                 width = width <= 0 ? height : width;
-
-
+				
+				// Calculate how much space the titles will take up
+				const title_space = 23*opts.font_scale*((opts.title != '') + opts.display_mode_name);
+				console.log(`title space is ${title_space}`);
+				// Calculate the space the button would take up ignoring font size
+				const desired_button_size = 100*Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4);
+				console.log(`desired button size is ${desired_button_size}`);
+				// Use the larger 
+				const top_space = Math.max(title_space, desired_button_size);
+				
 				// Buttons scale between 40-80px, depending on height between 300 and 800 px
 				button_dims = {
-					scale: Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4),
+					scale: top_space/100,
 					width: 120,
 					height: 100,
 					buffer: 10
 				};
 
+				
 				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
+				// Top, bottom, and left margin scale with font size to accomodate larger scales/labels
                 margin = {
                     top: 10 + 100*button_dims.scale,
                     right: 20,
-                    bottom: 80,
-                    left: 70
+                    bottom: 20 + 60*opts.font_scale,
+                    left: 40 + 30*opts.font_scale
                 };
 
                 dims = {
@@ -207,7 +217,7 @@ HTMLWidgets.widget({
                     .attr('transform', `rotate(-90) translate(${-dims.height/2},${-margin.left + 20})`)
                     .attr('dy', '.71em')
                     .style('text-anchor', 'middle')
-                    .style('font-size', 14 + 'px')
+                    .style('font-size', 14*opts.font_scale + 'px')
                     .text('Probability');
 
 				// Define x label, if desired
@@ -216,7 +226,7 @@ HTMLWidgets.widget({
                     .attr('class', 'x-axis-label')
                     .attr('transform', `translate(${dims.width/2},${dims.height + margin.bottom/2})`)
                     .style('text-anchor', 'middle')
-                    .style('font-size', 14 + 'px')
+                    .style('font-size', 14*opts.font_scale + 'px')
                     .text(opts.xlab||'');
 
 				// Proper case function
@@ -238,18 +248,18 @@ HTMLWidgets.widget({
 					mode_title = titleg.append('text')
 						.style('text-anchor','left')
 						.style('alignment-baseline', 'hanging')
-						.style('font-size', 20 + 'px')
+						.style('font-size', 20*opts.font_scale + 'px')
 						.style('opacity',1)
 						.text(`${str_proper(MODE)} ${STATUS=='discrete' ? 'Probability' : 'Distribution'}`);
 				}
 				
-				if (opts.title != null) {
+				if (opts.title != '') {
 					sub_title = titleg.append('text')
 						.style('text-anchor','left')
 						.style('alignment-baseline', 'hanging')
-						.style('font-size', 20 + 'px')
+						.style('font-size', 20*opts.font_scale + 'px')
 						.style('opacity',1)
-						.attr('dy',`${20*opts.display_mode_name}px`)
+						.attr('dy',`${20*opts.display_mode_name*opts.font_scale}px`)
 						.text(opts.title);
 				}
 
@@ -257,12 +267,14 @@ HTMLWidgets.widget({
                 g
                     .append('g')
                     .attr('class', 'x axis')
+                    .style('font-size',12*opts.font_scale + 'px')
                     .attr('transform', 'translate(0,' + dims.height + ')')
                     .call(xAxis);
 
                 g
                     .append('g')
                     .attr('class', 'y axis')
+                    .style('font-size',12*opts.font_scale + 'px')
                     .call(yAxis);
 
                 // function to transition areas to bars
@@ -355,6 +367,7 @@ HTMLWidgets.widget({
                 let tooltip = d3
                     .tip()
                     .attr('class', 'd3-tip chart-data-tip')
+					.style('font-size',12*opts.font_scale + 'px')
                     .style('z-index',1050)
                     .offset([30, 0])
                     .direction('s')
