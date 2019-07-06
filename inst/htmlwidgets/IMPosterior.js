@@ -29,11 +29,12 @@ HTMLWidgets.widget({
 				};
 
 				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
+				// Bottom and left margin scale with font size to accomodate larger scales/labels
                 margin = {
                     top: 10 + 100*button_dims.scale,
                     right: 20,
-                    bottom: 80,
-                    left: 70
+                    bottom: 20 + 60*opts.font_scale,
+                    left: 40 + 30*opts.font_scale
                 };
 
                 dims = {
@@ -324,6 +325,7 @@ HTMLWidgets.widget({
                 let tooltip = d3
                     .tip()
                     .attr('class', 'd3-tip chart-data-tip')
+					.style('font-size',12*opts.font_scale + 'px')
                     .style('z-index',1050)
                     .offset([30, 0])
                     .direction('s')
