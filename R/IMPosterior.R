@@ -133,7 +133,7 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
     initial_trans = TRUE,
     allow_mode_trans = allow_mode_trans,
     xlim = xlim,
-    font_scale = font_scale
+    font_scale = font_scale,
     display_mode_name = display_mode_name,
     title = title
   )
