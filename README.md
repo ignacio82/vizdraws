@@ -2,8 +2,8 @@
 vizdraws
 ========
 
-vizdraws allows you to create interactive visualizations of draws from a
-prior and posterior distribution.
+**vizdraws** allows you to create interactive visualizations of draws
+from a prior and posterior distributions.
 
 Example
 -------
