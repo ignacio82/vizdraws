@@ -10,6 +10,7 @@ Description: Interactive visualization for the prior and posterior distribution.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+URL: http://github.com/ignacio82/vizdraws, http://ignacio82.github.io/vizdraws
 Imports: 
     dplyr,
     tidyr,
