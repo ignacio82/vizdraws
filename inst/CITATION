@@ -1,0 +1,11 @@
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
+         title = "{vizdraws}: Interactive visualization for the prior and posterior distribution",
+         author = c(person("Ignacio", "Martinez"),
+                    person("Dan", "Thal"),
+                    person("Linus", "Marco")),
+         year = year,
+         note = note,
+         url = "https://CRAN.R-project.org/package=vizdraws")
