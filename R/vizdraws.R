@@ -1,23 +1,34 @@
-#' @title IMPosterior
-#' @param prior draws from the prior distribution. This is an optional parameter but either this or posterior should be provided.
-#' @param posterior draws from the posterior distribution. This is an optional parameter but either this or prior should be provided.
-#' @param MME minimum meaninful effect. If not provided MME is set to zero.
+#' @title vizdraws
+#'
+#' @param prior draws from the prior distribution. This is an optional parameter but either this or posterior should be provided
+#' @param posterior draws from the posterior distribution. This is an optional parameter but either this or prior should be provided
+#' @param MME minimum meaninful effect. If not provided MME is set to zero
 #' @param threshold if the probability is greater than this threshold, you would feel confortable making a decision
-#' @param units optional arguement to specify the units of x. For example, dollars or applications.
+#' @param units optional arguement to specify the units of x. For example, dollars or applications
 #' @param colors colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")
 #' @param width width for shiny
 #' @param height height for shiny
-#' @param elementId elementID for shiny
-#' @return htmlwidget
+#' @param quantity defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect
+#' @param xlab defaults to \code{NULL}
+#' @param breaks defaults to \code{NULL}
+#' @param break_names defaults to \code{NULL}
+#' @param xlim defaults to \code{NULL}
+#' @param font_scale defaults to \code{1}
+#' @param display_mode_name defaults to \code{FALSE}
+#' @param title defaults to \code{''}
+#' @param elementId Use an explicit element ID for the widget
+#'   (rather than an automatically generated one).elementID for shiny
+#'
+#' @return A HTML widget object
 #' @export
 #' @examples
 #' if(interactive()){
 #' set.seed(9782)
-#' library(IMPosterior)
-#' IMPosterior(prior= rnorm(100000))
+#' library(vizdraws)
+#' vizdraws(prior= rnorm(100000))
 #'  }
 
-IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
+vizdraws <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
                         units = NULL, quantity = FALSE, xlab = NULL,
                         breaks=NULL, break_names = NULL, colors = NULL,
                         width = NULL, height = NULL,
@@ -146,40 +157,40 @@ IMPosterior <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NUL
   )
   # create widget
   htmlwidgets::createWidget(
-    name = 'IMPosterior',
+    name = 'vizdraws',
     opts,
     width = width,
     height = height,
-    package = 'IMPosterior',
+    package = 'vizdraws',
     elementId = elementId,
     sizingPolicy = sizingPolicy
   )
 }
 
-#' Shiny bindings for IMPosterior
+#' Shiny bindings for vizdraws
 #'
-#' Output and render functions for using IMPosterior within Shiny
+#' Output and render functions for using vizdraws within Shiny
 #' applications and interactive Rmd documents.
 #'
 #' @param outputId output variable to read from
 #' @param width,height Must be a valid CSS unit (like \code{'100\%'},
 #'   \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
 #'   string and have \code{'px'} appended.
-#' @param expr An expression that generates a IMPosterior
+#' @param expr An expression that generates a vizdraws
 #' @param env The environment in which to evaluate \code{expr}.
 #' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
 #'   is useful if you want to save an expression in a variable.
 #'
-#' @name IMPosterior-shiny
+#' @name vizdraws-shiny
 #'
 #' @export
-IMPosteriorOutput <- function(outputId, width = '100%', height = '100%'){
-  htmlwidgets::shinyWidgetOutput(outputId, 'IMPosterior', width, height, package = 'IMPosterior')
+vizdrawsOutput <- function(outputId, width = '100%', height = '100%'){
+  htmlwidgets::shinyWidgetOutput(outputId, 'vizdraws', width, height, package = 'vizdraws')
 }
 
-#' @rdname IMPosterior-shiny
+#' @rdname vizdraws-shiny
 #' @export
-renderIMPosterior <- function(expr, env = parent.frame(), quoted = FALSE) {
+rendervizdraws <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
-  htmlwidgets::shinyRenderWidget(expr, IMPosteriorOutput, env, quoted = TRUE)
+  htmlwidgets::shinyRenderWidget(expr, vizdrawsOutput, env, quoted = TRUE)
 }
