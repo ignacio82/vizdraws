@@ -1,0 +1,57 @@
+---
+title: "Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Draws from the prior distribution
+
+```{r prior, eval=FALSE}
+library(vizdraws)
+set.seed(1982)
+vizdraws(prior = rnorm(n = 10000, mean = 0, sd = 1), xlim = c(-3,3))
+
+```
+
+<div align="center">
+   <iframe style="min-height:50vh" src="https://home.ignacio.website//vizdraws/prior.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
+</div>
+
+## Updating the prior
+
+```{r posterior, eval=FALSE}
+vizdraws(prior = rnorm(n = 10000, mean = 0, sd = 1),
+                       posterior = rnorm(n = 10000, mean = 0.3, sd = 0.5),
+                       xlim = c(-3,3))
+```
+
+<div align="center">
+   <iframe style="min-height:50vh" src="https://home.ignacio.website//vizdraws/prior2posterior.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
+</div>
+
+## Meanimum meaningful effect
+
+```{r mme, eval=FALSE}
+vizdraws(prior = rnorm(n = 10000, mean = 0, sd = 1),
+                       posterior = rnorm(n = 10000, mean = 0.3, sd = 0.5),
+                       xlim = c(-3,3), 
+                       MME = 0.1)
+
+```
+
+<div align="center">
+   <iframe style="min-height:50vh" src="https://home.ignacio.website//vizdraws/mme.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
+</div>
+
+
