@@ -3,7 +3,7 @@
  */
 
 HTMLWidgets.widget({
-    name: 'IMPosterior',
+    name: 'vizdraws',
     type: 'output',
 
     factory: function(el, width, height) {
@@ -18,16 +18,16 @@ HTMLWidgets.widget({
                 // if width or height is 0 then use reasonable default - 400 for height, and height for width
                 height = height <= 0 ? 400 : height;
                 width = width <= 0 ? height : width;
-				
+
 				// Calculate how much space the titles will take up
 				const title_space = 23*opts.font_scale*((opts.title != '') + opts.display_mode_name);
 				console.log(`title space is ${title_space}`);
 				// Calculate the space the button would take up ignoring font size
 				const desired_button_size = 100*Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4);
 				console.log(`desired button size is ${desired_button_size}`);
-				// Use the larger 
+				// Use the larger
 				const top_space = Math.max(title_space, desired_button_size);
-				
+
 				// Buttons scale between 40-80px, depending on height between 300 and 800 px
 				button_dims = {
 					scale: top_space/100,
@@ -36,7 +36,7 @@ HTMLWidgets.widget({
 					buffer: 10
 				};
 
-				
+
 				// Top margin fits the buttons. Always needs 10px buffer, plus height of button
 				// Top, bottom, and left margin scale with font size to accomodate larger scales/labels
                 margin = {
@@ -235,13 +235,13 @@ HTMLWidgets.widget({
 					let rest = str.substring(1,9999).toLowerCase();
 					return(first + rest);
 				}
-				
+
 				// Define title - may not actually show
 				let titleg = svg
 							.append('g')
 							.attr('class','title')
 							.attr('transform', 'translate(' + margin.left + ',10)');
-				
+
 				var mode_title;
 				var subtitle;
 				if (opts.display_mode_name) {
@@ -252,7 +252,7 @@ HTMLWidgets.widget({
 						.style('opacity',1)
 						.text(`${str_proper(MODE)} ${STATUS=='discrete' ? 'Probability' : 'Distribution'}`);
 				}
-				
+
 				if (opts.title != '') {
 					sub_title = titleg.append('text')
 						.style('text-anchor','left')
@@ -422,7 +422,7 @@ HTMLWidgets.widget({
 
                 // function to switch between bars and distribution
                 let toggle_status = (to, duration) => {
-					
+
 					// Fade out, change, fade back
 					if (opts.display_mode_name) {
 						mode_title
@@ -437,7 +437,7 @@ HTMLWidgets.widget({
 							.text(`${str_proper(MODE)} ${to=='discrete' ? 'Probability' : 'Distribution'}`)
 							.style('opacity',1);
 					}
-					
+
                     if (to === 'distribution') {
                         // update axes
                         updateYAxis(opts.dens, 0);
@@ -521,7 +521,7 @@ HTMLWidgets.widget({
 					// Update mode and activate/deactivate button
 					MODE = to;
 					mode_button.classed('active',MODE=='posterior');
-					
+
 					// Fade out, change, fade back
 					if (opts.display_mode_name) {
 						mode_title
