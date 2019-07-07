@@ -22,7 +22,8 @@ remotes::install_github('ignacio82/vizdraws')
 Example
 -------
 
-This is a basic example which shows you how to solve a common problem:
+This is a example which shows you how to how to visualize the transition
+from the prior to the posterior:
 
 ``` r
 library(vizdraws)
