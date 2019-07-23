@@ -2,6 +2,7 @@ parse_prior <- function(prior = NULL) {
   if (is.null(prior) | is.numeric(prior)) {
     return(prior)
   } else if (is.character(prior)) {
+    prior <- stringr::str_to_lower(prior)
     #Check that it matches one of the distribution options
     valid_distns <- list(n = qnorm, normal = qnorm, unif = qunif, uniform = qunif, beta = qbeta, gamma = qgamma)
     #These take 2 options
