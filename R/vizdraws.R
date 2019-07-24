@@ -42,6 +42,8 @@ vizdraws <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
   if (!is.null(breaks) & !is.null(break_names) & length(break_names)<=length(breaks)) stop('Not enough break_names specified')
   if (!is.null(breaks) & !is.null(colors) & length(colors)<=length(breaks)) stop('Not enough colors specified')
 
+  prior <- parse_prior(prior)
+
   if (!is.null(xlim)) {
     xlim <- sort(xlim)
     if (length(xlim)!=2) stop ('xlim must have exactly 2 elements')
