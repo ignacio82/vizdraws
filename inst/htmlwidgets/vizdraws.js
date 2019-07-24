@@ -21,10 +21,8 @@ HTMLWidgets.widget({
 
 				// Calculate how much space the titles will take up
 				const title_space = 23*opts.font_scale*((opts.title != '') + opts.display_mode_name);
-				console.log(`title space is ${title_space}`);
 				// Calculate the space the button would take up ignoring font size
 				const desired_button_size = 100*Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4);
-				console.log(`desired button size is ${desired_button_size}`);
 				// Use the larger
 				const top_space = Math.max(title_space, desired_button_size);
 
