@@ -21,10 +21,8 @@ HTMLWidgets.widget({
 
 				// Calculate how much space the titles will take up
 				const title_space = 23*opts.font_scale*((opts.title != '') + opts.display_mode_name);
-				console.log(`title space is ${title_space}`);
 				// Calculate the space the button would take up ignoring font size
 				const desired_button_size = 100*Math.max(Math.min(1,0.4+0.4*(height-300)/500),0.4);
-				console.log(`desired button size is ${desired_button_size}`);
 				// Use the larger
 				const top_space = Math.max(title_space, desired_button_size);
 
@@ -62,7 +60,7 @@ HTMLWidgets.widget({
 
                 const distParams = {
                     min: d3.min(opts.dens, d => d.x),
-                    max: d3.max(opts.dens, d =>  d.x)
+                    max: d3.max(opts.dens, d => d.x)
                 };
 
 				// If no MME or breaks are passed, R will pass a single value break, so convert to array
@@ -167,8 +165,8 @@ HTMLWidgets.widget({
 
 				let xDomain = [
 					Math.min(distParams.min, distParams.cuts[0]),
-					// Length -1 since we appended on a group at max+1
-					Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 1])
+					// Length - 2 since that is the last actual cut. We appended on a group at max+1
+					Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 2])
 				];
 				if (opts.xlim != null) {
 					xDomain = opts.xlim;
@@ -181,7 +179,7 @@ HTMLWidgets.widget({
 
 				// Clamp - otherwise the xlim won't cut off sharply
 				xContinuous.clamp(true);
-
+				
                 let xDiscrete = d3
                     .scaleBand()
                     .domain(dataDiscrete.map(d => d.x))
@@ -646,7 +644,7 @@ HTMLWidgets.widget({
 							toggle_mode('posterior',transDuration);
 						}, 1000);
 						setTimeout(() => {
-							toggle_status('discrete',transDuration);
+							toggle_status('discrete',transDuration);							
 						}, 2000);
 					} else {
 						setTimeout(() => {
