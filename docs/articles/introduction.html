@@ -90,32 +90,30 @@
 <div id="draws-from-the-prior-distribution" class="section level2">
 <h2 class="hasAnchor">
 <a href="#draws-from-the-prior-distribution" class="anchor"></a>Draws from the prior distribution</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(vizdraws)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">1982</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="../reference/vizdraws.html">vizdraws</a></span>(<span class="dt">prior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>), <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>))</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(vizdraws)
+<span class="kw"><a href="../reference/vizdraws.html">vizdraws</a></span>(<span class="dt">prior =</span> <span class="st">'normal(0.05, 0.2)'</span>)</code></pre></div>
 <div align="center">
-<p><iframe style="min-height:50vh" src="https://home.ignacio.website//vizdraws/prior.html" frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe></p>
+<p><iframe style="min-height:50vh" src="https://home.ignacio.website/vizdraws/prior.html" frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe></p>
 </div>
 </div>
 <div id="updating-the-prior" class="section level2">
 <h2 class="hasAnchor">
 <a href="#updating-the-prior" class="anchor"></a>Updating the prior</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="../reference/vizdraws.html">vizdraws</a></span>(<span class="dt">prior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">                       <span class="dt">posterior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="fl">0.3</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>),</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">                       <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>))</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/vizdraws.html">vizdraws</a></span>(<span class="dt">prior =</span> <span class="st">'normal(0.05, 0.2)'</span>,
+               <span class="dt">posterior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="fl">0.3</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>))</code></pre></div>
 <div align="center">
-<p><iframe style="min-height:50vh" src="https://home.ignacio.website//vizdraws/prior2posterior.html" frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe></p>
+<p><iframe style="min-height:50vh" src="https://home.ignacio.website/vizdraws/prior2posterior.html" frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe></p>
 </div>
 </div>
 <div id="meanimum-meaningful-effect" class="section level2">
 <h2 class="hasAnchor">
 <a href="#meanimum-meaningful-effect" class="anchor"></a>Meanimum meaningful effect</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="../reference/vizdraws.html">vizdraws</a></span>(<span class="dt">prior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">                       <span class="dt">posterior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="fl">0.3</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>),</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">                       <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>), </a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">                       <span class="dt">MME =</span> <span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/vizdraws.html">vizdraws</a></span>(<span class="dt">prior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>),
+         <span class="dt">posterior =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Normal">rnorm</a></span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="fl">0.3</span>, <span class="dt">sd =</span> <span class="fl">0.5</span>),
+         <span class="dt">xlim =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>), 
+         <span class="dt">MME =</span> <span class="fl">0.1</span>)</code></pre></div>
 <div align="center">
-<p><iframe style="min-height:50vh" src="https://home.ignacio.website//vizdraws/mme.html" frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe></p>
+<p><iframe style="min-height:50vh" src="https://home.ignacio.website/vizdraws/mme.html" frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe></p>
 </div>
 </div>
   </div>
