@@ -1,6 +1,6 @@
 #' @title vizdraws
 #'
-#' @param prior draws from the prior distribution. This is an optional parameter but either this or posterior should be provided
+#' @param prior prior ditribution or draws from it. Currenly `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided
 #' @param posterior draws from the posterior distribution. This is an optional parameter but either this or prior should be provided
 #' @param MME minimum meaninful effect. If not provided MME is set to zero
 #' @param threshold if the probability is greater than this threshold, you would feel confortable making a decision

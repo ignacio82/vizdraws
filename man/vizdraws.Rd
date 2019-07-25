@@ -11,7 +11,7 @@ vizdraws(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
   title = "", elementId = NULL)
 }
 \arguments{
-\item{prior}{draws from the prior distribution. This is an optional parameter but either this or posterior should be provided}
+\item{prior}{prior ditribution or draws from it. Currenly `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided}
 
 \item{posterior}{draws from the posterior distribution. This is an optional parameter but either this or prior should be provided}
 
