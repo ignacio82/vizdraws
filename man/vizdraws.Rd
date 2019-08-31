@@ -8,7 +8,7 @@ vizdraws(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
   units = NULL, quantity = FALSE, xlab = NULL, breaks = NULL,
   break_names = NULL, colors = NULL, width = NULL, height = NULL,
   xlim = NULL, font_scale = 1, display_mode_name = FALSE,
-  title = "", elementId = NULL)
+  title = "", stop_trans = FALSE, elementId = NULL)
 }
 \arguments{
 \item{prior}{prior ditribution or draws from it. Currenly `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided}
@@ -42,6 +42,8 @@ vizdraws(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
 \item{display_mode_name}{defaults to \code{FALSE}}
 
 \item{title}{defaults to \code{''}}
+
+\item{stop_trans}{defaults to \code{FALSE}. When set to true, initial transition stops at posterior density.}
 
 \item{elementId}{Use an explicit element ID for the widget
 (rather than an automatically generated one).elementID for shiny}
