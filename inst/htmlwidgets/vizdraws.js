@@ -179,7 +179,7 @@ HTMLWidgets.widget({
 
 				// Clamp - otherwise the xlim won't cut off sharply
 				xContinuous.clamp(true);
-				
+
                 let xDiscrete = d3
                     .scaleBand()
                     .domain(dataDiscrete.map(d => d.x))
@@ -643,9 +643,11 @@ HTMLWidgets.widget({
 						setTimeout(() => {
 							toggle_mode('posterior',transDuration);
 						}, 1000);
-						setTimeout(() => {
-							toggle_status('discrete',transDuration);							
-						}, 2000);
+						if (!opts.stop_trans) {
+  						setTimeout(() => {
+  							toggle_status('discrete',transDuration);
+  						}, 2000);
+						}
 					} else {
 						setTimeout(() => {
 							toggle_status('discrete',transDuration);

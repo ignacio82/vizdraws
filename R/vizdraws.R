@@ -16,6 +16,7 @@
 #' @param font_scale defaults to \code{1}
 #' @param display_mode_name defaults to \code{FALSE}
 #' @param title defaults to \code{''}
+#' @param stop_trans defaults to \code{FALSE}. When set to true, initial transition stops at posterior density.
 #' @param elementId Use an explicit element ID for the widget
 #'   (rather than an automatically generated one).elementID for shiny
 #'
@@ -34,6 +35,7 @@ vizdraws <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
                         width = NULL, height = NULL,
                         xlim = NULL, font_scale = 1,
                         display_mode_name = FALSE, title = '',
+                        stop_trans = FALSE,
                         elementId = NULL) {
   if(MME<0) stop("MME should be greater than 0")
   if (!is.null(breaks) & MME!=0) stop('MME and breaks cannot both be specified')
@@ -144,6 +146,7 @@ vizdraws <- function(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
     start_mode = start,
     start_status = 'distribution',
     initial_trans = TRUE,
+    stop_trans = stop_trans,
     allow_mode_trans = allow_mode_trans,
     xlim = xlim,
     font_scale = font_scale,
