@@ -4,11 +4,26 @@
 \alias{vizdraws}
 \title{vizdraws}
 \usage{
-vizdraws(prior = NULL, posterior = NULL, MME = 0, threshold = NULL,
-  units = NULL, quantity = FALSE, xlab = NULL, breaks = NULL,
-  break_names = NULL, colors = NULL, width = NULL, height = NULL,
-  xlim = NULL, font_scale = 1, display_mode_name = FALSE,
-  title = "", stop_trans = FALSE, elementId = NULL)
+vizdraws(
+  prior = NULL,
+  posterior = NULL,
+  MME = 0,
+  threshold = NULL,
+  units = NULL,
+  quantity = FALSE,
+  xlab = NULL,
+  breaks = NULL,
+  break_names = NULL,
+  colors = NULL,
+  width = NULL,
+  height = NULL,
+  xlim = NULL,
+  font_scale = 1,
+  display_mode_name = FALSE,
+  title = "",
+  stop_trans = FALSE,
+  elementId = NULL
+)
 }
 \arguments{
 \item{prior}{prior ditribution or draws from it. Currenly `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided}
