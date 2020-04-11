@@ -26,15 +26,15 @@ vizdraws(
 )
 }
 \arguments{
-\item{prior}{prior ditribution or draws from it. Currenly `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided}
+\item{prior}{prior distribution or draws from it. Currently `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided}
 
 \item{posterior}{draws from the posterior distribution. This is an optional parameter but either this or prior should be provided}
 
-\item{MME}{minimum meaninful effect. If not provided MME is set to zero}
+\item{MME}{minimum meaningful effect. If not provided MME is set to zero}
 
-\item{threshold}{if the probability is greater than this threshold, you would feel confortable making a decision}
+\item{threshold}{if the probability is greater than this threshold, you would feel comfortable making a decision}
 
-\item{units}{optional arguement to specify the units of x. For example, dollars or applications}
+\item{units}{optional argument to specify the units of x. For example, dollars or applications}
 
 \item{quantity}{defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect}
 
