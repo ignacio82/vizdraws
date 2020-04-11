@@ -1,10 +1,10 @@
 #' @title vizdraws
 #'
-#' @param prior prior ditribution or draws from it. Currenly `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided
+#' @param prior prior distribution or draws from it. Currently `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided
 #' @param posterior draws from the posterior distribution. This is an optional parameter but either this or prior should be provided
-#' @param MME minimum meaninful effect. If not provided MME is set to zero
-#' @param threshold if the probability is greater than this threshold, you would feel confortable making a decision
-#' @param units optional arguement to specify the units of x. For example, dollars or applications
+#' @param MME minimum meaningful effect. If not provided MME is set to zero
+#' @param threshold if the probability is greater than this threshold, you would feel comfortable making a decision
+#' @param units optional argument to specify the units of x. For example, dollars or applications
 #' @param colors colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")
 #' @param width width for shiny
 #' @param height height for shiny
