@@ -1,12 +1,16 @@
 Package: vizdraws
 Title: Visualize Draws from the Prior and Posterior Distributions
 Version: 1.0.0
-Date: 2020-04-1
+Date: 2020-04-15
 Authors@R: c(
     person("Ignacio", "Martinez", email = "ignacio@protonmail.com", role = c("aut", "cre")),
     person("Linus", "Marco", email = "lmarco163@gmail.com", role = "aut"),
     person("Dan", "Thal", email = "DThal@mathematica-mpr.com", role = "aut"))
-Description: Interactive visualization for the prior and posterior distribution.
+Description: Interactive visualization for Bayesian prior and posterior distributions. 
+             When both distributions are providers the animation shows a transition from 
+             prior to posterior. Finally, the animation splits the distribution using the provided 
+             `breaks` into bars that show the probability for each region. 
+             If no `breaks` are providers it will use zero by default.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
