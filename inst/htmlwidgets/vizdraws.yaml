@@ -1,9 +1,9 @@
 # (uncomment to add a dependency)
  dependencies:
   - name: D3
-    version: 4
+    version: 5
     src: htmlwidgets/lib/D3
-    script: d3.v4.js
+    script: d3.v5.min.js
     stylesheet: style.css
   - name: d3tip
     version: 0.7.1
