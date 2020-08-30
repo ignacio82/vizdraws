@@ -35,7 +35,7 @@ set.seed(9782)
 vizdraws(prior = rnorm(10000, 0, 1), posterior = rnorm(10000, 1.1, 0.5), MME = 0.5, threshold = 0.8)
 ```
 
-![](https://home.ignacio.website/Posterior.gif)
+![](https://ignacio.martinez.fyi/Posterior.gif)
 
 ### Notes
 
