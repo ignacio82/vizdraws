@@ -5,9 +5,9 @@ vizdraws
 **vizdraws** creates interactive visualizations using draws from a prior
 and posterior distributions.
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/vizdraws?color=blue)](http://cran.r-project.org/package=vizdraws)
-[![Downloads](http://cranlogs.r-pkg.org/badges/vizdraws?color=blue)](http://cran.rstudio.com/package=vizdraws)
-[![Downloads\_grand-total](http://cranlogs.r-pkg.org/badges/grand-total/vizdraws?color=blue)](http://cran.rstudio.com/package=vizdraws)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vizdraws?color=blue)](https://cran.r-project.org/package=vizdraws)
+[![Downloads](https://cranlogs.r-pkg.org/badges/vizdraws?color=blue)](https://cran.rstudio.com/package=vizdraws)
+[![Downloads\_grand-total](https://cranlogs.r-pkg.org/badges/grand-total/vizdraws?color=blue)](https://cran.rstudio.com/package=vizdraws)
 
 Installation
 ------------
