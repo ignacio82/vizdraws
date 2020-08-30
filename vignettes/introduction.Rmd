@@ -24,7 +24,7 @@ vizdraws(prior = 'normal(0.05, 0.2)')
 ```
 
 <div align="center">
-   <iframe style="min-height:50vh" src="https://home.ignacio.website/vizdraws/prior.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
+   <iframe style="min-height:50vh" src="https://ignacio.martinez.fyi/vizdraws/prior.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
 </div>
 
 ## Updating the prior
@@ -35,7 +35,7 @@ vizdraws(prior = 'normal(0.05, 0.2)',
 ```
 
 <div align="center">
-   <iframe style="min-height:50vh" src="https://home.ignacio.website/vizdraws/prior2posterior.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
+   <iframe style="min-height:50vh" src="https://ignacio.martinez.fyi/vizdraws/prior2posterior.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
 </div>
 
 ## Minimum meaningful effect
@@ -49,7 +49,7 @@ vizdraws(prior = rnorm(n = 10000, mean = 0, sd = 1),
 ```
 
 <div align="center">
-   <iframe style="min-height:50vh" src="https://home.ignacio.website/vizdraws/mme.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
+   <iframe style="min-height:50vh" src="https://ignacio.martinez.fyi/vizdraws/mme.html"  frameborder="0" scrolling="no" seamless="seamless" width="100%"></iframe>
 </div>
 
 
