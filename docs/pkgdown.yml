@@ -3,5 +3,6 @@ pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   introduction: introduction.html
-last_built: 2020-09-12T02:09Z
+  shiny-example: shiny-example.html
+last_built: 2020-09-13T05:18Z
 

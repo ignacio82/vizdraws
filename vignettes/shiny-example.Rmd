@@ -1,0 +1,49 @@
+---
+title: "Shiny"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Shiny}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## [A very simple shiny app](https://ignacio.shinyapps.io/shiny_vizdraws/)
+
+```{r setup, eval=FALSE}
+library(shiny)
+library(vizdraws)
+
+ui <- fluidPage(# Application title
+  titlePanel("vizdraws"),
+  
+  fluidRow(vizdrawsOutput('chart')))
+
+server <- function(input, output) {
+  output$chart <- rendervizdraws({
+    vizdraws(
+      prior = "N(0,1)",
+      posterior = rnorm(1000, mean = 0.2, sd = 0.1),
+      MME = 0.1,
+      threshold = 0.7,
+      display_mode_name = TRUE,
+      title = "Shiny Example"
+    )
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+```
+
+```{r iframe, echo=FALSE, out.width="100%"}
+knitr::include_url("https://ignacio.shinyapps.io/shiny_vizdraws/", 
+                   height = "450px")
+```
+
