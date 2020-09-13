@@ -15,7 +15,7 @@ function factory(el, width, height) {
 
       // Calculate how much space the titles will take up
       const title_space =
-          23 * opts.font_scale * ((opts.title != '') + opts.display_mode_name);
+          23 * opts.font_scale * ((opts.title !== '') + opts.display_mode_name);
       // Calculate the space the button would take up ignoring font size
       const desired_button_size =
           100 * Math.max(Math.min(1, 0.4 + 0.4 * (height - 300) / 500), 0.4);
@@ -108,7 +108,7 @@ function factory(el, width, height) {
         cuts.forEach((c, i) => {
           // Figure out text
           let range_suffix = '';
-          if (i == 0)
+          if (i === 0)
             range_suffix = `less than ${Math.round(100 * c) / 100}`;
             else if (i == cuts.length - 1) range_suffix =
                 `more than ${Math.round(100 * cuts[i - 1]) / 100}`;
@@ -178,7 +178,7 @@ function factory(el, width, height) {
         // at max+1
         Math.max(distParams.max, distParams.cuts[distParams.cuts.length - 2])
       ];
-      if (opts.xlim != null) {
+      if (opts.xlim !== null) {
         xDomain = opts.xlim;
       }
       // set up scales
@@ -201,6 +201,7 @@ function factory(el, width, height) {
           'transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
       // define axes
+
       let xAxis = d3.axisBottom().scale(xDiscrete);
 
       let yAxis = d3.axisLeft().scale(y).ticks(10).tickFormat(d3.format('.0%'));
@@ -254,7 +255,7 @@ function factory(el, width, height) {
                     STATUS == 'discrete' ? 'Probability' : 'Distribution'}`);
       }
 
-      if (opts.title != '') {
+      if (opts.title !== '') {
         var sub_title =
             titleg.append('text')
                 .style('text-anchor', 'left')
@@ -663,7 +664,7 @@ function factory(el, width, height) {
             .append('svg')
             .attr('width', 600)
             .attr('height', 400);
-      return this.draw(opts, svg)
+      return this.draw(opts, svg);
     },
     renderValue: function(opts) {
       console.log('render w,h', width, height);
