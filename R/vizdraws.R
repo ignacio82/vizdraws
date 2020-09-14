@@ -17,6 +17,7 @@
 #' @param display_mode_name defaults to \code{FALSE}
 #' @param title defaults to \code{''}
 #' @param stop_trans defaults to \code{FALSE}. When set to true, initial transition stops at posterior density.
+#' @param percentage defaults to \code{FALSE}. When set to true, the x axis tick format will be set to percentage.
 #' @param elementId Use an explicit element ID for the widget
 #'   (rather than an automatically generated one).elementID for shiny
 #'
@@ -47,6 +48,7 @@ vizdraws <-
            display_mode_name = FALSE,
            title = '',
            stop_trans = FALSE,
+           percentage = FALSE,
            elementId = NULL) {
     if (MME < 0)
       stop("MME should be greater than 0")
@@ -227,6 +229,7 @@ vizdraws <-
       start_status = 'distribution',
       initial_trans = TRUE,
       stop_trans = stop_trans,
+      percentage = percentage,
       allow_mode_trans = allow_mode_trans,
       xlim = xlim,
       font_scale = font_scale,
