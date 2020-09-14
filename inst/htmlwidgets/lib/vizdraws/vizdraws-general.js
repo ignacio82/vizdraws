@@ -408,9 +408,19 @@ function factory(el, width, height) {
       // function to update x axis
       let updateXAxis = (type, duration) => {
         if (type === 'continuous') {
-          xAxis.scale(xContinuous);
+          if(opts.percentage){
+            xAxis.scale(xContinuous).tickFormat(d3.format('.0%'));
+          }else{
+            xAxis.scale(xContinuous);
+          }
         } else {
-          xAxis.scale(xDiscrete);
+          if(opts.percentage){
+            xAxis.scale(xDiscrete).tickFormat(function (d) {
+            return d;
+          });
+          }else{
+            xAxis.scale(xDiscrete);
+          }
         }
 
         g.select('.x').transition().duration(duration).call(xAxis);

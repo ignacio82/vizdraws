@@ -22,6 +22,7 @@ vizdraws(
   display_mode_name = FALSE,
   title = "",
   stop_trans = FALSE,
+  percentage = FALSE,
   elementId = NULL
 )
 }
@@ -59,6 +60,8 @@ vizdraws(
 \item{title}{defaults to \code{''}}
 
 \item{stop_trans}{defaults to \code{FALSE}. When set to true, initial transition stops at posterior density.}
+
+\item{percentage}{defaults to \code{FALSE}. When set to true, the x axis tick format will be set to percentage.}
 
 \item{elementId}{Use an explicit element ID for the widget
 (rather than an automatically generated one).elementID for shiny}
