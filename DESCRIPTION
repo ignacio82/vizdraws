@@ -14,7 +14,7 @@ Description: Interactive visualization for Bayesian prior and posterior distribu
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: http://github.com/ignacio82/vizdraws, http://ignacio82.github.io/vizdraws
+URL: https://github.com/ignacio82/vizdraws/, https://vizdraws.martinez.fyi/
 Imports: 
     dplyr,
     tidyr,
