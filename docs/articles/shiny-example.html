@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">vizdraws</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -68,7 +68,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="http://github.com/ignacio82/vizdraws/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -82,7 +82,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="shiny-example_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Shiny</h1>
@@ -99,44 +99,45 @@
 <h2 class="hasAnchor">
 <a href="#a-very-simple-shiny-app" class="anchor"></a><a href="https://ignacio.shinyapps.io/shiny_vizdraws/">A very simple shiny app</a>
 </h2>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shiny</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">shinydashboard</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">glue</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://shiny.rstudio.com">shiny</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">shinydashboard</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidyverse/glue">glue</a></span><span class="op">)</span>
 
-<span class="no">ui</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shinydashboard/man/dashboardPage.html">dashboardPage</a></span>(
-  <span class="fu"><a href="https://rdrr.io/pkg/shinydashboard/man/dashboardHeader.html">dashboardHeader</a></span>(),
-  <span class="fu"><a href="https://rdrr.io/pkg/shinydashboard/man/dashboardSidebar.html">dashboardSidebar</a></span>(
-    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/numericInput.html">numericInput</a></span>(
+<span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">dashboardPage</span><span class="op">(</span>
+  <span class="fu">dashboardHeader</span><span class="op">(</span><span class="op">)</span>,
+  <span class="fu">dashboardSidebar</span><span class="op">(</span>
+    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/numericInput.html">numericInput</a></span><span class="op">(</span>
       <span class="st">"prior_mean"</span>,
-      <span class="kw">label</span> <span class="kw">=</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reexports.html">h3</a></span>(<span class="st">"Prior Mean"</span>),
-      <span class="kw">value</span> <span class="kw">=</span> <span class="fl">0</span>,
-      <span class="kw">step</span> <span class="kw">=</span> <span class="fl">0.1</span>
-    ),
-    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/numericInput.html">numericInput</a></span>(
+      label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h3</a></span><span class="op">(</span><span class="st">"Prior Mean"</span><span class="op">)</span>,
+      value <span class="op">=</span> <span class="fl">0</span>,
+      step <span class="op">=</span> <span class="fl">0.1</span>
+    <span class="op">)</span>,
+    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/numericInput.html">numericInput</a></span><span class="op">(</span>
       <span class="st">"prior_sd"</span>,
-      <span class="kw">label</span> <span class="kw">=</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reexports.html">h3</a></span>(<span class="st">"Prior SD"</span>),
-      <span class="kw">value</span> <span class="kw">=</span> <span class="fl">1</span>,
-      <span class="kw">min</span> <span class="kw">=</span> <span class="fl">0.01</span>,
-      <span class="kw">step</span> <span class="kw">=</span> <span class="fl">0.1</span>
-    )
-  ),
-  <span class="fu"><a href="https://rdrr.io/pkg/shinydashboard/man/dashboardBody.html">dashboardBody</a></span>(<span class="kw pkg">vizdraws</span><span class="kw ns">::</span><span class="fu"><a href="../reference/vizdraws-shiny.html">vizdrawsOutput</a></span>(<span class="st">'chart'</span>))
-)
+      label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h3</a></span><span class="op">(</span><span class="st">"Prior SD"</span><span class="op">)</span>,
+      value <span class="op">=</span> <span class="fl">1</span>,
+      min <span class="op">=</span> <span class="fl">0.01</span>,
+      step <span class="op">=</span> <span class="fl">0.1</span>
+    <span class="op">)</span>
+  <span class="op">)</span>,
+  <span class="fu">dashboardBody</span><span class="op">(</span><span class="fu">vizdraws</span><span class="fu">::</span><span class="fu"><a href="../reference/vizdraws-shiny.html">vizdrawsOutput</a></span><span class="op">(</span><span class="st">'chart'</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span>
 
-<span class="no">server</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">input</span>, <span class="no">output</span>) {
-  <span class="no">output</span>$<span class="no">chart</span> <span class="kw">&lt;-</span> <span class="kw pkg">vizdraws</span><span class="kw ns">::</span><span class="fu"><a href="../reference/vizdraws-shiny.html">rendervizdraws</a></span>({
-    <span class="kw pkg">vizdraws</span><span class="kw ns">::</span><span class="fu"><a href="../reference/vizdraws.html">vizdraws</a></span>(
-      <span class="kw">prior</span> <span class="kw">=</span> <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span>(<span class="st">"N({input$prior_mean},{input$prior_sd})"</span>),
-      <span class="kw">posterior</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">1000</span>, <span class="kw">mean</span> <span class="kw">=</span> <span class="fl">0.2</span>, <span class="kw">sd</span> <span class="kw">=</span> <span class="fl">0.1</span>),
-      <span class="kw">MME</span> <span class="kw">=</span> <span class="fl">0.1</span>,
-      <span class="kw">threshold</span> <span class="kw">=</span> <span class="fl">0.7</span>,
-      <span class="kw">display_mode_name</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
-      <span class="kw">title</span> <span class="kw">=</span> <span class="st">"Shiny Example"</span>
-    )
-  })
-}
+<span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">output</span><span class="op">$</span><span class="va">chart</span> <span class="op">&lt;-</span> <span class="fu">vizdraws</span><span class="fu">::</span><span class="fu"><a href="../reference/vizdraws-shiny.html">rendervizdraws</a></span><span class="op">(</span><span class="op">{</span>
+    <span class="fu">vizdraws</span><span class="fu">::</span><span class="fu"><a href="../reference/vizdraws.html">vizdraws</a></span><span class="op">(</span>
+      prior <span class="op">=</span> <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"N({input$prior_mean},{input$prior_sd})"</span><span class="op">)</span>,
+      posterior <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1000</span>, mean <span class="op">=</span> <span class="fl">0.2</span>, sd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,
+      MME <span class="op">=</span> <span class="fl">0.1</span>,
+      threshold <span class="op">=</span> <span class="fl">0.7</span>,
+      display_mode_name <span class="op">=</span> <span class="cn">TRUE</span>,
+      title <span class="op">=</span> <span class="st">"Shiny Example"</span>
+    <span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span>
+<span class="op">}</span>
 
-<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span>(<span class="no">ui</span>, <span class="no">server</span>)</pre></body></html></div>
+<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span><span class="op">)</span></code></pre></div>
 <iframe src="https://ignacio.shinyapps.io/shiny_vizdraws/" width="100%" height="450px">
 </iframe>
 </div>
@@ -157,7 +158,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -121,11 +121,11 @@ function factory(el, width, height) {
           let desc_posterior = '';
           if (opts.is_quantity) {
             desc_prior = `Your priors imply that there is a ${
-                probs[i].prior}% probability that ${opts.unit_text} will be ${
+                probs[i].prior}% probability that ${opts.unit_text} ${opts.tense} ${
                 range_suffix}.`;
             desc_posterior = `Your data suggest that there is a ${
                 probs[i].posterior}% probability that ${
-                opts.unit_text} will be ${range_suffix}.`;
+                opts.unit_text} ${opts.tense} ${range_suffix}.`;
           } else {
             desc_prior = `Your priors imply that there is a ${
                 probs[i]
