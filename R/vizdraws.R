@@ -9,6 +9,7 @@
 #' @param width width for shiny
 #' @param height height for shiny
 #' @param quantity defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect
+#' @param tense either "future" or "past". This is the tense that it will be use in the description if quantity is set to TRUE. \code{NULL}
 #' @param xlab defaults to \code{NULL}
 #' @param breaks defaults to \code{NULL}
 #' @param break_names defaults to \code{NULL}
@@ -37,6 +38,7 @@ vizdraws <-
            threshold = NULL,
            units = NULL,
            quantity = FALSE,
+           tense = c("future", "past"),
            xlab = NULL,
            breaks = NULL,
            break_names = NULL,
@@ -68,6 +70,13 @@ vizdraws <-
         !is.null(colors) &
         length(colors) <= length(breaks))
       stop('Not enough colors specified')
+
+    tense <- match.arg(tense)
+    if (tense == "future") {
+      tense <- "will be"
+    }else{
+      tense <- "was"
+    }
 
     prior <- parse_prior(prior)
 
@@ -234,7 +243,8 @@ vizdraws <-
       xlim = xlim,
       font_scale = font_scale,
       display_mode_name = display_mode_name,
-      title = title
+      title = title,
+      tense = tense
     )
 
     # Define sizing policy
