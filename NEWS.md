@@ -1,4 +1,4 @@
-# vizdraws 1.0.2
+# vizdraws 1.1
 
 * Added a `NEWS.md` file to track changes to the package.
 * Upgraded D3 to V5.
