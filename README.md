@@ -1,4 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 vizdraws
 ========
 
@@ -6,8 +7,8 @@ vizdraws
 and posterior distributions.
 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/vizdraws?color=blue)](https://cran.r-project.org/package=vizdraws)
-[![Downloads](https://cranlogs.r-pkg.org/badges/vizdraws?color=blue)](https://cran.rstudio.com/package=vizdraws)
-[![Downloads\_grand-total](https://cranlogs.r-pkg.org/badges/grand-total/vizdraws?color=blue)](https://cran.rstudio.com/package=vizdraws)
+[![Downloads](https://cranlogs.r-pkg.org/badges/vizdraws?color=blue)](https://cran.rstudio.com/web/packages/vizdraws/index.html)
+[![Downloads\_grand-total](https://cranlogs.r-pkg.org/badges/grand-total/vizdraws?color=blue)](https://cran.rstudio.com/web/packages/vizdraws/index.html)
 
 Installation
 ------------
