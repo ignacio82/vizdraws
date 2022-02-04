@@ -236,6 +236,71 @@ function factory(el, width, height) {
             let rest = str.substring(1, 9999).toLowerCase();
             return (first + rest);
           };
+      
+      //define a button to download chart as png
+      const ICON = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-download'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'></path><polyline points='7 10 12 15 17 10'></polyline><line x1='12' y1='15' x2='12' y2='3'></line></svg>";
+      let save_as_image = svg.append('g')
+        .append('svg')
+        .attr('width', 20)
+        .attr('height', 20)
+        .attr('x', 50)
+        .attr('y', 0)
+        .html(ICON);
+
+    let triggerDownload = (imgURI) => {
+      const evt = new MouseEvent('click', {
+        view: window,
+        bubbles: false,
+        cancelable: true
+      });
+
+      const a = document.createElement('a');
+      a.setAttribute('download', 'chart.png');
+      a.setAttribute('href', imgURI);
+      a.setAttribute('target', '_blank');
+      a.dispatchEvent(evt);
+      document.getElementById('canvas').remove()
+    }
+
+    let convertSvgToPng = () => {
+      const canvas = document.createElement('canvas');
+      const svg = document.querySelector('svg');
+      const groups = [svg.children[1],svg.children[2],svg.children[3]]
+      svg.lastChild.remove()
+      svg.lastChild.remove()
+      svg.lastChild.remove()
+      canvas.setAttribute('id', 'canvas')
+      let width = svg.clientWidth;
+      let height = svg.clientHeight;
+      canvas.width = width;
+      canvas.height = height;
+      document.body.append(canvas)
+      var ctx = canvas.getContext('2d');
+      let data = (new XMLSerializer()).serializeToString(svg);
+      let DOMURL = window.URL || window.webkitURL || window;
+
+      let img = new Image();
+      let svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+      let url = DOMURL.createObjectURL(svgBlob);
+
+      img.onload = function () {
+        ctx.drawImage(img, 0, 0);
+        DOMURL.revokeObjectURL(url);
+
+        let imgURI = canvas
+          .toDataURL('image/png')
+          .replace('image/png', 'image/octet-stream');
+
+        triggerDownload(imgURI);
+      };
+
+      img.src = url;
+      svg.append(groups[0],groups[1],groups[2])
+    }
+
+    save_as_image.on('click', function (d) {
+      convertSvgToPng()
+    });
 
       // Define title - may not actually show
       let titleg = svg.append('g')
