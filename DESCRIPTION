@@ -1,6 +1,6 @@
 Package: vizdraws
 Title: Visualize Draws from the Prior and Posterior Distributions
-Version: 1.2
+Version: 1.3
 Date: 2022-02-04
 Authors@R: c(
     person("Ignacio", "Martinez", email = "ignacio@protonmail.com", role = c("aut", "cre")),

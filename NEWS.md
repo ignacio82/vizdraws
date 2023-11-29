@@ -1,5 +1,9 @@
 # vizdraws 1.2
 
+* Added a background color and opacity arguments
+
+# vizdraws 1.2
+
 * Added a download button to the top left corner.
 
 # vizdraws 1.1

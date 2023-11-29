@@ -9,6 +9,8 @@
 #' @param width width for shiny
 #' @param height height for shiny
 #' @param quantity defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect
+#' @param backgroundColor defaults to \code{'"#FFFFFF"'}
+#' @param backgroundOpacity defaults to \code{'0.9'}
 #' @param tense either "future" or "past". This is the tense that it will be use in the description if quantity is set to TRUE. \code{NULL}
 #' @param xlab defaults to \code{NULL}
 #' @param breaks defaults to \code{NULL}
@@ -39,6 +41,8 @@ vizdraws <-
            units = NULL,
            quantity = FALSE,
            tense = c("future", "past"),
+           backgroundColor = "#FFFFFF",
+           backgroundOpacity = 0.9,
            xlab = NULL,
            breaks = NULL,
            break_names = NULL,
@@ -244,7 +248,9 @@ vizdraws <-
       font_scale = font_scale,
       display_mode_name = display_mode_name,
       title = title,
-      tense = tense
+      tense = tense,
+      backgroundColor = backgroundColor,
+      backgroundOpacity = backgroundOpacity
     )
 
     # Define sizing policy

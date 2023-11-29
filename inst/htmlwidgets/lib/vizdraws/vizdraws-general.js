@@ -13,6 +13,11 @@ function factory(el, width, height) {
       height = height <= 0 ? 400 : height;
       width = width <= 0 ? height : width;
 
+      // Set background color and opacity
+      svg.style('background-color', backgroundColor)
+         .style('opacity', backgroundOpacity);
+
+
       // Calculate how much space the titles will take up
       const title_space =
           23 * opts.font_scale * ((opts.title !== '') + opts.display_mode_name);
@@ -236,7 +241,7 @@ function factory(el, width, height) {
             let rest = str.substring(1, 9999).toLowerCase();
             return (first + rest);
           };
-      
+
       //define a button to download chart as png
       const ICON = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-download'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'></path><polyline points='7 10 12 15 17 10'></polyline><line x1='12' y1='15' x2='12' y2='3'></line></svg>";
       let save_as_image = svg.append('g')
@@ -745,6 +750,9 @@ function factory(el, width, height) {
       console.log('render w,h', width, height);
       // keep options for resize
       options = opts;
+      // Set background color and opacity from options
+      backgroundColor = opts.backgroundColor || 'white'; // default to white if not provided
+      backgroundOpacity = opts.backgroundOpacity || 1; // default to fully opaque if not provided
 
       // create main containers
       let svg = this.setupSvg();
