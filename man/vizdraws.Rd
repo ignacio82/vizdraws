@@ -12,6 +12,8 @@ vizdraws(
   units = NULL,
   quantity = FALSE,
   tense = c("future", "past"),
+  backgroundColor = "#FFFFFF",
+  backgroundOpacity = 0.9,
   xlab = NULL,
   breaks = NULL,
   break_names = NULL,
@@ -41,6 +43,10 @@ vizdraws(
 \item{quantity}{defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect}
 
 \item{tense}{either "future" or "past". This is the tense that it will be use in the description if quantity is set to TRUE. \code{NULL}}
+
+\item{backgroundColor}{defaults to \code{'"#FFFFFF"'}}
+
+\item{backgroundOpacity}{defaults to \code{'0.9'}}
 
 \item{xlab}{defaults to \code{NULL}}
 
