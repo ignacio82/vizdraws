@@ -3,7 +3,7 @@ dataframeToD3 <- function(df) {
     return(list())
   }
   if (!is.data.frame(df)) {
-    stop("IMPosterior: the input must be a dataframe", call. = FALSE)
+    stop("vizdraws: the input must be a dataframe", call. = FALSE)
   }
 
   row.names(df) <- NULL

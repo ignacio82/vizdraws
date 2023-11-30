@@ -1,10 +1,7 @@
-# vizdraws 1.5
-
-# vizdraws 1.4
-
 # vizdraws 1.3
 
-* Added a background color and opacity arguments
+* Added a background color and opacity arguments.
+* Fixes resize method.
 
 # vizdraws 1.2
 

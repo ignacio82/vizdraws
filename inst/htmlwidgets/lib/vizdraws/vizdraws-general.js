@@ -770,23 +770,15 @@ function factory(el, width, height) {
       console.log('resize w, h', newWidth, newHeight);
       width = newWidth;
       height = newHeight;
-      // TODO: code to re-render the widget with a new size
-      /*let svg = d3
-          .select(el)
-          .append('svg')  // definitely don't think you'll want to append a new
-         svg .attr('width', dims.width + margin.left + margin.right)
-          .attr('height', dims.height + margin.top + margin.bottom);
-      */
-      // Set initials to whatever they currently were when graph was last
-      // changed
-      options.start_mode = MODE;
-      options.start_status = STATUS;
-      options.initial_trans = false;
-      // if you don't care about animation or transition
-      // you can just call render
-      this.renderValue(options);
 
-      // or without uncommenting as of now do nothing
+      // Update the dimensions of the SVG element
+      let svg = d3.select(el).select('svg');
+      svg.attr('width', newWidth);
+      svg.attr('height', newHeight);
+
+      // Re-render the plot
+      this.renderValue(options);
     }
+
   };
 }
