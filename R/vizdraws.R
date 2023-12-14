@@ -1,37 +1,45 @@
+#' Visualize Draws from Prior or Posterior Distributions
+#'
+#' A function to visualize draws from either the prior or posterior distribution, facilitating interpretation and decision-making.
+#'
 #' @title vizdraws
 #'
-#' @param prior prior distribution or draws from it. Currently `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided
-#' @param posterior draws from the posterior distribution. This is an optional parameter but either this or prior should be provided
-#' @param MME minimum meaningful effect. If not provided MME is set to zero
-#' @param threshold if the probability is greater than this threshold, you would feel comfortable making a decision
-#' @param units optional argument to specify the units of x. For example, dollars or applications
-#' @param colors colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")
-#' @param width width for shiny
-#' @param height height for shiny
-#' @param quantity defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect
-#' @param backgroundColor defaults to \code{'"#FFFFFF"'}
-#' @param backgroundOpacity defaults to \code{'0.9'}
-#' @param tense either "future" or "past". This is the tense that it will be use in the description if quantity is set to TRUE. \code{NULL}
-#' @param xlab defaults to \code{NULL}
-#' @param breaks defaults to \code{NULL}
-#' @param break_names defaults to \code{NULL}
-#' @param xlim defaults to \code{NULL}
-#' @param font_scale defaults to \code{1}
-#' @param display_mode_name defaults to \code{FALSE}
-#' @param title defaults to \code{''}
-#' @param stop_trans defaults to \code{FALSE}. When set to true, initial transition stops at posterior density.
-#' @param percentage defaults to \code{FALSE}. When set to true, the x axis tick format will be set to percentage.
-#' @param elementId Use an explicit element ID for the widget
-#'   (rather than an automatically generated one).elementID for shiny
+#' @param prior (optional) Prior distribution or draws from it. Supported distributions: `Normal`, `uniform`, `beta`, and `gamma`. Provide either this or the posterior.
+#' @param posterior (optional) Draws from the posterior distribution. Provide either this or the prior.
+#' @param MME Minimum meaningful effect. If not provided, MME is set to zero.
+#' @param threshold If the probability is greater than this threshold, a decision is considered comfortable.
+#' @param units Optional argument to specify the units of x (e.g., dollars or applications).
+#' @param colors Colors for the left, middle, and right areas. Defaults to c("#e41a1c", "#377eb8", "#4daf4a").
+#' @param width Width for shiny.
+#' @param height Height for shiny.
+#' @param quantity Defaults to \code{FALSE}. When set to true, the text will reflect predicting a quantity rather than a treatment effect.
+#' @param backgroundColor Defaults to \code{'#FFFFFF'}.
+#' @param backgroundOpacity Defaults to \code{0.9}.
+#' @param tense Either "future" or "past." This is the tense used in the description if quantity is set to TRUE. \code{NULL}.
+#' @param xlab Defaults to \code{NULL}.
+#' @param breaks Defaults to \code{NULL}.
+#' @param break_names Defaults to \code{NULL}.
+#' @param xlim Defaults to \code{NULL}.
+#' @param font_scale Defaults to \code{1}.
+#' @param display_mode_name Defaults to \code{FALSE}.
+#' @param title Defaults to \code{''}.
+#' @param stop_trans Defaults to \code{FALSE}. When set to true, the initial transition stops at posterior density.
+#' @param percentage Defaults to \code{FALSE}. When set to true, the x-axis tick format will be set to percentage.
+#' @param elementId Use an explicit element ID for the widget (rather than an automatically generated one). elementID for shiny.
+#' @param logoPath Logo path. Defaults to \code{NULL}.
+#' @param logoSize Logo size. Defaults to \code{FALSE}.
+#' @param logoLocation Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left', 'center')}.
 #'
-#' @return A HTML widget object
+#' @return A HTML widget object.
 #' @export
+#'
 #' @examples
 #' if(interactive()){
-#' set.seed(9782)
-#' library(vizdraws)
-#' vizdraws(prior= rnorm(100000))
-#'  }
+#'   set.seed(9782)
+#'   library(vizdraws)
+#'   vizdraws(prior = rnorm(100000))
+#' }
+
 
 vizdraws <-
   function(prior = NULL,
@@ -55,7 +63,11 @@ vizdraws <-
            title = '',
            stop_trans = FALSE,
            percentage = FALSE,
-           elementId = NULL) {
+           elementId = NULL,
+           logoPath = NULL,
+           logoSize = 100,
+           logoLocation = c('bottom-right', 'top-left', 'top-right', 'bottom-left', 'center')) {
+    logoLocation <- match.arg(logoLocation)
     if (MME < 0)
       stop("MME should be greater than 0")
     if (!is.null(breaks) &
@@ -250,7 +262,11 @@ vizdraws <-
       title = title,
       tense = tense,
       backgroundColor = backgroundColor,
-      backgroundOpacity = backgroundOpacity
+      backgroundOpacity = backgroundOpacity,
+      logoPath = logoPath,
+      logoSize = logoSize,
+      logoLocation = logoLocation
+
     )
 
     # Define sizing policy

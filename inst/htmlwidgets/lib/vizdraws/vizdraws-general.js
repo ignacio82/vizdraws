@@ -1,22 +1,40 @@
 
 function factory(el, width, height) {
   let options, dims, margin, status, mode;
+
   return {
     setupSvg: () => {
         d3.select(el).selectAll('*').remove();
         return d3.select(el).append('svg');
     },
+
     draw: function(opts, svg) {
+      // If the logo is centered, delay the drawing of the rest of the visualization
+      if (opts.logoPath && opts.logoLocation === 'center') {
+        // Wait for 5 seconds before drawing the visualization
+        setTimeout(() => this.actualDraw(opts, svg), 5000);
+      } else {
+        // Draw immediately
+        this.actualDraw(opts, svg);
+      }
+
+      // Load and display the logo if path is provided
+      if (opts.logoPath) {
+        this.loadAndDisplayLogo(opts, svg);
+      }
+    },
+    actualDraw: function(opts, svg) {
+
       const vis = this;
       // if width or height is 0 then use reasonable default - 400 for height,
       // and height for width
       height = height <= 0 ? 400 : height;
       width = width <= 0 ? height : width;
 
+
       // Set background color and opacity
       svg.style('background-color', backgroundColor)
          .style('opacity', backgroundOpacity);
-
 
       // Calculate how much space the titles will take up
       const title_space =
@@ -778,7 +796,55 @@ function factory(el, width, height) {
 
       // Re-render the plot
       this.renderValue(options);
-    }
+    },
+
+    loadAndDisplayLogo: function(opts, svg) {
+      const logoSize = opts.logoSize || 100; // Default logo size in pixels
+      const logoLocation = opts.logoLocation || 'bottom-right'; // Default location
+
+      // Load the SVG logo
+      d3.xml(opts.logoPath).then((data) => {
+        let logo = d3.select(data).select('svg');
+
+        // Set the size of the logo
+        logo.attr('width', logoSize)
+            .attr('height', logoSize);
+
+        // Append the logo to the SVG element
+        const logoG = svg.append('g').node().appendChild(logo.node());
+
+        // Position the logo based on logoLocation
+        let x, y;
+        switch (logoLocation) {
+          case 'top-left':
+            x = 0; y = 0;
+            break;
+          case 'top-right':
+            // Adjust position to avoid overlap with buttons
+            x = width - logoSize - 60; y = 0;
+            break;
+          case 'bottom-left':
+            x = 0; y = height - logoSize;
+            break;
+          case 'bottom-right':
+            x = width - logoSize; y = height - logoSize;
+            break;
+          case 'center':
+            x = (width - logoSize) / 2; y = (height - logoSize) / 2;
+            // Display only the logo for 5 seconds
+            d3.select(el).selectAll('*').remove();
+            break;
+        }
+        logo.attr('x', x).attr('y', y);
+
+        // If the logo is centered, remove it after 5 seconds
+        if (logoLocation === 'center') {
+          setTimeout(() => {
+            logo.remove();
+          }, 5000); // 5 seconds in milliseconds
+        }
+      });
+    },
 
   };
 }
