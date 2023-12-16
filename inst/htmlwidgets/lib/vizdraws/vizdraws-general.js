@@ -9,14 +9,7 @@ function factory(el, width, height) {
     },
 
     draw: function(opts, svg) {
-      // If the logo is centered, delay the drawing of the rest of the visualization
-      if (opts.logoPath && opts.logoLocation === 'center') {
-        // Wait for 5 seconds before drawing the visualization
-        setTimeout(() => this.actualDraw(opts, svg), 5000);
-      } else {
-        // Draw immediately
-        this.actualDraw(opts, svg);
-      }
+      this.actualDraw(opts, svg);
 
       // Load and display the logo if path is provided
       if (opts.logoPath) {
@@ -24,14 +17,11 @@ function factory(el, width, height) {
       }
     },
     actualDraw: function(opts, svg) {
-
       const vis = this;
       // if width or height is 0 then use reasonable default - 400 for height,
       // and height for width
       height = height <= 0 ? 400 : height;
       width = width <= 0 ? height : width;
-
-
       // Set background color and opacity
       svg.style('background-color', backgroundColor)
          .style('opacity', backgroundOpacity);
@@ -260,7 +250,7 @@ function factory(el, width, height) {
             return (first + rest);
           };
 
-      //define a button to download chart as png
+      // Define a button to download the chart as PNG
       const ICON = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-download'><path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'></path><polyline points='7 10 12 15 17 10'></polyline><line x1='12' y1='15' x2='12' y2='3'></line></svg>";
       let save_as_image = svg.append('g')
         .append('svg')
@@ -270,60 +260,66 @@ function factory(el, width, height) {
         .attr('y', 0)
         .html(ICON);
 
-    let triggerDownload = (imgURI) => {
-      const evt = new MouseEvent('click', {
-        view: window,
-        bubbles: false,
-        cancelable: true
+      let convertSvgToPng = () => {
+        const canvas = document.createElement('canvas');
+        const svg = document.querySelector('svg');
+        const groups = [svg.children[1],svg.children[2],svg.children[3]]
+        svg.lastChild.remove()
+        svg.lastChild.remove()
+        svg.lastChild.remove()
+        canvas.setAttribute('id', 'canvas')
+        let width = svg.clientWidth;
+        let height = svg.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+        document.body.append(canvas)
+        var ctx = canvas.getContext('2d');
+        let data = (new XMLSerializer()).serializeToString(svg);
+        let DOMURL = window.URL || window.webkitURL || window;
+
+        let img = new Image();
+        let svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+        let url = DOMURL.createObjectURL(svgBlob);
+
+        img.onload = function () {
+          ctx.drawImage(img, 0, 0);
+          DOMURL.revokeObjectURL(url);
+
+          let imgURI = canvas
+            .toDataURL('image/png')
+            .replace('image/png', 'image/octet-stream');
+
+          triggerDownload(imgURI);
+        };
+
+        img.src = url;
+        svg.append(groups[0],groups[1],groups[2])
+    }
+
+        // This function triggers the download of the image
+       let triggerDownload = (imgURI) => {
+            const evt = new MouseEvent('click', {
+              view: window,
+              bubbles: false,
+              cancelable: true
+            });
+
+            const a = document.createElement('a');
+            a.setAttribute('download', 'chart.png');
+            a.setAttribute('href', imgURI);
+            a.setAttribute('target', '_blank');
+            a.dispatchEvent(evt);
+            document.getElementById('canvas').remove()
+          }
+
+
+
+
+      // Event listener for the download button
+      save_as_image.on('click', function () {
+        convertSvgToPng();
       });
 
-      const a = document.createElement('a');
-      a.setAttribute('download', 'chart.png');
-      a.setAttribute('href', imgURI);
-      a.setAttribute('target', '_blank');
-      a.dispatchEvent(evt);
-      document.getElementById('canvas').remove()
-    }
-
-    let convertSvgToPng = () => {
-      const canvas = document.createElement('canvas');
-      const svg = document.querySelector('svg');
-      const groups = [svg.children[1],svg.children[2],svg.children[3]]
-      svg.lastChild.remove()
-      svg.lastChild.remove()
-      svg.lastChild.remove()
-      canvas.setAttribute('id', 'canvas')
-      let width = svg.clientWidth;
-      let height = svg.clientHeight;
-      canvas.width = width;
-      canvas.height = height;
-      document.body.append(canvas)
-      var ctx = canvas.getContext('2d');
-      let data = (new XMLSerializer()).serializeToString(svg);
-      let DOMURL = window.URL || window.webkitURL || window;
-
-      let img = new Image();
-      let svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
-      let url = DOMURL.createObjectURL(svgBlob);
-
-      img.onload = function () {
-        ctx.drawImage(img, 0, 0);
-        DOMURL.revokeObjectURL(url);
-
-        let imgURI = canvas
-          .toDataURL('image/png')
-          .replace('image/png', 'image/octet-stream');
-
-        triggerDownload(imgURI);
-      };
-
-      img.src = url;
-      svg.append(groups[0],groups[1],groups[2])
-    }
-
-    save_as_image.on('click', function (d) {
-      convertSvgToPng()
-    });
 
       // Define title - may not actually show
       let titleg = svg.append('g')
@@ -821,7 +817,7 @@ function factory(el, width, height) {
             break;
           case 'top-right':
             // Adjust position to avoid overlap with buttons
-            x = width - logoSize - 60; y = 0;
+            x = width - logoSize - 120; y = 0;
             break;
           case 'bottom-left':
             x = 0; y = height - logoSize;
@@ -829,20 +825,8 @@ function factory(el, width, height) {
           case 'bottom-right':
             x = width - logoSize; y = height - logoSize;
             break;
-          case 'center':
-            x = (width - logoSize) / 2; y = (height - logoSize) / 2;
-            // Display only the logo for 5 seconds
-            d3.select(el).selectAll('*').remove();
-            break;
         }
         logo.attr('x', x).attr('y', y);
-
-        // If the logo is centered, remove it after 5 seconds
-        if (logoLocation === 'center') {
-          setTimeout(() => {
-            logo.remove();
-          }, 5000); // 5 seconds in milliseconds
-        }
       });
     },
 
