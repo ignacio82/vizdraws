@@ -1,4 +1,4 @@
-# vizdraws (development version)
+# vizdraws 1.4.1
 
 # vizdraws 1.4.0
 
