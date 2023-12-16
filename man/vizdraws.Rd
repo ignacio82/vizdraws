@@ -29,7 +29,7 @@ vizdraws(
   elementId = NULL,
   logoPath = NULL,
   logoSize = 100,
-  logoLocation = c("bottom-right", "top-left", "top-right", "bottom-left", "center")
+  logoLocation = c("bottom-right", "top-left", "top-right", "bottom-left")
 )
 }
 \arguments{
@@ -81,7 +81,7 @@ vizdraws(
 
 \item{logoSize}{Logo size. Defaults to \code{FALSE}.}
 
-\item{logoLocation}{Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left', 'center')}.}
+\item{logoLocation}{Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left')}.}
 }
 \value{
 A HTML widget object.

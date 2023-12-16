@@ -28,7 +28,7 @@
 #' @param elementId Use an explicit element ID for the widget (rather than an automatically generated one). elementID for shiny.
 #' @param logoPath Logo path. Defaults to \code{NULL}.
 #' @param logoSize Logo size. Defaults to \code{FALSE}.
-#' @param logoLocation Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left', 'center')}.
+#' @param logoLocation Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left')}.
 #'
 #' @return A HTML widget object.
 #' @export
@@ -66,7 +66,7 @@ vizdraws <-
            elementId = NULL,
            logoPath = NULL,
            logoSize = 100,
-           logoLocation = c('bottom-right', 'top-left', 'top-right', 'bottom-left', 'center')) {
+           logoLocation = c('bottom-right', 'top-left', 'top-right', 'bottom-left')) {
     logoLocation <- match.arg(logoLocation)
     if (MME < 0)
       stop("MME should be greater than 0")
