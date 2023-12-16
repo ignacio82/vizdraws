@@ -26,65 +26,76 @@ vizdraws(
   title = "",
   stop_trans = FALSE,
   percentage = FALSE,
-  elementId = NULL
+  elementId = NULL,
+  logoPath = NULL,
+  logoSize = 100,
+  logoLocation = c("bottom-right", "top-left", "top-right", "bottom-left", "center")
 )
 }
 \arguments{
-\item{prior}{prior distribution or draws from it. Currently `Normal`, `uniform`, `beta`, and `gamma` are supported. This is an optional parameter but either this or posterior should be provided}
+\item{prior}{(optional) Prior distribution or draws from it. Supported distributions: `Normal`, `uniform`, `beta`, and `gamma`. Provide either this or the posterior.}
 
-\item{posterior}{draws from the posterior distribution. This is an optional parameter but either this or prior should be provided}
+\item{posterior}{(optional) Draws from the posterior distribution. Provide either this or the prior.}
 
-\item{MME}{minimum meaningful effect. If not provided MME is set to zero}
+\item{MME}{Minimum meaningful effect. If not provided, MME is set to zero.}
 
-\item{threshold}{if the probability is greater than this threshold, you would feel comfortable making a decision}
+\item{threshold}{If the probability is greater than this threshold, a decision is considered comfortable.}
 
-\item{units}{optional argument to specify the units of x. For example, dollars or applications}
+\item{units}{Optional argument to specify the units of x (e.g., dollars or applications).}
 
-\item{quantity}{defaults to \code{FALSE}. When set to true text will change to reflect that you are predicting a quantity rather than a treatment effect}
+\item{quantity}{Defaults to \code{FALSE}. When set to true, the text will reflect predicting a quantity rather than a treatment effect.}
 
-\item{tense}{either "future" or "past". This is the tense that it will be use in the description if quantity is set to TRUE. \code{NULL}}
+\item{tense}{Either "future" or "past." This is the tense used in the description if quantity is set to TRUE. \code{NULL}.}
 
-\item{backgroundColor}{defaults to \code{'"#FFFFFF"'}}
+\item{backgroundColor}{Defaults to \code{'#FFFFFF'}.}
 
-\item{backgroundOpacity}{defaults to \code{'0.9'}}
+\item{backgroundOpacity}{Defaults to \code{0.9}.}
 
-\item{xlab}{defaults to \code{NULL}}
+\item{xlab}{Defaults to \code{NULL}.}
 
-\item{breaks}{defaults to \code{NULL}}
+\item{breaks}{Defaults to \code{NULL}.}
 
-\item{break_names}{defaults to \code{NULL}}
+\item{break_names}{Defaults to \code{NULL}.}
 
-\item{colors}{colors for the left, middle, and right areas. The defaults are c("#e41a1c", "#377eb8", "#4daf4a")}
+\item{colors}{Colors for the left, middle, and right areas. Defaults to c("#e41a1c", "#377eb8", "#4daf4a").}
 
-\item{width}{width for shiny}
+\item{width}{Width for shiny.}
 
-\item{height}{height for shiny}
+\item{height}{Height for shiny.}
 
-\item{xlim}{defaults to \code{NULL}}
+\item{xlim}{Defaults to \code{NULL}.}
 
-\item{font_scale}{defaults to \code{1}}
+\item{font_scale}{Defaults to \code{1}.}
 
-\item{display_mode_name}{defaults to \code{FALSE}}
+\item{display_mode_name}{Defaults to \code{FALSE}.}
 
-\item{title}{defaults to \code{''}}
+\item{title}{Defaults to \code{''}.}
 
-\item{stop_trans}{defaults to \code{FALSE}. When set to true, initial transition stops at posterior density.}
+\item{stop_trans}{Defaults to \code{FALSE}. When set to true, the initial transition stops at posterior density.}
 
-\item{percentage}{defaults to \code{FALSE}. When set to true, the x axis tick format will be set to percentage.}
+\item{percentage}{Defaults to \code{FALSE}. When set to true, the x-axis tick format will be set to percentage.}
 
-\item{elementId}{Use an explicit element ID for the widget
-(rather than an automatically generated one).elementID for shiny}
+\item{elementId}{Use an explicit element ID for the widget (rather than an automatically generated one). elementID for shiny.}
+
+\item{logoPath}{Logo path. Defaults to \code{NULL}.}
+
+\item{logoSize}{Logo size. Defaults to \code{FALSE}.}
+
+\item{logoLocation}{Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left', 'center')}.}
 }
 \value{
-A HTML widget object
+A HTML widget object.
 }
 \description{
-vizdraws
+Visualize Draws from Prior or Posterior Distributions
+}
+\details{
+A function to visualize draws from either the prior or posterior distribution, facilitating interpretation and decision-making.
 }
 \examples{
 if(interactive()){
-set.seed(9782)
-library(vizdraws)
-vizdraws(prior= rnorm(100000))
- }
+  set.seed(9782)
+  library(vizdraws)
+  vizdraws(prior = rnorm(100000))
+}
 }
