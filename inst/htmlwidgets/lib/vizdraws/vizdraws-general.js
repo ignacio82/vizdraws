@@ -260,40 +260,40 @@ function factory(el, width, height) {
         .attr('y', 0)
         .html(ICON);
 
-      let convertSvgToPng = () => {
-        const canvas = document.createElement('canvas');
-        const svg = document.querySelector('svg');
-        const groups = [svg.children[1],svg.children[2],svg.children[3]]
-        svg.lastChild.remove()
-        svg.lastChild.remove()
-        svg.lastChild.remove()
-        canvas.setAttribute('id', 'canvas')
-        let width = svg.clientWidth;
-        let height = svg.clientHeight;
-        canvas.width = width;
-        canvas.height = height;
-        document.body.append(canvas)
-        var ctx = canvas.getContext('2d');
-        let data = (new XMLSerializer()).serializeToString(svg);
-        let DOMURL = window.URL || window.webkitURL || window;
+        let convertSvgToPng = () => {
+          const canvas = document.createElement('canvas');
+          const svg = document.querySelector('svg');
+          const groups = [svg.children[1],svg.children[2],svg.children[3]]
+          svg.lastChild.remove()
+          svg.lastChild.remove()
+          svg.lastChild.remove()
+          canvas.setAttribute('id', 'canvas')
+          let width = svg.clientWidth;
+          let height = svg.clientHeight;
+          canvas.width = width;
+          canvas.height = height;
+          document.body.append(canvas)
+          var ctx = canvas.getContext('2d');
+          let data = (new XMLSerializer()).serializeToString(svg);
+          let DOMURL = window.URL || window.webkitURL || window;
 
-        let img = new Image();
-        let svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
-        let url = DOMURL.createObjectURL(svgBlob);
+          let img = new Image();
+          let svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+          let url = DOMURL.createObjectURL(svgBlob);
 
-        img.onload = function () {
-          ctx.drawImage(img, 0, 0);
-          DOMURL.revokeObjectURL(url);
+          img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+            DOMURL.revokeObjectURL(url);
 
-          let imgURI = canvas
-            .toDataURL('image/png')
-            .replace('image/png', 'image/octet-stream');
+            let imgURI = canvas
+              .toDataURL('image/png')
+              .replace('image/png', 'image/octet-stream');
 
-          triggerDownload(imgURI);
-        };
+            triggerDownload(imgURI);
+          };
 
-        img.src = url;
-        svg.append(groups[0],groups[1],groups[2])
+          img.src = url;
+          svg.append(groups[0],groups[1],groups[2])
     }
 
         // This function triggers the download of the image
