@@ -1,10 +1,35 @@
-#' Visualize Probabilities
+#' Visualize Probabilities using a Lollipop Chart
 #'
-#' A function to visualize probabilities using a lollipop chart
+#' This function creates a lollipop chart to visualize probabilities.
 #'
-#' @title lollipops
+#' @param data A data frame containing the probabilities to visualize.
+#' @param plotBackgroundColor The background color of the plot.
+#' @param plotBackgroundOpacity The opacity of the plot background.
+#' @param title The title of the plot.
+#' @param leftArea The label for the left area of the plot.
+#' @param rightArea The label for the right area of the plot.
+#' @param mediumText The font size for medium text elements.
+#' @param bigText The font size for big text elements.
+#' @param width The width of the widget (optional).
+#' @param height The height of the widget (optional).
+#' @param elementId The element ID of the widget (optional).
 #'
-#' @return A HTML widget object.
+#' @return A HTML widget object representing the lollipop chart.
+#'
+#' @details
+#' The data frame should have three columns: `name`, `value`, and `color`.
+#' The `name` column specifies the names of the data points, while the
+#' `value` column specifies the corresponding probabilities. The `color`
+#' column specifies the color of each lollipop.
+#'
+#' @examples
+#' data <- data.frame(
+#'   Name = c("Outcome 1", "Outcome 2", "Outcome 3"),
+#'   Prior = c(0.5, 0.5, 0.5),
+#'   Posterior = c(0.2, 0.6, 0.9)
+#' )
+#' lollipops(data)
+#'
 #' @export
 #'
 lollipops <-
