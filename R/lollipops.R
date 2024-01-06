@@ -10,13 +10,25 @@
 lollipops <-
   function(data,
            plotBackgroundColor = "white",
+           plotBackgroundOpacity = 0.8,
+           title = "Probability of an impact",
+           leftArea = "Negative",
+           rightArea = "Positive",
+           mediumText = 18,
+           bigText = 28,
            width = NULL,
            height = NULL,
            elementId = NULL) {
     verifyDataConditions(data)
 
     opts = list(data = dataframeToD3(data.frame(data)),
-                plotBackgroundColor = plotBackgroundColor)
+                plotBackgroundColor = plotBackgroundColor,
+                plotBackgroundOpacity = plotBackgroundOpacity,
+                title = title,
+                leftArea = leftArea,
+                rightArea = rightArea,
+                mediumText = mediumText,
+                bigText = bigText)
 
     # Define sizing policy
     sizingPolicy = htmlwidgets::sizingPolicy(

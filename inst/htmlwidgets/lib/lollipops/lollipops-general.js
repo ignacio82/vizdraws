@@ -20,11 +20,11 @@ function factory(el, width, height) {
         const plotWidth = width - margin.left - margin.right;
         const plotHeight = height - margin.top - margin.bottom;
         const lineWidth = 4;
-        const mediumText = 18;
-        const bigText = 28;
+        const mediumText = opts.mediumText;
+        const bigText = opts.bigText;
         const fontFamily = "Roboto, sans-serif";
-        const plotBackgroundColor = opts.plotBackgroundColor; // New constant for plot background color
-        const plotBackgroundOpacity = 0.8; // New constant for plot background opacity
+        const plotBackgroundColor = opts.plotBackgroundColor;
+        const plotBackgroundOpacity = opts.plotBackgroundOpacity;
 
         // set width and height of svg element (plot + margin)
         svg.attr("width", plotWidth + margin.left + margin.right)
@@ -181,7 +181,7 @@ function factory(el, width, height) {
           .attr("font-size", bigText)
           .attr("font-family", fontFamily)
           .attr("font-weight", "bold")
-          .text("Probability of an impact");
+          .text(opts.title);
 
       // Add x-axis label
       svg.append("text")
@@ -211,7 +211,7 @@ function factory(el, width, height) {
           .attr("font-size", mediumText)
           .attr("font-family", fontFamily)
           .attr("font-weight", "bold")
-          .text("Negative");
+          .text(opts.leftArea);
 
       // Add the text "Positive" centered between 0.5 and 1
       svg.append("text")
@@ -221,7 +221,7 @@ function factory(el, width, height) {
           .attr("font-size", mediumText)
           .attr("font-family", fontFamily)
           .attr("font-weight", "bold")
-          .text("Positive");
+          .text(opts.rightArea);
 
       // Add a button
       const buttonWidth = 100;
