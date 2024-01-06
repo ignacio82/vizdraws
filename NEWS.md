@@ -1,3 +1,5 @@
+# vizdraws 2.0.0
+
 # vizdraws 2.0
 
 * Added lollipop chart
