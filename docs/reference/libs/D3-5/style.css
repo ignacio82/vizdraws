@@ -1,0 +1,18 @@
+html, body{
+  margin: 0;
+  height: 100%;
+}
+
+line {
+  stroke: black;
+}
+
+
+g.tick line {
+  stroke: black;
+}
+
+g.tick text {
+  fill: black;
+
+}

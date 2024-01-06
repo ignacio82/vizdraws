@@ -1,8 +1,8 @@
-pandoc: 2.11.2
-pkgdown: 1.6.1
+pandoc: '2.18'
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   introduction: introduction.html
   shiny-example: shiny-example.html
-last_built: 2022-02-04T19:47Z
+last_built: 2024-01-06T22:40Z
 

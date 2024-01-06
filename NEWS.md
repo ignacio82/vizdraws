@@ -1,10 +1,6 @@
-# vizdraws (development version)
+# vizdraws 2.0
 
-# vizdraws 1.4.2
-
-# vizdraws 1.4.1
-
-# vizdraws 1.4.0
+* Added lollipop chart
 
 # vizdraws 1.3
 

@@ -1,0 +1,10 @@
+ dependencies:
+  - name: D3
+    version: 5
+    src: htmlwidgets/lib/D3
+    script: d3.v5.min.js
+    stylesheet: style.css
+  - name: lollipops-general
+    script: lollipops-general.js
+    src: htmlwidgets/lib/lollipops
+    version: 0.1
