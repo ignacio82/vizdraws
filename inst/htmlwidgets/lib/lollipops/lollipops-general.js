@@ -325,19 +325,39 @@ function factory(el, width, height) {
       },
 
       renderValue: function(opts) {
+        // keep options for resize
+        options = opts;
         this.setupSvg();
         this.draw(opts);
       },
 
-      resize: function(newWidth, newHeight) {
-        console.log('resize w, h', newWidth, newHeight);
-        const width = newWidth;
-        const height = newHeight;
-        // Update the dimensions of the SVG element
-        this.svg.attr('width', newWidth);
-        this.svg.attr('height', newHeight);
-        // Re-render the plot
-        this.renderValue();
-      }
+    resize: function(newWidth, newHeight) {
+      console.log('resize w, h', newWidth, newHeight);
+
+      const margin = {
+        top: 80,
+        right: 100,
+        bottom: 80,
+        left: 100
+      };
+
+      const plotWidth = newWidth - margin.left - margin.right;
+      const plotHeight = newHeight - margin.top - margin.bottom;
+
+      // Clear existing elements before redrawing
+      this.svg.selectAll('*').remove();
+
+      // Update the dimensions of the SVG element
+      this.svg.attr('width', plotWidth);
+      this.svg.attr('height', plotHeight);
+
+      // Update the width and height variables
+      width = newWidth;
+      height = newHeight;
+
+      // Re-render the plot with the updated dimensions
+      this.draw(options);
+    }
+
   };
 }
