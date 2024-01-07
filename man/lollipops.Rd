@@ -15,7 +15,12 @@ lollipops(
   bigText = 28,
   width = NULL,
   height = NULL,
-  elementId = NULL
+  elementId = NULL,
+  logoPath = NULL,
+  logoSize = 100,
+  logoLocation = c("bottom-left", "top-left", "top-right", "bottom-right"),
+  rightAreaText = "A positive impact is not necesarly a large impact.",
+  leftAreaText = "A negative impact is not necesarly a large impact."
 )
 }
 \arguments{
@@ -40,6 +45,16 @@ lollipops(
 \item{height}{The height of the widget (optional).}
 
 \item{elementId}{The element ID of the widget (optional).}
+
+\item{logoPath}{Logo path. Defaults to \code{NULL}.}
+
+\item{logoSize}{Logo size. Defaults to \code{FALSE}.}
+
+\item{logoLocation}{Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left')}.}
+
+\item{rightAreaText}{The tooltip text for the right area of the plot.}
+
+\item{leftAreaText}{The tooltip text for the left area of the plot.}
 }
 \value{
 A HTML widget object representing the lollipop chart.
@@ -59,6 +74,8 @@ data <- data.frame(
   Prior = c(0.5, 0.5, 0.5),
   Posterior = c(0.2, 0.6, 0.9)
 )
-lollipops(data)
+lollipops(data,
+  logoPath = 'https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg',
+  logoLocation = 'bottom-left')
 
 }

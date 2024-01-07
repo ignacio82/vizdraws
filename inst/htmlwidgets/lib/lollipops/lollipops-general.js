@@ -6,8 +6,15 @@ function factory(el, width, height) {
         // not necessary but more convenient to access later with this.svg
         this.svg = d3.select(el).append('svg'); // Assign to the higher-scoped svg variable
       },
+    draw: function(opts) {
+      this.actualDraw(opts);
 
-      draw: function(opts) {
+      // Load and display the logo if path is provided
+      if (opts.logoPath) {
+        this.loadAndDisplayLogo(opts);
+      }
+    },
+      actualDraw: function(opts) {
         console.log('opts', opts);
         const svg = this.svg;
         // set up constants used throughout script
@@ -25,6 +32,45 @@ function factory(el, width, height) {
         const fontFamily = "Roboto, sans-serif";
         const plotBackgroundColor = opts.plotBackgroundColor;
         const plotBackgroundOpacity = opts.plotBackgroundOpacity;
+        // Initialize d3-tip
+        const tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+            const name = d.Name.charAt(0).toUpperCase() + d.Name.slice(1);
+            let priorSentence, posteriorSentence;
+
+            if (d.Posterior > 0.5) {
+              priorSentence = `For ${name}, our prior of a ${opts.rightArea.toLowerCase()} impact was ${d.Prior * 100}%`;
+              posteriorSentence = `. After analyzing the data, we estimate that the probability of a ${opts.rightArea.toLowerCase()} impact is ${d.Posterior * 100}%.`;
+            } else {
+              priorSentence = `For ${name}, our prior of a ${opts.leftArea.toLowerCase()} impact was ${d.Prior * 100}%`;
+              posteriorSentence = `. After analyzing the data, we estimate that the probability of a ${opts.leftArea.toLowerCase()} impact is ${(1 - d.Posterior) * 100}%.`;
+            }
+            return priorSentence + posteriorSentence;
+          });
+
+      // Tooltip for opts.rightArea
+      const rightAreaTip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+          return opts.rightAreaText;
+        });
+
+      // Tooltip for opts.leftArea
+      const leftAreaTip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+          return opts.leftAreaText;
+        });
+
+
+        svg.call(tip); // Call the main tip function on your SVG element
+        svg.call(rightAreaTip); // Call the right area tip function on your SVG element
+        svg.call(leftAreaTip); // Call the left area tip function on your SVG element
+
 
         // set width and height of svg element (plot + margin)
         svg.attr("width", plotWidth + margin.left + margin.right)
@@ -81,7 +127,7 @@ function factory(el, width, height) {
       // y-axis
       // y-axis goes from height of plot to 0
       let yAxis = d3.scaleBand()
-      .domain(opts.data.map(function(d) { //// Is this wrong?????
+      .domain(opts.data.map(function(d) {
         return d.Name;
       }))
       .padding(1)
@@ -150,7 +196,9 @@ function factory(el, width, height) {
           .attr("cy", function(d) { return yAxis(d.Name); })
           .attr("r", "7")
           .style("fill", "#EA4335")
-          .attr("stroke", "black");
+          .attr("stroke", "black")
+          .on('mouseover', tip.show) // Display tooltip on mouseover
+          .on('mouseout', tip.hide); // Hide tooltip on mouseout
 
       // Change the X coordinates of line and circle
       plotGroup.selectAll("circle")
@@ -211,7 +259,10 @@ function factory(el, width, height) {
           .attr("font-size", mediumText)
           .attr("font-family", fontFamily)
           .attr("font-weight", "bold")
-          .text(opts.leftArea);
+          .text(opts.leftArea)
+          .on('mouseover', leftAreaTip.show) // Display left area tooltip on mouseover
+          .on('mouseout', leftAreaTip.hide); // Hide left area tooltip on mouseout
+
 
       // Add the text "Positive" centered between 0.5 and 1
       svg.append("text")
@@ -221,7 +272,9 @@ function factory(el, width, height) {
           .attr("font-size", mediumText)
           .attr("font-family", fontFamily)
           .attr("font-weight", "bold")
-          .text(opts.rightArea);
+          .text(opts.rightArea)
+          .on('mouseover', rightAreaTip.show) // Display right area tooltip on mouseover
+          .on('mouseout', rightAreaTip.hide); // Hide right area tooltip on mouseout
 
       // Add a button
       const buttonWidth = 100;
@@ -357,7 +410,43 @@ function factory(el, width, height) {
 
       // Re-render the plot with the updated dimensions
       this.draw(options);
-    }
+    },
+
+    loadAndDisplayLogo: function(opts) {
+      const logoSize = opts.logoSize || 100; // Default logo size in pixels
+      const logoLocation = opts.logoLocation || 'bottom-right'; // Default location
+
+      // Load the SVG logo
+      d3.xml(opts.logoPath).then((data) => {
+        let logo = d3.select(data).select('svg');
+
+        // Set the size of the logo
+        logo.attr('width', logoSize)
+            .attr('height', logoSize);
+
+        // Append the logo to the SVG element
+        const logoG = this.svg.append('g').node().appendChild(logo.node());
+
+        // Position the logo based on logoLocation
+        let x, y;
+        switch (logoLocation) {
+          case 'top-left':
+            x = 0; y = 0;
+            break;
+          case 'top-right':
+            // Adjust position to avoid overlap with buttons
+            x = width - logoSize - 120; y = 0;
+            break;
+          case 'bottom-left':
+            x = 0; y = height - logoSize;
+            break;
+          case 'bottom-right':
+            x = width - logoSize; y = height - logoSize;
+            break;
+        }
+        logo.attr('x', x).attr('y', y);
+      });
+    },
 
   };
 }
