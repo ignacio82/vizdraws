@@ -13,6 +13,11 @@
 #' @param width The width of the widget (optional).
 #' @param height The height of the widget (optional).
 #' @param elementId The element ID of the widget (optional).
+#' @param logoPath Logo path. Defaults to \code{NULL}.
+#' @param logoSize Logo size. Defaults to \code{FALSE}.
+#' @param logoLocation Logo location. \code{c('bottom-right', 'top-left', 'top-right', 'bottom-left')}.
+#' @param rightAreaText The tooltip text for the right area of the plot.
+#' @param leftAreaText The tooltip text for the left area of the plot.
 #'
 #' @return A HTML widget object representing the lollipop chart.
 #'
@@ -28,7 +33,9 @@
 #'   Prior = c(0.5, 0.5, 0.5),
 #'   Posterior = c(0.2, 0.6, 0.9)
 #' )
-#' lollipops(data)
+#' lollipops(data,
+#'   logoPath = 'https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg',
+#'   logoLocation = 'bottom-left')
 #'
 #' @export
 #'
@@ -43,9 +50,14 @@ lollipops <-
            bigText = 28,
            width = NULL,
            height = NULL,
-           elementId = NULL) {
+           elementId = NULL,
+           logoPath = NULL,
+           logoSize = 100,
+           logoLocation = c('bottom-left', 'top-left', 'top-right', 'bottom-right'),
+           rightAreaText = "A positive impact is not necesarly a large impact.",
+           leftAreaText = "A negative impact is not necesarly a large impact.") {
     verifyDataConditions(data)
-
+    logoLocation <- match.arg(logoLocation)
     opts = list(data = dataframeToD3(data.frame(data)),
                 plotBackgroundColor = plotBackgroundColor,
                 plotBackgroundOpacity = plotBackgroundOpacity,
@@ -53,7 +65,13 @@ lollipops <-
                 leftArea = leftArea,
                 rightArea = rightArea,
                 mediumText = mediumText,
-                bigText = bigText)
+                bigText = bigText,
+                logoPath = logoPath,
+                logoSize = logoSize,
+                logoLocation = logoLocation,
+                rightAreaText = rightAreaText,
+                leftAreaText = leftAreaText
+                )
 
     # Define sizing policy
     sizingPolicy = htmlwidgets::sizingPolicy(
