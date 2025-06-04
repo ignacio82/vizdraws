@@ -23,7 +23,8 @@ Imports:
 Suggests:
     glue,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 BugReports: https://github.com/ignacio82/vizdraws/issues
