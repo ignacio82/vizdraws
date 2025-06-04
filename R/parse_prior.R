@@ -21,10 +21,10 @@ parse_prior <- function(prior = NULL) {
       return(qnorm(0.5 + 1:1000/2001, arg1, arg2))
     } else if (stringr::str_detect(prior,'^(t|student_t)\\(([-0-9.]+), ?([-0-9.]+), ?([-0-9.]+)\\)$')) {
       matches <- stringr::str_match(prior,'^(t|student_t)\\(([-0-9.]+), ?([-0-9.]+), ?([-0-9.]+)\\)$')
-      arg1 <- as.numeric(matches[,3])
-      arg2 <- as.numeric(matches[,4])
-      arg3 <- as.numeric(matches[,5])
-      return(qt(1:1000/1001, arg1, arg2, arg3))
+      mu <- as.numeric(matches[,3])
+      sigma <- as.numeric(matches[,4])
+      df <- as.numeric(matches[,5])
+      return(mu + sigma * qt(1:1000/1001, df))
     } else {
       stop('prior incorrectly specified. Valid distributions are std_normal, N, normal, halfnormal, unif, uniform, beta, gamma, t, and student_t.')
     }
