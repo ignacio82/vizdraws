@@ -22,10 +22,8 @@
 #' @return A HTML widget object representing the lollipop chart.
 #'
 #' @details
-#' The data frame should have three columns: `name`, `value`, and `color`.
-#' The `name` column specifies the names of the data points, while the
-#' `value` column specifies the corresponding probabilities. The `color`
-#' column specifies the color of each lollipop.
+#' The data frame must contain the columns `Name`, `Prior`, and `Posterior`.
+#' `Name` lists the outcomes, while `Prior` and `Posterior` provide the probabilities before and after observing new information.
 #'
 #' @examples
 #' data <- data.frame(
